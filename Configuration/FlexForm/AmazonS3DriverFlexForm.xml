@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<ROOT>
+		<type>array</type>
+		<el>
+			<bucket>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.bucket</label>
+					<config>
+						<type>input</type>
+						<size>30</size>
+					</config>
+				</TCEforms>
+			</bucket>
+			<region>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.region</label>
+					<config>
+						<type>select</type>
+						<items type="array"></items>
+						<itemsProcFunc>AUS\AusDriverAmazonS3\Utility\FlexFormUtility->addDriverConfigurationRegions</itemsProcFunc>
+						<size>1</size>
+						<minitems>1</minitems>
+						<maxitems>1</maxitems>
+					</config>
+				</TCEforms>
+			</region>
+			<key>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.key</label>
+					<config>
+						<type>input</type>
+						<size>30</size>
+					</config>
+				</TCEforms>
+			</key>
+			<secretKey>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.secretKey</label>
+					<config>
+						<type>input</type>
+						<size>30</size>
+						<eval>password</eval>
+					</config>
+				</TCEforms>
+			</secretKey>
+			<publicBaseUrl>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl</label>
+					<config>
+						<type>input</type>
+						<size>30</size>
+					</config>
+				</TCEforms>
+			</publicBaseUrl>
+			<protocol>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol</label>
+					<config>
+						<type>select</type>
+						<size>1</size>
+						<minitems>1</minitems>
+						<maxitems>1</maxitems>
+						<items type="array">
+							<numIndex index="0" type="array">
+								<numIndex index="0">LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol.auto</numIndex>
+								<numIndex index="1">auto</numIndex>
+							</numIndex>
+							<numIndex index="1" type="array">
+								<numIndex index="0">https://</numIndex>
+								<numIndex index="1">https://</numIndex>
+							</numIndex>
+							<numIndex index="2" type="array">
+								<numIndex index="0">http://</numIndex>
+								<numIndex index="1">http://</numIndex>
+							</numIndex>
+						</items>
+					</config>
+				</TCEforms>
+			</protocol>
+		</el>
+	</ROOT>
+</T3DataStructure>

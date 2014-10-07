@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="ru" datatype="plaintext" original="messages" date="2013-05-27T14:06:47Z" product-name="aus_driver_amazon_s3">
+		<header/>
+		<body>
+			<trans-unit id="driverConfiguration.region">
+				<target>Amazon S3: Регион (Region)</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.bucket">
+				<target>Amazon S3: Раздел (Bucket)</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.key">
+				<target>Amazon S3: Ключ (Key)</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.secretKey">
+				<target>Amazon S3: Секретный Ключ (Secret Key)</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.publicBaseUrl">
+				<target>Amazon S3: Публичный базовый URL (необязательно)</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.protocol">
+				<target>Протокол</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.protocol.auto">
+				<target>автоматически</target>
+			</trans-unit>
+
+			<trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
+				<target>Загрузи разрешение DNS  через HTML-тег "dns-prefetch"</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

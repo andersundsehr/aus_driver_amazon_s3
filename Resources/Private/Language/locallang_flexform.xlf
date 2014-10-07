@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-05-27T14:06:47Z" product-name="aus_driver_amazon_s3">
+		<header/>
+		<body>
+			<trans-unit id="driverConfiguration.region">
+				<source>Amazon S3: Region</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.bucket">
+				<source>Amazon S3: Bucket</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.key">
+				<source>Amazon S3: Key</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.secretKey">
+				<source>Amazon S3: Secret key</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.publicBaseUrl">
+				<source>Amazon S3: Public base URL (optional)</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.protocol">
+				<source>Protocol</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.protocol.auto">
+				<source>auto</source>
+			</trans-unit>
+
+			<trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
+				<source>Use DNS prefetching HTML tag</source>
+			</trans-unit>
+			<trans-unit id="ausDriverAmazonS3.settings.doNotLoadAmazonLib">
+				<source>Don't load Amazon AWS PHP SDK (please make sure this is loaded elsewhere)</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

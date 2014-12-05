@@ -35,7 +35,7 @@ class FlexFormUtility implements \TYPO3\CMS\Core\SingletonInterface {
 		$reflection = new \ReflectionClass('\Aws\Common\Enum\Region');
 
 		foreach ($reflection->getConstants() as $constant => $value) {
-			$regionOptions[] = array($constant, $value);
+			$regionOptions[$value] = array($constant, $value);
 		}
 
 		$config['items'] = array_merge($config['items'], $regionOptions);

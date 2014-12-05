@@ -19,7 +19,6 @@ namespace Aws\Ec2;
 use Aws\Common\Client\AbstractClient;
 use Aws\Common\Client\ClientBuilder;
 use Aws\Common\Enum\ClientOptions as Options;
-use Aws\Common\Signature\SignatureV4;
 use Guzzle\Common\Collection;
 use Guzzle\Service\Resource\Model;
 use Guzzle\Service\Resource\ResourceIteratorInterface;
@@ -238,7 +237,7 @@ use Guzzle\Service\Resource\ResourceIteratorInterface;
  */
 class Ec2Client extends AbstractClient
 {
-    const LATEST_API_VERSION = '2014-06-15';
+    const LATEST_API_VERSION = '2014-10-01';
 
     /**
      * Factory method to create a new AWS Elastic Beanstalk client using an array of configuration options.
@@ -250,10 +249,6 @@ class Ec2Client extends AbstractClient
      */
     public static function factory($config = array())
     {
-        if (isset($config['region']) && substr($config['region'], 0, 3) == 'cn-') {
-            $config[Options::SIGNATURE] = new SignatureV4();
-        }
-
         $client = ClientBuilder::factory(__NAMESPACE__)
             ->setConfig($config)
             ->setConfigDefaults(array(

@@ -24,6 +24,12 @@
 			<trans-unit id="driverConfiguration.protocol.auto">
 				<target>automatisch</target>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.signature">
+				<target>Signatur</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.signature.auto">
+				<target>automatisch</target>
+			</trans-unit>
 
 			<trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
 				<target>Lade DNS Auflösung durch HTML-Tag "dns-prefetch"</target>

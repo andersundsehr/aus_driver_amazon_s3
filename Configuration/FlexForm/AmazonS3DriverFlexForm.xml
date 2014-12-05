@@ -81,6 +81,27 @@
 					</config>
 				</TCEforms>
 			</protocol>
+			<signature>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature</label>
+					<config>
+						<type>select</type>
+						<size>1</size>
+						<minitems>1</minitems>
+						<maxitems>1</maxitems>
+						<items type="array">
+							<numIndex index="0" type="array">
+								<numIndex index="0">LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature.auto</numIndex>
+								<numIndex index="1">0</numIndex>
+							</numIndex>
+							<numIndex index="1" type="array">
+								<numIndex index="0">v4</numIndex>
+								<numIndex index="1">v4</numIndex>
+							</numIndex>
+						</items>
+					</config>
+				</TCEforms>
+			</signature>
 		</el>
 	</ROOT>
 </T3DataStructure>

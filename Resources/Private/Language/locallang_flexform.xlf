@@ -24,6 +24,12 @@
 			<trans-unit id="driverConfiguration.protocol.auto">
 				<source>auto</source>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.signature">
+				<source>Signature</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.signature.auto">
+				<source>auto</source>
+			</trans-unit>
 
 			<trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
 				<source>Use DNS prefetching HTML tag</source>

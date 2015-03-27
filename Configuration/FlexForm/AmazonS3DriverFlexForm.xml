@@ -56,6 +56,19 @@
 					</config>
 				</TCEforms>
 			</publicBaseUrl>
+			<cacheHeaderDuration>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.cacheHeaderDuration</label>
+					<config>
+						<type>input</type>
+						<size>30</size>
+						<eval>int</eval>
+						<range>
+							<lower>0</lower>
+						</range>
+					</config>
+				</TCEforms>
+			</cacheHeaderDuration>
 			<protocol>
 				<TCEforms>
 					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol</label>

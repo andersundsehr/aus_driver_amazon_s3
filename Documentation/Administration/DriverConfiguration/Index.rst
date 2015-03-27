@@ -21,8 +21,11 @@ Add the following configurations:
 
 - Public base url (optional): this is the public url of your bucket, if empty its default to "bucketname.s3.amazonaws.com"
 
+- Default cache header: max-age in seconds (optional) - Please Notice: Amazon S3 set the cache header only once - while uploading / creating or copy the file.
+
 - Protocol: network protocol (https://, http:// or auto detection)
 
+- Signature: Here you can set the signature manually to "Version 4" - "auto" should usually work
 
 
 

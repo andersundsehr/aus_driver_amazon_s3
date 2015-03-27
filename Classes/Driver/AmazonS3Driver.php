@@ -259,17 +259,19 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 */
 	public function addFile($localFilePath, $targetFolderIdentifier, $newFileName = '', $removeOriginal = TRUE) {
 		$targetIdentifier = $targetFolderIdentifier . $newFileName;
-		if (is_uploaded_file($localFilePath)) {
-			$moveResult = file_put_contents($this->getStreamWrapperPath($targetIdentifier), file_get_contents($localFilePath));
-		} else {
-			$localIdentifier = $localFilePath;
-			$this->normalizeIdentifier($localIdentifier);
+		$localIdentifier = $localFilePath;
+		$this->normalizeIdentifier($localIdentifier);
 
-			if ($this->objectExists($localIdentifier)) {
-				$moveResult = rename($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
-			} else {
-				$moveResult = file_put_contents($this->getStreamWrapperPath($targetIdentifier), file_get_contents($localFilePath));
-			}
+		if (!is_uploaded_file($localFilePath) && $this->objectExists($localIdentifier)) {
+			rename($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
+		} else {
+			$fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+			$contentType = finfo_file($fileInfo, $localFilePath);
+			finfo_close($fileInfo);
+			$this->createObject($targetIdentifier, file_get_contents($localFilePath), array(
+				'ContentType' => $contentType,
+				'CacheControl' => $this->getCacheControl($targetIdentifier)
+			));
 		}
 
 		return $targetIdentifier;
@@ -904,15 +906,17 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 
 
 	/**
-	 * @param \string $identifier
-	 * @return void
+	 * @param string $identifier
+	 * @param string $body
+	 * @param array $overrideArgs
 	 */
-	protected function createObject($identifier) {
-		$this->s3Client->putObject(array(
+	protected function createObject($identifier, $body = ' ', $overrideArgs = array()) {
+		$args = array(
 			'Bucket' => $this->configuration['bucket'],
 			'Key' => $identifier,
-			'Body' => ' '
-		));
+			'Body' => $body
+		);
+		$this->s3Client->putObject(array_merge_recursive($args, $overrideArgs));
 	}
 
 
@@ -1024,7 +1028,8 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 		$this->s3Client->copyObject(array(
 			'Bucket' => $this->configuration['bucket'],
 			'CopySource' => $this->configuration['bucket'] . '/' . $identifier,
-			'Key' => $targetIdentifier
+			'Key' => $targetIdentifier,
+			'CacheControl' => $this->getCacheControl($targetIdentifier)
 		));
 	}
 
@@ -1057,6 +1062,23 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 
 
 	/**
+	 * @param string $pathAndFilename
+	 * @return string
+	 */
+	protected function getCacheControl($pathAndFilename) {
+		$cacheControl = $this->configuration['cacheHeaderDuration'] ? 'max-age=' . $this->configuration['cacheHeaderDuration'] : '';
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['getCacheControl'])) {
+			$fileExtension = pathinfo($pathAndFilename, PATHINFO_EXTENSION);
+			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['getCacheControl'] as $funcName) {
+				$params = array('cacheControl' => &$cacheControl, 'fileExtension' => $fileExtension, 'configuration' => $this->configuration);
+				GeneralUtility::callUserFunction($funcName, $params, $this);
+			}
+		}
+		return $cacheControl;
+	}
+
+
+	/**
 	 * @return ResourceStorage
 	 */
 	protected function getStorage(){
@@ -1069,6 +1091,9 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	}
 
 
+	/**
+	 * @return string
+	 */
 	protected function getProcessingFolder(){
 		if(!$this->processingFolder){
 			$confProcessingFolder = $this->getStorage()->getProcessingFolder()->getName();

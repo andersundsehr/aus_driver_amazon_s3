@@ -18,6 +18,9 @@
 			<trans-unit id="driverConfiguration.publicBaseUrl">
 				<target>Amazon S3: Öffentliche URL (optional)</target>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.cacheHeaderDuration">
+				<target>Cache Header: Max-Age (in Sekunden, optional)</target>
+			</trans-unit>
 			<trans-unit id="driverConfiguration.protocol">
 				<target>Netzwerkprotokoll</target>
 			</trans-unit>

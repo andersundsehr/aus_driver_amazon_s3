@@ -345,11 +345,7 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 */
 	public function deleteFolder($folderIdentifier, $deleteRecursively = FALSE) {
 		if ($deleteRecursively) {
-			$items = $this->s3Client->listObjects(array(
-				'Bucket' => $this->configuration['bucket'],
-				'Prefix' => $folderIdentifier
-			))->toArray();
-
+			$items = $this->getListObjects($folderIdentifier);
 			foreach ($items['Contents'] as $object) {
 				// Filter the folder itself
 				if ($object['Key'] !== $folderIdentifier) {
@@ -564,10 +560,7 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @return boolean TRUE if there are no files and folders within $folder
 	 */
 	public function isFolderEmpty($folderIdentifier) {
-		$result = $this->s3Client->listObjects(array(
-			'Bucket' => $this->configuration['bucket'],
-			'Prefix' => $folderIdentifier
-		))->toArray();
+		$result = $this->getListObjects($folderIdentifier);
 
 		// Contents will always include the folder itself
 		if (sizeof($result['Contents']) > 1) {
@@ -642,11 +635,7 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 			$folderIdentifier = '';
 		}
 
-		$response = $this->s3Client->listObjects(array(
-			'Bucket' => $this->configuration['bucket'],
-			'Prefix' => $folderIdentifier
-		))->toArray();
-
+		$response = $this->getListObjects($folderIdentifier);
 		if($response['Contents']) {
 			foreach ($response['Contents'] as $fileCandidate) {
 				// skip directory entries
@@ -684,10 +673,8 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 		$this->normalizeIdentifier($folderIdentifier);
 		$folders = array();
 
-		$configuration = array('Bucket' => $this->configuration['bucket']);
 		if ($folderIdentifier === self::ROOT_FOLDER_IDENTIFIER) {
-			$configuration['Delimiter'] = $folderIdentifier;
-			$response = $this->s3Client->listObjects($configuration)->toArray();
+			$response = $this->getListObjects('', array('Delimiter' => $folderIdentifier));
 			if($response['CommonPrefixes']){
 				foreach ($response['CommonPrefixes'] as $folderCandidate) {
 					$key = $folderCandidate['Prefix'];
@@ -984,14 +971,35 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @return array
 	 */
 	protected function getSubObjects($identifier, $recursive = TRUE, $filter = self::FILTER_ALL) {
-		$result = $this->s3Client->listObjects(array(
-			'Bucket' => $this->configuration['bucket'],
-			'Prefix' => $identifier
-		))->toArray();
-
+		$result = $this->getListObjects($identifier);
 		return array_filter($result['Contents'], function (&$object) use ($identifier, $recursive, $filter) {
 			return ($object['Key'] !== $identifier && ($recursive || substr_count(trim(str_replace($identifier, '', $object['Key']), '/'), '/') === 0) && ($filter === self::FILTER_ALL || $filter === self::FILTER_FOLDERS && $this->isDir($object['Key']) || $filter === self::FILTER_FILES && !$this->isDir($object['Key'])));
 		});
+	}
+
+
+	/**
+	 * Recursive function to get all objects of a folder
+	 * It is recursive because Amazon S3 lists max 1000 objects by one request
+	 *
+	 * @param string $identifier
+	 * @param array $overrideArgs
+	 * @return array
+	 */
+	protected function getListObjects($identifier, $overrideArgs = array()) {
+		$args = array(
+			'Bucket' => $this->configuration['bucket'],
+			'Prefix' => $identifier
+		);
+		$result = $this->s3Client->listObjects(array_merge_recursive($args, $overrideArgs))->toArray();
+
+		// Amazon S3 lists max 1000 files, so we have to get all recursive
+		if (count($result['Contents']) === 1000) {
+			$overrideArgs['Marker'] = $result['Contents'][999]['Key'];
+			$moreResults = $this->getListObjects($identifier, $overrideArgs);
+			$result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
+		}
+		return $result;
 	}
 
 

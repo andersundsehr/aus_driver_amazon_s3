@@ -626,7 +626,7 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @param array   $filenameFilterCallbacks callbacks for filtering the items
 	 *
 	 * @return array of FileIdentifiers
-	 * @toDo: Implement params
+	 * @toDo: Implement $start and $numberOfItems
 	 */
 	public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $filenameFilterCallbacks = array()) {
 		$this->normalizeIdentifier($folderIdentifier);
@@ -649,6 +649,11 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 				}
 
 				$fileName = basename($fileCandidate['Key']);
+				// check filter
+				if (!$this->applyFilterMethodsToDirectoryItem($filenameFilterCallbacks, $fileName, $fileCandidate['Key'], $folderIdentifier)) {
+					continue;
+				}
+
 				$files[$fileCandidate['Key']] = $fileCandidate['Key'];
 			}
 		}
@@ -1119,6 +1124,34 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 */
 	protected function isDir($identifier) {
 		return substr($identifier, -1) === '/';
+	}
+
+
+	/**
+	 * Applies a set of filter methods to a file name to find out if it should be used or not. This is e.g. used by
+	 * directory listings.
+	 *
+	 * @param array $filterMethods The filter methods to use
+	 * @param string $itemName
+	 * @param string $itemIdentifier
+	 * @param string $parentIdentifier
+	 * @throws \RuntimeException
+	 * @return bool
+	 */
+	protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier) {
+		foreach ($filterMethods as $filter) {
+			if (is_array($filter)) {
+				$result = call_user_func($filter, $itemName, $itemIdentifier, $parentIdentifier, array(), $this);
+				// We have to use -1 as the „don't include“ return value, as call_user_func() will return FALSE
+				// If calling the method succeeded and thus we can't use that as a return value.
+				if ($result === -1) {
+					return FALSE;
+				} elseif ($result === FALSE) {
+					throw new \RuntimeException('Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1]);
+				}
+			}
+		}
+		return TRUE;
 	}
 
 }

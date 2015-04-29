@@ -1,8 +1,11 @@
 <?php
 namespace AUS\AusDriverAmazonS3\Driver;
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
+use TYPO3\CMS\Core\Resource\Exception;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 
 /***************************************************************
  *  Copyright notice
@@ -19,7 +22,7 @@ use \TYPO3\CMS\Core\Resource\ResourceStorage;
  * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
  * @package AUS\AusDriverAmazonS3\Driver
  */
-class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver {
+class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 
 
 	const DEBUG_MODE = FALSE;
@@ -35,6 +38,8 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	const FILTER_FILES = 'files';
 
 	const ROOT_FOLDER_IDENTIFIER = '/';
+
+	const UNSAFE_FILENAME_CHARACTER_EXPRESSION = '\\x00-\\x2C\\/\\x3A-\\x3F\\x5B-\\x60\\x7B-\\xBF';
 
 	/**
 	 * @var \Aws\S3\S3Client
@@ -95,6 +100,11 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @var array
 	 */
 	protected static $settings = NULL;
+
+	/**
+	 * @var \TYPO3\CMS\Core\Charset\CharsetConverter
+	 */
+	protected $charsetConversion;
 
 
 
@@ -192,7 +202,7 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 			'mimetype' => $metadata['ContentType'],
 			'size' => (integer)$metadata['ContentLength'],
 			'identifier_hash' => $this->hashIdentifier($fileIdentifier),
-			'folder_hash' => $this->hashIdentifier(\TYPO3\CMS\Core\Utility\PathUtility::dirname($fileIdentifier)),
+			'folder_hash' => $this->hashIdentifier(PathUtility::dirname($fileIdentifier)),
 			'storage' => $this->storageUid
 		);
 	}
@@ -260,6 +270,7 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @return string the identifier of the new file
 	 */
 	public function addFile($localFilePath, $targetFolderIdentifier, $newFileName = '', $removeOriginal = TRUE) {
+		$newFileName = $this->sanitizeFileName($newFileName !== '' ? $newFileName : PathUtility::basename($localFilePath));
 		$targetIdentifier = $targetFolderIdentifier . $newFileName;
 		$localIdentifier = $localFilePath;
 		$this->normalizeIdentifier($localIdentifier);
@@ -399,7 +410,10 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @return string
 	 */
 	public function createFile($fileName, $parentFolderIdentifier) {
-		$identifier = $parentFolderIdentifier . $fileName;
+		$parentFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($parentFolderIdentifier);
+		$identifier = $this->canonicalizeAndCheckFileIdentifier(
+			$parentFolderIdentifier . $this->sanitizeFileName(ltrim($fileName, '/'))
+		);
 		$this->createObject($identifier);
 		return $identifier;
 	}
@@ -413,12 +427,21 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @param string  $parentFolderIdentifier
 	 * @param boolean $recursive
 	 * @return string the Identifier of the new folder
-	 * @toDo: implement $recursive
 	 */
 	public function createFolder($newFolderName, $parentFolderIdentifier = '', $recursive = FALSE) {
+		$parentFolderIdentifier = $this->canonicalizeAndCheckFolderIdentifier($parentFolderIdentifier);
 		$newFolderName = trim($newFolderName, '/');
 
-		$identifier = $parentFolderIdentifier . $newFolderName . '/';
+		if ($recursive === FALSE) {
+			$newFolderName = $this->sanitizeFileName($newFolderName);
+			$identifier = $parentFolderIdentifier . $newFolderName . '/';
+		} else {
+			$parts = GeneralUtility::trimExplode('/', $newFolderName);
+			$parts = array_map(array($this, 'sanitizeFileName'), $parts);
+			$newFolderName = implode('/', $parts);
+			$identifier = $parentFolderIdentifier . $newFolderName . '/';
+		}
+
 		$this->createObject($identifier);
 		return $identifier;
 	}
@@ -462,9 +485,8 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @return string The identifier of the file after renaming
 	 */
 	public function renameFile($fileIdentifier, $newName) {
-		$newIdentifier = $fileIdentifier;
-		$namePivot = strrpos($newIdentifier, basename($fileIdentifier));
-		$newIdentifier = substr($newIdentifier, 0, $namePivot) . $newName;
+		$newName = $this->sanitizeFileName($newName);
+		$newIdentifier = rtrim(PathUtility::dirname($fileIdentifier), '/') . '/' . $newName;
 
 		$this->renameObject($fileIdentifier, $newIdentifier);
 		return $newIdentifier;
@@ -480,8 +502,9 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 */
 	public function renameFolder($folderIdentifier, $newName) {
 		$this->resetIdentifierMap();
+		$newName = $this->sanitizeFileName($newName);
 
-		$parentFolderName = dirname($folderIdentifier);
+		$parentFolderName = PathUtility::dirname($folderIdentifier);
 		if ($parentFolderName === '.') {
 			$parentFolderName = '';
 		} else {
@@ -803,7 +826,7 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 		$this->baseUrl = $protocol;
 
 		if (isset($this->configuration['publicBaseUrl']) && $this->configuration['publicBaseUrl'] !== '') {
-			$this->baseUrl .= $this->configuration['publicBaseUrl'];
+			$this->baseUrl .= rtrim($this->configuration['publicBaseUrl'], '/');
 		} else {
 			$this->baseUrl .= $this->configuration['bucket'] . '.s3.amazonaws.com';
 		}
@@ -962,6 +985,53 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	protected function renameObject($identifier, $newIdentifier) {
 		rename($this->getStreamWrapperPath($identifier), $this->getStreamWrapperPath($newIdentifier));
 		$this->identifierMap[$identifier] = $newIdentifier;
+	}
+
+	/**
+	 * Returns a string where any character not matching [.a-zA-Z0-9_-] is
+	 * substituted by '_'
+	 * Trailing dots are removed
+
+	 * @param string $fileName Input string, typically the body of a fileName
+	 * @param string $charset Charset of the a fileName (defaults to current charset; depending on context)
+	 * @return string Output string with any characters not matching [.a-zA-Z0-9_-] is substituted by '_' and trailing dots removed
+	 * @throws Exception\InvalidFileNameException
+	 */
+	public function sanitizeFileName($fileName, $charset = '') {
+		$fileName = $this->getCharsetConversion()->specCharsToASCII('utf-8', $fileName);
+		// Replace unwanted characters by underscores
+		$cleanFileName = preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/', '_', trim($fileName));
+
+		// Strip trailing dots and return
+		$cleanFileName = rtrim($cleanFileName, '.');
+		if ($cleanFileName === '') {
+			throw new Exception\InvalidFileNameException(
+				'File name ' . $fileName . ' is invalid.',
+				1320288991
+			);
+		}
+		return $cleanFileName;
+	}
+
+
+	/**
+	 * Gets the charset conversion object.
+	 *
+	 * @return \TYPO3\CMS\Core\Charset\CharsetConverter
+	 */
+	protected function getCharsetConversion() {
+		if (!isset($this->charsetConversion)) {
+			if (TYPO3_MODE === 'FE') {
+				$this->charsetConversion = $GLOBALS['TSFE']->csConvObj;
+			} elseif (is_object($GLOBALS['LANG'])) {
+				// BE assumed:
+				$this->charsetConversion = $GLOBALS['LANG']->csConvObj;
+			} else {
+				// The object may not exist yet, so we need to create it now. Happens in the Install Tool for example.
+				$this->charsetConversion = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+			}
+		}
+		return $this->charsetConversion;
 	}
 
 

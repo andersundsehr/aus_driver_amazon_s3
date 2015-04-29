@@ -129,7 +129,9 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @return string
 	 */
 	public function getPublicUrl($identifier) {
-		return $this->baseUrl . '/' . $identifier;
+		$uriParts = explode('/', ltrim($identifier, '/'));
+		$uriParts = array_map('rawurlencode', $uriParts);
+		return $this->baseUrl . '/' . implode('/', $uriParts);
 	}
 
 

@@ -624,11 +624,17 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 	 * @param integer $numberOfItems
 	 * @param boolean $recursive
 	 * @param array   $filenameFilterCallbacks callbacks for filtering the items
+	 * @param string  $sort Property name used to sort the items.
+	 *                      Among them may be: '' (empty, no sorting), name,
+	 *                      fileext, size, tstamp and rw.
+	 *                      If a driver does not support the given property, it
+	 *                      should fall back to "name".
+	 * @param bool    $sortRev TRUE to indicate reverse sorting (last to first)
 	 *
 	 * @return array of FileIdentifiers
-	 * @toDo: Implement $start and $numberOfItems
+	 * @toDo: Implement $start, $numberOfItems, $sort and $sortRev
 	 */
-	public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $filenameFilterCallbacks = array()) {
+	public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $filenameFilterCallbacks = array(), $sort = '', $sortRev = FALSE) {
 		$this->normalizeIdentifier($folderIdentifier);
 		$files = array();
 		if ($folderIdentifier === self::ROOT_FOLDER_IDENTIFIER) {
@@ -663,18 +669,37 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 
 
 	/**
-	 * Returns a list of folders inside the specified path
+	 * Returns the number of files inside the specified path
 	 *
+	 * @param string $folderIdentifier
+	 * @param bool $recursive
+	 * @param array $filenameFilterCallbacks callbacks for filtering the items
+	 * @return int Number of files in folder
+	 */
+	public function countFilesInFolder($folderIdentifier, $recursive = FALSE, array $filenameFilterCallbacks = array()) {
+		return count($this->getFilesInFolder($folderIdentifier, 0, 0, $recursive, $filenameFilterCallbacks));
+	}
+
+
+	/**
+	 * Returns a list of folders inside the specified path
+
 	 * @param string  $folderIdentifier
 	 * @param integer $start
 	 * @param integer $numberOfItems
 	 * @param boolean $recursive
 	 * @param array   $folderNameFilterCallbacks callbacks for filtering the items
+	 * @param string  $sort Property name used to sort the items.
+	 *                      Among them may be: '' (empty, no sorting), name,
+	 *                      fileext, size, tstamp and rw.
+	 *                      If a driver does not support the given property, it
+	 *                      should fall back to "name".
+	 * @param bool    $sortRev TRUE to indicate reverse sorting (last to first)
 	 *
 	 * @return array of Folder Identifier
-	 * @toDo: Implement params
+	 * @toDo: Implement params $start, $numberOfItems, $recursive, $folderNameFilterCallbacks, $sort, $sort
 	 */
-	public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $folderNameFilterCallbacks = array()) {
+	public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $folderNameFilterCallbacks = array(), $sort = '', $sortRev = FALSE) {
 		$this->normalizeIdentifier($folderIdentifier);
 		$folders = array();
 
@@ -697,6 +722,19 @@ class AmazonS3Driver extends \TYPO3\CMS\Core\Resource\Driver\AbstractHierarchica
 		}
 
 		return $folders;
+	}
+
+
+	/**
+	 * Returns the number of folders inside the specified path
+	 *
+	 * @param string $folderIdentifier
+	 * @param boolean $recursive
+	 * @param array $folderNameFilterCallbacks callbacks for filtering the items
+	 * @return integer Number of folders in folder
+	 */
+	public function countFoldersInFolder($folderIdentifier, $recursive = FALSE, array $folderNameFilterCallbacks = array()) {
+		return count($this->getFoldersInFolder($folderIdentifier, 0, 0, $recursive, $folderNameFilterCallbacks));
 	}
 
 

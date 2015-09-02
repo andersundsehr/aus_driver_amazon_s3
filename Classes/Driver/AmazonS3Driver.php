@@ -345,7 +345,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 	 * @return boolean TRUE if deleting the file succeeded
 	 */
 	public function deleteFile($fileIdentifier) {
-		$this->deleteObject($fileIdentifier);
+		return $this->deleteObject($fileIdentifier);
 	}
 
 
@@ -374,7 +374,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 			}
 		}
 
-		$this->deleteObject($folderIdentifier);
+		return $this->deleteObject($folderIdentifier);
 	}
 
 
@@ -938,10 +938,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 
 	/**
 	 * @param string $identifier
-	 * @return Model
+	 * @return boolean
 	 */
 	protected function deleteObject($identifier) {
-		return $this->s3Client->deleteObject(array('Bucket' => $this->configuration['bucket'], 'Key' => $identifier));
+		$this->s3Client->deleteObject(array('Bucket' => $this->configuration['bucket'], 'Key' => $identifier));
+		return !$this->s3Client->doesObjectExist($this->configuration['bucket'], $identifier);
 	}
 
 

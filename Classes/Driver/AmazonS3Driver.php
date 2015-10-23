@@ -262,6 +262,20 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 
 
 	/**
+	 * Returns the Identifier for a folder within a given folder.
+	 *
+	 * @param string $folderName The name of the target folder
+	 * @param string $folderIdentifier
+	 * @return string
+	 */
+	public function getFolderInFolder($folderName, $folderIdentifier) {
+		$identifier = $folderIdentifier  . '/' . $folderName . '/';
+		$this->normalizeIdentifier($identifier);
+		return $identifier;
+	}
+
+
+	/**
 	 * @param string  $localFilePath  (within PATH_site)
 	 * @param string  $targetFolderIdentifier
 	 * @param string  $newFileName    optional, if not given original name is used
@@ -638,6 +652,20 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 			'name' => basename(rtrim($folderIdentifier, '/')),
 			'storage' => $this->storageUid
 		);
+	}
+
+
+	/**
+	 * Returns a file inside the specified path
+	 *
+	 * @param string $fileName
+	 * @param string $folderIdentifier
+	 * @return string File Identifier
+	 */
+	public function getFileInFolder($fileName, $folderIdentifier) {
+		$folderIdentifier = $folderIdentifier . '/' . $fileName;
+		$this->normalizeIdentifier($folderIdentifier);
+		return $folderIdentifier;
 	}
 
 

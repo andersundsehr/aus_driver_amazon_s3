@@ -1222,7 +1222,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['getCacheControl'])) {
 			$fileExtension = pathinfo($pathAndFilename, PATHINFO_EXTENSION);
 			foreach($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['getCacheControl'] as $funcName) {
-				$params = array('cacheControl' => &$cacheControl, 'fileExtension' => $fileExtension, 'configuration' => $this->configuration);
+				$params = array('cacheControl' => &$cacheControl, 'pathAndFilename' => $pathAndFilename, 'fileExtension' => $fileExtension, 'configuration' => $this->configuration);
 				GeneralUtility::callUserFunction($funcName, $params, $this);
 			}
 		}

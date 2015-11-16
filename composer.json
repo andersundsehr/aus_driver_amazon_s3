@@ -1,10 +1,11 @@
 {
-	"name": "andersundsehr/aus_driver_amazon_s3",
+	"name": "andersundsehr/aus-driver-amazon-s3",
 	"type": "typo3-cms-extension",
 	"description": "Provides a FAL driver for the Amazon Web Service S3.",
 	"homepage": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
 	"support": {
-		"issues": "https://git.typo3.org/TYPO3CMS/Extensions/aus_driver_amazon_s3.git"
+		"source": "https://git.typo3.org/TYPO3CMS/Extensions/aus_driver_amazon_s3.git",
+		"issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3"
 	},
 	"require": {
 		"typo3/cms-core": "*"
@@ -15,6 +16,6 @@
 		}
 	},
 	"replace": {
-		"typo3-ter/aus_driver_amazon_s3": "self.version"
+		"typo3-ter/aus-driver-amazon-s3": "self.version"
 	}
 }

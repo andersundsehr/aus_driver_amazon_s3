@@ -2,13 +2,18 @@
 	"name": "andersundsehr/aus-driver-amazon-s3",
 	"type": "typo3-cms-extension",
 	"description": "Provides a FAL driver for the Amazon Web Service S3.",
-	"homepage": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
+	"homepage": "https://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn",
 	"support": {
 		"source": "https://git.typo3.org/TYPO3CMS/Extensions/aus_driver_amazon_s3.git",
-		"issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3"
+		"issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
+		"docs": "https://docs.typo3.org/typo3cms/extensions/aus_driver_amazon_s3/"
 	},
 	"require": {
-		"typo3/cms-core": "*"
+		"composer/installers": "~1.0",
+		"typo3/cms": "*"
+	},
+	"extra": {
+		"installer-name": "aus_driver_amazon_s3"
 	},
 	"autoload": {
 		"psr-4": {

@@ -11,11 +11,7 @@
 	},
 	"license": "GPL-2.0+",
 	"require": {
-		"composer/installers": "~1.0",
 		"typo3/cms": "*"
-	},
-	"extra": {
-		"installer-name": "aus_driver_amazon_s3"
 	},
 	"autoload": {
 		"psr-4": {
@@ -23,6 +19,7 @@
 		}
 	},
 	"replace": {
+		"typo3-ter/aus_driver_amazon_s3": "self.version",
 		"typo3-ter/aus-driver-amazon-s3": "self.version"
 	}
 }

@@ -934,6 +934,18 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 
 
 	/**
+	 * Remove the identifier from the first level cache
+	 *
+	 * @param $identifier
+	 * @return void
+	 */
+	protected function flushObjectExistenceCache($identifier) {
+		$this->normalizeIdentifier($identifier);
+		unset($this->objectExistenceCache[$identifier]);
+	}
+
+
+	/**
 	 * @param string $identifier
 	 * @return mixed
 	 */
@@ -970,6 +982,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 	 */
 	protected function deleteObject($identifier) {
 		$this->s3Client->deleteObject(array('Bucket' => $this->configuration['bucket'], 'Key' => $identifier));
+		$this->flushObjectExistenceCache($identifier);
 		return !$this->s3Client->doesObjectExist($this->configuration['bucket'], $identifier);
 	}
 
@@ -1001,6 +1014,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 			'Body' => $body
 		);
 		$this->s3Client->putObject(array_merge_recursive($args, $overrideArgs));
+		$this->flushObjectExistenceCache($identifier);
 	}
 
 
@@ -1014,6 +1028,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 	protected function renameObject($identifier, $newIdentifier) {
 		rename($this->getStreamWrapperPath($identifier), $this->getStreamWrapperPath($newIdentifier));
 		$this->identifierMap[$identifier] = $newIdentifier;
+		$this->flushObjectExistenceCache($identifier);
+		$this->flushObjectExistenceCache($newIdentifier);
 	}
 
 	/**
@@ -1183,6 +1199,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver {
 			'Key' => $targetIdentifier,
 			'CacheControl' => $this->getCacheControl($targetIdentifier)
 		));
+		$this->flushObjectExistenceCache($targetIdentifier);
 	}
 
 

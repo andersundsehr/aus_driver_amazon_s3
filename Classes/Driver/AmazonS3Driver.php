@@ -145,7 +145,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function getPublicUrl($identifier)
     {
-        $uriParts = explode('/', ltrim($identifier, '/'));
+        $uriParts = GeneralUtility::trimExplode('/', ltrim($identifier, '/'), true);
         $uriParts = array_map('rawurlencode', $uriParts);
         return $this->baseUrl . '/' . implode('/', $uriParts);
     }

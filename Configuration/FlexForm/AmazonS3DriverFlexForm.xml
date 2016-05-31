@@ -20,8 +20,48 @@
 					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.region</label>
 					<config>
 						<type>select</type>
-						<items type="array"></items>
-						<itemsProcFunc>AUS\AusDriverAmazonS3\Utility\FlexFormUtility->addDriverConfigurationRegions</itemsProcFunc>
+						<items type="array">
+							<numIndex index="0" type="array">
+								<numIndex index="0">US East (N. Virginia) - us-east-1</numIndex>
+								<numIndex index="1">us-east-1</numIndex>
+							</numIndex>
+							<numIndex index="1" type="array">
+								<numIndex index="0">US West (N. California) - us-west-1</numIndex>
+								<numIndex index="1">us-west-1</numIndex>
+							</numIndex>
+							<numIndex index="2" type="array">
+								<numIndex index="0">US West (Oregon) - us-west-2</numIndex>
+								<numIndex index="1">us-west-2</numIndex>
+							</numIndex>
+							<numIndex index="3" type="array">
+								<numIndex index="0">EU (Ireland) - eu-west-1</numIndex>
+								<numIndex index="1">eu-west-1</numIndex>
+							</numIndex>
+							<numIndex index="4" type="array">
+								<numIndex index="0">EU (Frankfurt) - eu-central-1</numIndex>
+								<numIndex index="1">eu-central-1</numIndex>
+							</numIndex>
+							<numIndex index="5" type="array">
+								<numIndex index="0">Asia Pacific (Tokyo) - ap-northeast-1</numIndex>
+								<numIndex index="1">ap-northeast-1</numIndex>
+							</numIndex>
+							<numIndex index="6" type="array">
+								<numIndex index="0">Asia Pacific (Seoul) - ap-northeast-2</numIndex>
+								<numIndex index="1">ap-northeast-2</numIndex>
+							</numIndex>
+							<numIndex index="7" type="array">
+								<numIndex index="0">Asia Pacific (Singapore) - ap-southeast-1</numIndex>
+								<numIndex index="1">ap-southeast-1</numIndex>
+							</numIndex>
+							<numIndex index="8" type="array">
+								<numIndex index="0">Asia Pacific (Sydney) - ap-southeast-2</numIndex>
+								<numIndex index="1">ap-southeast-2</numIndex>
+							</numIndex>
+							<numIndex index="9" type="array">
+								<numIndex index="0">South America (São Paulo) - sa-east-1</numIndex>
+								<numIndex index="1">sa-east-1</numIndex>
+							</numIndex>
+						</items>
 						<size>1</size>
 						<minitems>1</minitems>
 						<maxitems>1</maxitems>

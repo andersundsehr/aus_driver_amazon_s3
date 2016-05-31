@@ -11,7 +11,8 @@
   },
   "license": "GPL-2.0+",
   "require": {
-    "typo3/cms": "*"
+    "typo3/cms": "*",
+    "aws/aws-sdk-php": "^3.18"
   },
   "autoload": {
     "psr-4": {

@@ -1,9 +1,9 @@
 <?php
 namespace AUS\AusDriverAmazonS3\Driver;
 
-use Aws\S3\Enum\Permission;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -118,7 +118,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public static function loadExternalClasses()
     {
-        require_once(GeneralUtility::getFileAbsFileName('EXT:' . self::EXTENSION_KEY . '/Resources/Private/PHP/Aws/aws-autoloader.php'));
+        if (GeneralUtility::compat_version('7.6.0') === false || Bootstrap::usesComposerClassLoading() === false) {
+            require_once(GeneralUtility::getFileAbsFileName('EXT:' . self::EXTENSION_KEY . '/Resources/Private/PHP/Aws/aws-autoloader.php'));
+        }
     }
 
     /**
@@ -197,7 +199,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             'Bucket' => $this->configuration['bucket'],
             'Key' => $fileIdentifier
         ))->toArray();
-        $lastModified = \DateTime::createFromFormat(\Aws\Common\Enum\DateFormat::RFC2822, $metadata['LastModified']);
+        /** @var \Aws\Api\DateTimeResult $lastModified */
+        $lastModified = $metadata['LastModified'];
         $lastModifiedUnixTimestamp = $lastModified->getTimestamp();
 
         return array(
@@ -842,9 +845,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
 
 
-    /*************************************************************/
-    /****************** Protected Helpers ************************/
-    /*************************************************************/
+    /*************************************************************
+     ******************** Protected Helpers **********************
+     *************************************************************/
 
     /**
      * initializeBaseUrl
@@ -894,12 +897,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected function initializeClient()
     {
         $configuration = array(
-            'key' => $this->configuration['key'],
-            'secret' => $this->configuration['secretKey'],
-            'region' => $this->configuration['region']
+            'version' => '2006-03-01',
+            'region' => $this->configuration['region'],
+            'credentials' => array(
+                'key' => $this->configuration['key'],
+                'secret' => $this->configuration['secretKey'],
+            ),
         );
         if (!empty($this->configuration['signature'])) {
-            $configuration['signature'] = $this->configuration['signature'];
+            $configuration['signature_version'] = $this->configuration['signature_version'];
         }
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'])) {
@@ -910,7 +916,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         }
 
         if (!$this->s3Client) {
-            $this->s3Client = S3Client::factory($configuration);
+            $this->s3Client = new S3Client($configuration);
             StreamWrapper::register($this->s3Client);
         }
         return $this;
@@ -955,6 +961,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function getObjectPermissions($identifier)
     {
+        $this->normalizeIdentifier($identifier);
         if (!isset($this->objectPermissionsCache[$identifier])) {
             if ($identifier === self::ROOT_FOLDER_IDENTIFIER) {
                 $permissions = array('r' => true, 'w' => true,);
@@ -968,7 +975,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
                 // Until the SDK provides any useful information about folder permissions, we take full access for granted as long as one user with full access exists.
                 foreach ($response['Grants'] as $grant) {
-                    if ($grant['Permission'] === Permission::FULL_CONTROL) {
+                    if ($grant['Permission'] === 'FULL_CONTROL') {
                         $permissions['r'] = true;
                         $permissions['w'] = true;
                     }
@@ -1115,6 +1122,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         if ($identifier !== '/') {
             $identifier = ltrim($identifier, '/');
+            $identifier = str_replace('//', '/', $identifier);
         }
     }
 

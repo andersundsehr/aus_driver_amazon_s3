@@ -1020,6 +1020,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function createObject($identifier, $body = ' ', $overrideArgs = array())
     {
+        $this->normalizeIdentifier($identifier);
         $args = array(
             'Bucket' => $this->configuration['bucket'],
             'Key' => $identifier,

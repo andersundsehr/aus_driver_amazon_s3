@@ -1,25 +1,25 @@
 {
-	"name": "andersundsehr/aus-driver-amazon-s3",
-	"type": "typo3-cms-extension",
-	"version": "1.3.3",
-	"description": "Provides a FAL driver for the Amazon Web Service S3.",
-	"homepage": "https://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn",
-	"support": {
-		"source": "https://git.typo3.org/TYPO3CMS/Extensions/aus_driver_amazon_s3.git",
-		"issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
-		"docs": "https://docs.typo3.org/typo3cms/extensions/aus_driver_amazon_s3/"
-	},
-	"license": "GPL-2.0+",
-	"require": {
-		"typo3/cms": "*"
-	},
-	"autoload": {
-		"psr-4": {
-			"AUS\\AusDriverAmazonS3\\": "Classes/"
-		}
-	},
-	"replace": {
-		"typo3-ter/aus_driver_amazon_s3": "self.version",
-		"typo3-ter/aus-driver-amazon-s3": "self.version"
-	}
+  "name": "andersundsehr/aus-driver-amazon-s3",
+  "type": "typo3-cms-extension",
+  "version": "1.3.3",
+  "description": "Provides a FAL driver for the Amazon Web Service S3.",
+  "homepage": "https://www.andersundsehr.com",
+  "support": {
+    "source": "https://git.typo3.org/TYPO3CMS/Extensions/aus_driver_amazon_s3.git",
+    "issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
+    "docs": "https://docs.typo3.org/typo3cms/extensions/aus_driver_amazon_s3/"
+  },
+  "license": "GPL-2.0+",
+  "require": {
+    "typo3/cms": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "AUS\\AusDriverAmazonS3\\": "Classes/"
+    }
+  },
+  "replace": {
+    "typo3-ter/aus_driver_amazon_s3": "self.version",
+    "typo3-ter/aus-driver-amazon-s3": "self.version"
+  }
 }

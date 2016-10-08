@@ -118,7 +118,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public static function loadExternalClasses()
     {
-        if (GeneralUtility::compat_version('7.6.0') === false || Bootstrap::usesComposerClassLoading() === false) {
+        if ((!GeneralUtility::compat_version('7.6.0') || !Bootstrap::usesComposerClassLoading()) && !function_exists('Aws\manifest')) {
             require_once(GeneralUtility::getFileAbsFileName('EXT:' . self::EXTENSION_KEY . '/Resources/Private/PHP/Aws/aws-autoloader.php'));
         }
     }
@@ -898,10 +898,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         $configuration = array(
             'version' => '2006-03-01',
-            'region' => $this->configuration['region'],
+            'region' => (string)$this->configuration['region'],
             'credentials' => array(
-                'key' => $this->configuration['key'],
-                'secret' => $this->configuration['secretKey'],
+                'key' => (string)$this->configuration['key'],
+                'secret' => (string)$this->configuration['secretKey'],
             ),
         );
         if (!empty($this->configuration['signature'])) {

@@ -38,7 +38,7 @@
 				<source>Use DNS prefetching HTML tag</source>
 			</trans-unit>
 			<trans-unit id="ausDriverAmazonS3.settings.doNotLoadAmazonLib">
-				<source>Don't load Amazon AWS PHP SDK (please make sure this is loaded elsewhere)</source>
+				<source>Don't load Amazon AWS PHP SDK (please make sure this is loaded elsewhere, obsolete in "composer mode")</source>
 			</trans-unit>
 		</body>
 	</file>

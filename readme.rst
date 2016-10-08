@@ -19,13 +19,13 @@ Administrator Manual
 Installation
 ------------
 
-1. Install the TYPO3 extension via composer (recommended):
+1. Install the TYPO3 extension via composer (recommended) or install the extension via TER (not recommended anymore).
+
+  Composer installation:
 
   .. code-block::
 
     composer require andersundsehr/aus-driver-amazon-s3
-
-  or install the extension via TER (not recommended anymore)
 
 2. Add a new file storage with the "Amazon S3" driver to root page (pid = 0).
 

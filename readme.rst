@@ -9,7 +9,7 @@ Requires TYPO3 6.2 - 8.x
 
 German blog post: `TYPO3 CDN with Amazon S3 <http://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn>`_
 
-Issue tracking: `TYPO3 Forge: Amazon S3 FAL Driver <http://forge.typo3.org/projects/extension-aus_driver_amazon_s3>`_
+Issue tracking: `GitHub: Amazon S3 FAL Driver <https://github.com/andersundsehr/aus_driver_amazon_s3/issues>`_
 
 
 
@@ -19,7 +19,17 @@ Administrator Manual
 Installation
 ------------
 
-Add a new file storage with the "Amazon S3" driver to root page (pid = 0).
+1. Install the TYPO3 extension via composer (recommended):
+
+  .. code-block::
+
+    composer require andersundsehr/aus-driver-amazon-s3
+
+  or install the extension via TER (not recommended anymore)
+
+2. Add a new file storage with the "Amazon S3" driver to root page (pid = 0).
+
+3. Configure your file storage
 
 
 Driver Configuration
@@ -48,18 +58,20 @@ For example add the following default permissions to "Edit bucket policy":
 
 Example permissions:
 
-{
-	"Version": "2008-10-17",
-	"Statement": [
-		{
-			"Sid": "AddPerm",
-			"Effect": "Allow",
-			"Principal": "*",
-			"Action": "s3:GetObject",
-			"Resource": "arn:aws:s3:::bucketname/*"
-		}
-	]
-}
+.. code-block:: javascript
+
+  {
+  	"Version": "2008-10-17",
+  	"Statement": [
+  		{
+  			"Sid": "AddPerm",
+  			"Effect": "Allow",
+  			"Principal": "*",
+  			"Action": "s3:GetObject",
+  			"Resource": "arn:aws:s3:::bucketname/*"
+  		}
+  	]
+  }
 
 
 
@@ -81,22 +93,24 @@ Extend Extension
 
 If you use your own Amazon AWS SDK, you may want to work with your own S3 client object.
 
-So you have to use the following hook in your own ext_loaclconf.php: ::
+So you have to use the following hook in your own ext_loaclconf.php:
 
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_driver_amazon_s3']['initializeClient-preProcessing'][] = 'Vendor\ExtensionName\Hooks\AmazonS3DriverHook->initializeClient';
+.. code-block:: php
 
-A hook class might look like this: ::
+  $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_driver_amazon_s3']['initializeClient-preProcessing'][] = \Vendor\ExtensionName\Hooks\AmazonS3DriverHook::class . '->initializeClient';
 
-	namespace Vendor\ExtensionName\Hooks;
+A hook class might look like this:
 
-	class AmazonS3DriverHook {
+.. code-block:: php
 
-		public function initializeClient(&$params, $obj){
-			$params['s3Client'] = MyAwsFactory::getAwsS3Client($params['configuration']);
-		}
+  namespace Vendor\ExtensionName\Hooks;
 
-	}
+  class AmazonS3DriverHook {
+
+    public function initializeClient(array &$params, $obj){
+      $params['s3Client'] = MyAwsFactory::getAwsS3Client($params['configuration']);
+    }
+  }
 
 
-If you wish other hooks - don't be shy: `TYPO3 Forge: Amazon S3 FAL Driver <http://forge.typo3.org/projects/extension-aus_driver_amazon_s3>`_
-
+If you wish other hooks - don't be shy: `GitHub issue tracking: Amazon S3 FAL Driver <https://github.com/andersundsehr/aus_driver_amazon_s3/issues>`_

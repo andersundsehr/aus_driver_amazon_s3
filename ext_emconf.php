@@ -2,7 +2,7 @@
 
 /** @var string $_EXTKEY */
 $EM_CONF[$_EXTKEY] = array(
-    'title' => 'anders und sehr: Amazon S3 FAL driver (CDN)',
+    'title' => 'anders und sehr: Amazon AWS S3 FAL driver (CDN)',
     'description' => 'Provides a FAL driver for the Amazon Web Service S3.',
     'category' => 'be',
     'version' => '1.4.0',
@@ -17,7 +17,7 @@ $EM_CONF[$_EXTKEY] = array(
         array(
             'depends' =>
                 array(
-                    'typo3' => '6.2.0-7.99.99',
+                    'typo3' => '6.2.0-8.99.99',
                 ),
             'conflicts' => array(),
             'suggests' => array(),

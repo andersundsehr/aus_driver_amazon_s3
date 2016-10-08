@@ -33,6 +33,15 @@
 			<trans-unit id="driverConfiguration.signature.auto">
 				<target>automatisch</target>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.message.connectionTestFailed.title">
+				<target>AWS S3 Verbindung fehlgeschlagen</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.message.connectionTestSuccessful.title">
+				<target>Verbindung erfolgreich hergestellt</target>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.message.connectionTestSuccessful.message">
+				<target>Glückwunsch! AWS S3 ist erfolgreich mit TYPO3 verbunden.</target>
+			</trans-unit>
 
 			<trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
 				<target>Lade DNS Auflösung durch HTML-Tag "dns-prefetch"</target>

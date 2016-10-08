@@ -4,6 +4,8 @@ namespace AUS\AusDriverAmazonS3\Driver;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -11,6 +13,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /***************************************************************
  *  Copyright notice
@@ -36,6 +39,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     const DRIVER_TYPE = 'AusDriverAmazonS3';
 
     const EXTENSION_KEY = 'aus_driver_amazon_s3';
+
+    const EXTENSION_NAME = 'AusDriverAmazonS3';
 
     const FILTER_ALL = 'all';
 
@@ -111,6 +116,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @var \TYPO3\CMS\Core\Charset\CharsetConverter
      */
     protected $charsetConversion;
+
+    /**
+     * @var string
+     */
+    protected $languageFile = 'EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf';
 
 
     /**
@@ -918,8 +928,40 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (!$this->s3Client) {
             $this->s3Client = new S3Client($configuration);
             StreamWrapper::register($this->s3Client);
+            $this->testConnection();
         }
         return $this;
+    }
+
+    /**
+     * Test the connection
+     */
+    protected function testConnection()
+    {
+        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        /** @var FlashMessageService $flashMessageService */
+        $flashMessageService = $objectManager->get('TYPO3\CMS\Core\Messaging\FlashMessageService');
+        $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $localizationPrefix = 'LLL:' . $this->languageFile . ':driverConfiguration.message.';
+        try {
+            $this->getFilesInFolder(static::ROOT_FOLDER_IDENTIFIER);
+            $message = GeneralUtility::makeInstance(
+                'TYPO3\CMS\Core\Messaging\FlashMessage',
+                LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.message', static::EXTENSION_NAME),
+                LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.title', static::EXTENSION_NAME),
+                '',
+                FlashMessage::OK
+            );
+            $messageQueue->addMessage($message);
+        } catch (\Exception $exception) {
+            $message = GeneralUtility::makeInstance(
+                'TYPO3\CMS\Core\Messaging\FlashMessage',
+                $exception->getMessage(),
+                LocalizationUtility::translate($localizationPrefix . 'connectionTestFailed.title', static::EXTENSION_NAME),
+                FlashMessage::WARNING
+            );
+            $messageQueue->addMessage($message);
+        }
     }
 
     /**

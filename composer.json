@@ -5,7 +5,7 @@
   "description": "Provides a FAL driver for the Amazon Web Service AWS S3.",
   "homepage": "https://www.andersundsehr.com",
   "support": {
-    "source": "https://git.typo3.org/TYPO3CMS/Extensions/aus_driver_amazon_s3.git",
+    "source": "https://github.com/andersundsehr/aus_driver_amazon_s3.git",
     "issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
     "docs": "https://docs.typo3.org/typo3cms/extensions/aus_driver_amazon_s3/"
   },

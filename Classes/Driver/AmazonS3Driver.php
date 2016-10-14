@@ -365,7 +365,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function replaceFile($fileIdentifier, $localFilePath)
     {
-        throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException(__METHOD__);
+	    $contents = file_get_contents($localFilePath);
+	    $written = $this->setFileContents($fileIdentifier, $contents);
+	    return $written > 0;
     }
 
     /**

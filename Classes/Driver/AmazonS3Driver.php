@@ -740,8 +740,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 $files[$fileCandidate['Key']] = $fileCandidate['Key'];
             }
         }
-
-        return $files;
+	if ($numberOfItems > 0) {
+		 return array_splice($files, $start, $numberOfItems);
+	} else {
+		return $files;
+	}
     }
 
     /**

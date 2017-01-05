@@ -124,6 +124,19 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
 
     /**
+     * @param array $configuration
+     */
+    public function __construct(array $configuration = [])
+    {
+        parent::__construct($configuration);
+        // The capabilities default of this driver. See CAPABILITY_* constants for possible values
+        $this->capabilities =
+            ResourceStorage::CAPABILITY_BROWSABLE
+            | ResourceStorage::CAPABILITY_PUBLIC
+            | ResourceStorage::CAPABILITY_WRITABLE;
+    }
+
+    /**
      * loadExternalClasses
      */
     public static function loadExternalClasses()
@@ -152,7 +165,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (TYPO3_MODE === 'BE' && !empty($_GET['edit']['sys_file_storage'])) {
             $this->testConnection();
         }
-        $this->capabilities = ResourceStorage::CAPABILITY_BROWSABLE | ResourceStorage::CAPABILITY_PUBLIC | ResourceStorage::CAPABILITY_WRITABLE;
     }
 
     /**

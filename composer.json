@@ -1,7 +1,7 @@
 {
   "name": "andersundsehr/aus-driver-amazon-s3",
   "type": "typo3-cms-extension",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Provides a FAL driver for the Amazon Web Service AWS S3.",
   "homepage": "https://www.andersundsehr.com",
   "support": {

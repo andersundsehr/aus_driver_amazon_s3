@@ -148,6 +148,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $this->initializeBaseUrl()
             ->initializeSettings()
             ->initializeClient();
+        // Test connection if we are in the edit view of this storage
+        if (TYPO3_MODE === 'BE' && !empty($_GET['edit']['sys_file_storage'])) {
+            $this->testConnection();
+        }
         $this->capabilities = ResourceStorage::CAPABILITY_BROWSABLE | ResourceStorage::CAPABILITY_PUBLIC | ResourceStorage::CAPABILITY_WRITABLE;
     }
 
@@ -930,7 +934,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (!$this->s3Client) {
             $this->s3Client = new S3Client($configuration);
             StreamWrapper::register($this->s3Client);
-            $this->testConnection();
         }
         return $this;
     }

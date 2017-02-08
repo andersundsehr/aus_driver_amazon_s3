@@ -732,7 +732,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             $folderIdentifier = '';
         }
 
-        $response = $this->getListObjects($folderIdentifier);
+        $overrideArgs = [];
+        if (!$recursive) {
+            $overrideArgs['Delimiter'] = '/';
+        }
+        $response = $this->getListObjects($folderIdentifier, $overrideArgs);
         if ($response['Contents']) {
             foreach ($response['Contents'] as $fileCandidate) {
                 // skip directory entries
@@ -1233,10 +1237,17 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $result = $this->s3Client->listObjects(array_merge_recursive($args, $overrideArgs))->toArray();
 
         // Amazon S3 lists max 1000 files, so we have to get all recursive
-        if (count($result['Contents']) === 1000) {
-            $overrideArgs['Marker'] = $result['Contents'][999]['Key'];
+        if ($result['IsTruncated']) {
+            if ($result['NextMarker']) {
+                $overrideArgs['Marker'] = $result['NextMarker'];
+            } else {
+                $last = end($result['Contents']);
+                $overrideArgs['Marker'] = $last['Key'];
+                reset($result['Contents']);
+            }
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
             $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
+            $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
         }
         return $result;
     }

@@ -1253,7 +1253,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
             $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
-            $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
+            if (!empty($result['CommonPrefixes']) && !empty($moreResults['CommonPrefixes'])) {
+                $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
+            }
         }
         return $result;
     }

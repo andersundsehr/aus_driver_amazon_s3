@@ -518,7 +518,13 @@ spl_autoload_register(function ($class) use ($mapping) {
 }, true);
 
 require __DIR__ . '/Aws/functions.php';
-require __DIR__ . '/GuzzleHttp/functions.php';
-require __DIR__ . '/GuzzleHttp/Psr7/functions.php';
-require __DIR__ . '/GuzzleHttp/Promise/functions.php';
+if (!function_exists('GuzzleHttp\\uri_template')) {
+    require __DIR__ . '/GuzzleHttp/functions.php';
+}
+if (!function_exists('GuzzleHttp\\Psr7\\str')) {
+    require __DIR__ . '/GuzzleHttp/Psr7/functions.php';
+}
+if (!function_exists('GuzzleHttp\\Promise\\queue')) {
+    require __DIR__ . '/GuzzleHttp/Promise/functions.php';
+}
 require __DIR__ . '/JmesPath/JmesPath.php';

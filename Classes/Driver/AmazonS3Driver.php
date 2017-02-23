@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
@@ -141,7 +142,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public static function loadExternalClasses()
     {
-        if ((!GeneralUtility::compat_version('7.6.0') || !Bootstrap::usesComposerClassLoading()) && !function_exists('Aws\manifest')) {
+        if ((!GeneralUtility::compat_version('7.6.0') || !Bootstrap::usesComposerClassLoading()) && !function_exists('Aws\\manifest')) {
             require_once(GeneralUtility::getFileAbsFileName('EXT:' . self::EXTENSION_KEY . '/Resources/Private/PHP/Aws/aws-autoloader.php'));
         }
     }
@@ -973,7 +974,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 'TYPO3\CMS\Core\Messaging\FlashMessage',
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.message', static::EXTENSION_NAME),
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.title', static::EXTENSION_NAME),
-                '',
                 FlashMessage::OK
             );
             $messageQueue->addMessage($message);
@@ -1028,6 +1028,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected function getObjectPermissions($identifier)
     {
         $this->normalizeIdentifier($identifier);
+        if ($identifier === '') {
+            $identifier = self::ROOT_FOLDER_IDENTIFIER;
+        }
+        if ($identifier === ResourceStorageInterface::DEFAULT_ProcessingFolder) {
+            $identifier = rtrim($identifier, '/') . '/';
+        }
         if (!isset($this->objectPermissionsCache[$identifier])) {
             if ($identifier === self::ROOT_FOLDER_IDENTIFIER) {
                 $permissions = array('r' => true, 'w' => true,);
@@ -1247,7 +1253,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
             $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
-            $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
+            if (!empty($result['CommonPrefixes']) && !empty($moreResults['CommonPrefixes'])) {
+                $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
+            }
         }
         return $result;
     }

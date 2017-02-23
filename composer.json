@@ -11,7 +11,7 @@
   },
   "license": "GPL-2.0+",
   "require": {
-    "typo3/cms": "*",
+    "typo3/cms-core": "^6.2 || ^7.6 || ^8.0",
     "aws/aws-sdk-php": "^3.20"
   },
   "autoload": {
@@ -20,6 +20,7 @@
     }
   },
   "replace": {
+    "aus_driver_amazon_s3": "self.version",
     "typo3-ter/aus_driver_amazon_s3": "self.version",
     "typo3-ter/aus-driver-amazon-s3": "self.version"
   }

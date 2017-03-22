@@ -1,3 +1,6 @@
+[![Packagist Release](https://img.shields.io/packagist/v/andersundsehr/aus-driver-amazon-s3.svg)](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
+[![GitHub License](https://img.shields.io/github/license/andersundsehr/aus_driver_amazon_s3.svg)](https://github.com/andersundsehr/aus_driver_amazon_s3/blob/master/LICENSE.txt)
+
 # TYPO3 Extension: Amazon AWS S3 FAL driver (CDN)
 
 This is a driver for the file abstraction layer (FAL) to support Amazon AWS S3.

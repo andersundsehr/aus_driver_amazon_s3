@@ -1,44 +1,30 @@
 <?php
 namespace AUS\AusDriverAmazonS3\Index;
 
+/***
+ *
+ * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * (c) 2017 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ * Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
+ *
+ ***/
+
 use TYPO3\CMS\Core\Resource;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2016 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
- *  Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *  A copy is found in the textfile GPL.txt and important notices to the license
- *  from the author is found in LICENSE.txt distributed with these scripts.
- *
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 /**
  * Extractor for image files
  *
  * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
  * @author Stefan Lamm <s.lamm@andersundsehr.com>
+ * @package AUS\AusDriverAmazonS3\Index
  */
 class Extractor implements ExtractorInterface
 {

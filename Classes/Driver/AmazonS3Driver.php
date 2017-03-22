@@ -1,6 +1,17 @@
 <?php
 namespace AUS\AusDriverAmazonS3\Driver;
 
+/***
+ *
+ * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * (c) 2017 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ *
+ ***/
+
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
 use TYPO3\CMS\Core\Core\Bootstrap;
@@ -16,17 +27,9 @@ use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2016 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
- *  All rights reserved
- *
- ***************************************************************/
-
 /**
  * Class AmazonS3Driver
- * Driver for Amazon Simple Storage Service (S3).
+ * Driver for Amazon Simple Storage Service (S3)
  *
  * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
  * @package AUS\AusDriverAmazonS3\Driver

@@ -845,12 +845,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      *
      * @param string $identifier
      * @return void
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
-     * @toDo: Implement
      */
     public function dumpFileContents($identifier)
     {
-        throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException(__METHOD__);
+        $fileContents = $this->getFileContents($identifier);
+        echo $fileContents;
+        exit;
     }
 
     /**

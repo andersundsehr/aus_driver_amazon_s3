@@ -233,7 +233,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $lastModified = $metadata['LastModified'];
         $lastModifiedUnixTimestamp = $lastModified->getTimestamp();
 
-        return array(
+        $return = array(
             'name' => basename($fileIdentifier),
             'identifier' => $fileIdentifier,
             'ctime' => $lastModifiedUnixTimestamp,
@@ -244,6 +244,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             'folder_hash' => $this->hashIdentifier(PathUtility::dirname($fileIdentifier)),
             'storage' => $this->storageUid
         );
+
+        if (count($propertiesToExtract) > 0) {
+            $return = array_intersect_key($return, array_flip($propertiesToExtract));
+        }
+
+        return $return;
     }
 
     /**

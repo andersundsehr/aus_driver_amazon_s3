@@ -124,7 +124,8 @@ class Extractor implements ExtractorInterface
         /* @var $graphicalFunctionsObject \TYPO3\CMS\Core\Imaging\GraphicalFunctions */
         $graphicalFunctionsObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\GraphicalFunctions');
         $tempFilePath = $file->getForLocalProcessing();
-        return $graphicalFunctionsObject->getImageDimensions($tempFilePath);
+        $imageDimensions = $graphicalFunctionsObject->getImageDimensions($tempFilePath);
+        return $imageDimensions;
     }
 
 }

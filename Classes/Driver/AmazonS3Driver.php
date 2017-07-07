@@ -126,6 +126,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected $languageFile = 'EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf';
 
+    /**
+     * @var array
+     */
+    protected $temporaryPaths = array();
 
     /**
      * @param array $configuration
@@ -138,6 +142,19 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             ResourceStorage::CAPABILITY_BROWSABLE
             | ResourceStorage::CAPABILITY_PUBLIC
             | ResourceStorage::CAPABILITY_WRITABLE;
+    }
+
+    /**
+     * Remove temporary used files.
+     * This is a poor software architecture style: temp files should be deleted by the FAL users and not by the FAL drivers
+     * @see https://forge.typo3.org/issues/56982
+     * @see https://review.typo3.org/#/c/36446/
+     */
+    public function __destruct()
+    {
+        foreach ($this->temporaryPaths as $temporaryPath) {
+            @unlink($temporaryPath);
+        }
     }
 
     /**
@@ -441,6 +458,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     /**
      * Returns a path to a local copy of a file for processing it. When changing the
      * file, you have to take care of replacing the current version yourself!
+     * The file will be removed by the driver automatically on destruction.
      *
      * @param string $fileIdentifier
      * @param bool $writable Set this to FALSE if you only need the file for read
@@ -458,6 +476,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $result = copy($sourcePath, $temporaryPath);
         if ($result === false) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
+        }
+        if (!isset($this->temporaryPaths[$temporaryPath])) {
+            $this->temporaryPaths[$temporaryPath] = $temporaryPath;
         }
         return $temporaryPath;
     }

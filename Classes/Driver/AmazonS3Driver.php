@@ -344,6 +344,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 'ContentType' => $contentType,
                 'CacheControl' => $this->getCacheControl($targetIdentifier)
             ));
+            @unlink($localFilePath);
         }
 
         return $targetIdentifier;

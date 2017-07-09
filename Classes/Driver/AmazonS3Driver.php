@@ -126,6 +126,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected $languageFile = 'EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf';
 
+    /**
+     * @var array
+     */
+    protected $temporaryPaths = array();
 
     /**
      * @param array $configuration
@@ -138,6 +142,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             ResourceStorage::CAPABILITY_BROWSABLE
             | ResourceStorage::CAPABILITY_PUBLIC
             | ResourceStorage::CAPABILITY_WRITABLE;
+    }
+
+    public function __destruct()
+    {
+        foreach ($this->temporaryPaths as $temporaryPath) {
+            @unlink($temporaryPath);
+        }
     }
 
     /**
@@ -344,6 +355,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 'ContentType' => $contentType,
                 'CacheControl' => $this->getCacheControl($targetIdentifier)
             ));
+            @unlink($localFilePath);
         }
 
         return $targetIdentifier;
@@ -459,6 +471,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if ($result === false) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
         }
+        if (!in_array($temporaryPath, $this->temporaryPaths)) {
+            $this->temporaryPaths[] = $temporaryPath;
+	}
         return $temporaryPath;
     }
 

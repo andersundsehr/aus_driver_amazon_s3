@@ -121,11 +121,12 @@ class Extractor implements ExtractorInterface
      */
     public static function getImageDimensionsOfRemoteFile(File $file)
     {
-        /* @var $graphicalFunctionsObject \TYPO3\CMS\Core\Imaging\GraphicalFunctions */
-        $graphicalFunctionsObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\GraphicalFunctions');
-        $tempFilePath = $file->getForLocalProcessing();
-        $imageDimensions = $graphicalFunctionsObject->getImageDimensions($tempFilePath);
-        return $imageDimensions;
+        $fileNameAndPath = $file->getForLocalProcessing(false);
+        $imageInfo = GeneralUtility::makeInstance('TYPO3\\CMS\Core\\Type\\File\\ImageInfo', $fileNameAndPath);
+        return [
+            $imageInfo->getWidth(),
+            $imageInfo->getHeight(),
+        ];
     }
 
 }

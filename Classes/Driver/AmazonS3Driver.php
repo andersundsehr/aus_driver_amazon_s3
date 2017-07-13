@@ -756,7 +756,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @return array of FileIdentifiers
      * @toDo: Implement $start, $numberOfItems, $sort and $sortRev
      */
-    public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $filenameFilterCallbacks = array(), $sort = '', $sortRev = false) {
+    public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $filenameFilterCallbacks = array(), $sort = '', $sortRev = false)
+    {
         $this->normalizeIdentifier($folderIdentifier);
         $files = array();
         if ($folderIdentifier === self::ROOT_FOLDER_IDENTIFIER) {
@@ -828,28 +829,22 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @return array of Folder Identifier
      * @toDo: Implement params $start, $numberOfItems, $recursive, $folderNameFilterCallbacks, $sort, $sort
      */
-    public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $folderNameFilterCallbacks = array(), $sort = '', $sortRev = false) {
+    public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $folderNameFilterCallbacks = array(), $sort = '', $sortRev = false)
+    {
         $this->normalizeIdentifier($folderIdentifier);
         $folders = array();
 
-        if ($folderIdentifier === self::ROOT_FOLDER_IDENTIFIER) {
-            $response = $this->getListObjects('', array('Delimiter' => $folderIdentifier));
-            if ($response['CommonPrefixes']) {
-                foreach ($response['CommonPrefixes'] as $folderCandidate) {
-                    $key = $folderCandidate['Prefix'];
-                    $folderName = basename(rtrim($key, '/'));
-                    if ($folderName !== $this->getProcessingFolder()) {
-                        $folders[$key] = $key;
-                    }
+        $folderIdentifier = $folderIdentifier === self::ROOT_FOLDER_IDENTIFIER ? '' : $folderIdentifier;
+        $response = $this->getListObjects($folderIdentifier, array('Delimiter' => '/'));
+        if ($response['CommonPrefixes']) {
+            foreach ($response['CommonPrefixes'] as $folderCandidate) {
+                $key = $folderCandidate['Prefix'];
+                $folderName = basename(rtrim($key, '/'));
+                if ($folderName !== $this->getProcessingFolder()) {
+                    $folders[$key] = $key;
                 }
             }
-        } else {
-            foreach ($this->getSubObjects($folderIdentifier, false, self::FILTER_FOLDERS) as $folderObject) {
-                $key = $folderObject['Key'];
-                $folders[$key] = $key;
-            }
         }
-
         return $folders;
     }
 
@@ -861,7 +856,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param array $folderNameFilterCallbacks callbacks for filtering the items
      * @return integer Number of folders in folder
      */
-    public function countFoldersInFolder($folderIdentifier, $recursive = false, array $folderNameFilterCallbacks = array()) {
+    public function countFoldersInFolder($folderIdentifier, $recursive = false, array $folderNameFilterCallbacks = array())
+    {
         return count($this->getFoldersInFolder($folderIdentifier, 0, 0, $recursive, $folderNameFilterCallbacks));
     }
 
@@ -993,10 +989,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function testConnection()
     {
-        $objectManager = GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
-        /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = $objectManager->get('TYPO3\CMS\Core\Messaging\FlashMessageService');
-        $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $messageQueue = $this->getMessageQueue();
         $localizationPrefix = 'LLL:' . $this->languageFile . ':driverConfiguration.message.';
         try {
             $this->getFilesInFolder(static::ROOT_FOLDER_IDENTIFIER);
@@ -1016,6 +1009,17 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             );
             $messageQueue->addMessage($message);
         }
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Messaging\FlashMessageQueue
+     */
+    protected function getMessageQueue()
+    {
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var FlashMessageService $flashMessageService */
+        $flashMessageService = $objectManager->get('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        return $flashMessageService->getMessageQueueByIdentifier();
     }
 
     /**
@@ -1070,16 +1074,30 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             } else {
                 $permissions = array('r' => false, 'w' => false,);
 
-                $response = $this->s3Client->getObjectAcl(array(
-                    'Bucket' => $this->configuration['bucket'],
-                    'Key' => $identifier
-                ))->toArray();
+                try {
+                    $response = $this->s3Client->getObjectAcl(array(
+                        'Bucket' => $this->configuration['bucket'],
+                        'Key' => $identifier
+                    ))->toArray();
 
-                // Until the SDK provides any useful information about folder permissions, we take full access for granted as long as one user with full access exists.
-                foreach ($response['Grants'] as $grant) {
-                    if ($grant['Permission'] === 'FULL_CONTROL') {
-                        $permissions['r'] = true;
-                        $permissions['w'] = true;
+                    // Until the SDK provides any useful information about folder permissions, we take full access for granted as long as one user with full access exists.
+                    foreach ($response['Grants'] as $grant) {
+                        if ($grant['Permission'] === 'FULL_CONTROL') {
+                            $permissions['r'] = true;
+                            $permissions['w'] = true;
+                        }
+                    }
+                } catch (\Exception $exception) {
+                    // Show warning in backend list module
+                    if (TYPO3_MODE === 'BE' && $_GET['M'] === 'file_FilelistList') {
+                        $messageQueue = $this->getMessageQueue();
+                        $message = GeneralUtility::makeInstance(
+                            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                            $exception->getMessage(),
+                            '',
+                            FlashMessage::WARNING
+                        );
+                        $messageQueue->addMessage($message);
                     }
                 }
             }

@@ -417,9 +417,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function replaceFile($fileIdentifier, $localFilePath)
     {
-	    $contents = file_get_contents($localFilePath);
-	    $written = $this->setFileContents($fileIdentifier, $contents);
-	    return $written > 0;
+        $contents = file_get_contents($localFilePath);
+        $written = $this->setFileContents($fileIdentifier, $contents);
+        return $written > 0;
     }
 
     /**
@@ -678,7 +678,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function isFolderEmpty($folderIdentifier)
     {
-        $result = $this->getListObjects($folderIdentifier);
+        $result = $this->getListObjects(
+            $folderIdentifier,
+            [
+                'max-keys' => 1
+            ]
+        );
 
         // Contents will always include the folder itself
         if (sizeof($result['Contents']) > 1) {
@@ -801,11 +806,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 $files[$fileCandidate['Key']] = $fileCandidate['Key'];
             }
         }
-	if ($numberOfItems > 0) {
-		 return array_splice($files, $start, $numberOfItems);
-	} else {
-		return $files;
-	}
+        if ($numberOfItems > 0) {
+             return array_splice($files, $start, $numberOfItems);
+        } else {
+            return $files;
+        }
     }
 
     /**

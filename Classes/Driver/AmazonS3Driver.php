@@ -351,9 +351,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $localIdentifier = $localFilePath;
         $this->normalizeIdentifier($localIdentifier);
 
+        // if the source file is also in this driver
         if (!is_uploaded_file($localFilePath) && $this->objectExists($localIdentifier)) {
-            rename($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
-        } else {
+            if ($removeOriginal) {
+                rename($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
+            } else {
+                copy($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
+            }
+        } else { // upload local file
             $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
             $contentType = finfo_file($fileInfo, $localFilePath);
             finfo_close($fileInfo);
@@ -361,6 +366,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 'ContentType' => $contentType,
                 'CacheControl' => $this->getCacheControl($targetIdentifier)
             ));
+
+            if ($removeOriginal) {
+                unlink($localFilePath);
+            }
         }
 
         return $targetIdentifier;

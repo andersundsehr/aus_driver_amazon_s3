@@ -36,10 +36,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 {
-
-
-    const DEBUG_MODE = false;
-
     const DRIVER_TYPE = 'AusDriverAmazonS3';
 
     const EXTENSION_KEY = 'aus_driver_amazon_s3';
@@ -1007,16 +1003,18 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $localizationPrefix = 'LLL:' . $this->languageFile . ':driverConfiguration.message.';
         try {
             $this->getFilesInFolder(static::ROOT_FOLDER_IDENTIFIER);
+            /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
             $message = GeneralUtility::makeInstance(
-                'TYPO3\CMS\Core\Messaging\FlashMessage',
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.message', static::EXTENSION_NAME),
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.title', static::EXTENSION_NAME),
                 FlashMessage::OK
             );
             $messageQueue->addMessage($message);
         } catch (\Exception $exception) {
+            /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
             $message = GeneralUtility::makeInstance(
-                'TYPO3\CMS\Core\Messaging\FlashMessage',
+                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
                 $exception->getMessage(),
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestFailed.title', static::EXTENSION_NAME),
                 FlashMessage::WARNING
@@ -1105,6 +1103,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                     // Show warning in backend list module
                     if (TYPO3_MODE === 'BE' && $_GET['M'] === 'file_FilelistList') {
                         $messageQueue = $this->getMessageQueue();
+                        /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
                         $message = GeneralUtility::makeInstance(
                             'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
                             $exception->getMessage(),
@@ -1136,7 +1135,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * Returns a folder by its identifier.
      *
      * @param $identifier
-     * @return Folder
+     * @return Folder|string
      */
     protected function getFolder($identifier)
     {

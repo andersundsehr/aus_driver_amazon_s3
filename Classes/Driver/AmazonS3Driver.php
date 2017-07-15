@@ -55,7 +55,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     /**
      * @var S3Client
      */
-    protected $s3Client;
+    protected $s3Client = null;
 
     /**
      * The base URL that points to this driver's storage. As long is this is not set, it is assumed that this folder
@@ -63,14 +63,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      *
      * @var string
      */
-    protected $baseUrl;
+    protected $baseUrl = '';
 
     /**
      * The identifier map used for renaming
      *
      * @var array
      */
-    protected $identifierMap;
+    protected $identifierMap = [];
 
     /**
      * Object existence is cached here like:
@@ -93,7 +93,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      *
      * @var string
      */
-    protected $processingFolder;
+    protected $processingFolder = '';
 
     /**
      * Default processing folder
@@ -105,7 +105,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     /**
      * @var \TYPO3\CMS\Core\Resource\ResourceStorage
      */
-    protected $storage;
+    protected $storage = null;
 
     /**
      * @var array
@@ -115,7 +115,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     /**
      * @var \TYPO3\CMS\Core\Charset\CharsetConverter
      */
-    protected $charsetConversion;
+    protected $charsetConversion = null;
 
     /**
      * @var string
@@ -128,9 +128,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected $temporaryPaths = array();
 
     /**
+     * AmazonS3Driver constructor.
+     *
      * @param array $configuration
+     * @param S3Client $s3Client
      */
-    public function __construct(array $configuration = [])
+    public function __construct(array $configuration = [], $s3Client = null)
     {
         parent::__construct($configuration);
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
@@ -138,6 +141,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             ResourceStorage::CAPABILITY_BROWSABLE
             | ResourceStorage::CAPABILITY_PUBLIC
             | ResourceStorage::CAPABILITY_WRITABLE;
+        $this->s3Client = $s3Client;
     }
 
     /**
@@ -949,7 +953,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function initializeSettings()
     {
-        if (self::$settings === null) {
+        if (self::$settings === null && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::EXTENSION_KEY])) {
             self::$settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::EXTENSION_KEY]);
             if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
                 self::loadExternalClasses();
@@ -980,7 +984,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             $configuration['signature_version'] = $this->configuration['signature_version'];
         }
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'])) {
+        if (
+            isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing']) &&
+            is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'])
+        ) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'] as $funcName) {
                 $params = array('s3Client' => &$this->s3Client, 'configuration' => &$configuration);
                 GeneralUtility::callUserFunction($funcName, $params, $this);

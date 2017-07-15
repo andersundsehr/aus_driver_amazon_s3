@@ -1,0 +1,21 @@
+language: php
+dist: trusty
+sudo: false
+
+php:
+  - 5.6
+  - 7.0
+  - 7.1
+
+cache:
+  directories:
+    - .composer/cache
+
+before_install:
+  - alias composer=composer\ --no-interaction && composer selfupdate
+
+install:
+  - travis_retry composer install --no-progress --profile --no-scripts --no-suggest
+
+script:
+   - composer test

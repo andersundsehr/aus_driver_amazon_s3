@@ -36,8 +36,7 @@ class FileIndexRepository
     public function recordUpdatedOrCreated($data)
     {
         if ($data['type'] === File::FILETYPE_IMAGE) {
-            /* @var $storage \TYPO3\CMS\Core\Resource\ResourceStorage */
-            $storage = ResourceFactory::getInstance()->getStorageObject($data['storage']);
+            $storage = $this->getStorage($data['storage']);
 
             // only process on our driver type where data was missing
             if ($storage->getDriverType() !== AmazonS3Driver::DRIVER_TYPE) {
@@ -45,11 +44,10 @@ class FileIndexRepository
             }
 
             $file = $storage->getFile($data['identifier']);
-            $imageDimensions = Extractor::getImageDimensionsOfRemoteFile($file);
+            $imageDimensions = $this->getExtractor()->getImageDimensionsOfRemoteFile($file);
 
             if ($imageDimensions !== null) {
-                /* @var $metaDataRepository \TYPO3\CMS\Core\Resource\Index\MetaDataRepository */
-                $metaDataRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\MetaDataRepository');
+                $metaDataRepository = $this->getMetaDataRepository();
                 $metaData = $metaDataRepository->findByFileUid($data['uid']);
 
                 $metaData['width'] = $imageDimensions[0];
@@ -59,4 +57,28 @@ class FileIndexRepository
         }
     }
 
+    /**
+     * @param int $uid
+     * @return \TYPO3\CMS\Core\Resource\ResourceStorage
+     */
+    protected function getStorage($uid)
+    {
+        return ResourceFactory::getInstance()->getStorageObject($uid);
+    }
+
+    /**
+     * @return \AUS\AusDriverAmazonS3\Index\Extractor
+     */
+    protected function getExtractor()
+    {
+        return GeneralUtility::makeInstance('AUS\\AusDriverAmazonS3\\Index\\Extractor');
+    }
+
+    /**
+     * @return \TYPO3\CMS\Core\Resource\Index\MetaDataRepository
+     */
+    protected function getMetaDataRepository()
+    {
+        return GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\MetaDataRepository');
+    }
 }

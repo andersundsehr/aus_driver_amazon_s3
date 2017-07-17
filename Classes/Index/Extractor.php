@@ -13,9 +13,9 @@ namespace AUS\AusDriverAmazonS3\Index;
  *
  ***/
 
-use TYPO3\CMS\Core\Resource;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -85,10 +85,10 @@ class Extractor implements ExtractorInterface
     /**
      * Checks if the given file can be processed by this Extractor
      *
-     * @param Resource\File $file
+     * @param File $file
      * @return boolean
      */
-    public function canProcess(Resource\File $file)
+    public function canProcess(File $file)
     {
         return $file->getType() == File::FILETYPE_IMAGE && $file->getStorage()->getDriverType() === AmazonS3Driver::DRIVER_TYPE;
     }
@@ -98,14 +98,14 @@ class Extractor implements ExtractorInterface
      *
      * Should return an array with database properties for sys_file_metadata to write
      *
-     * @param Resource\File $file
+     * @param File $file
      * @param array $previousExtractedData optional, contains the array of already extracted data
      * @return array
      */
-    public function extractMetaData(Resource\File $file, array $previousExtractedData = array())
+    public function extractMetaData(File $file, array $previousExtractedData = array())
     {
-        if (!$previousExtractedData['width'] || !$previousExtractedData['height']) {
-            $imageDimensions = self::getImageDimensionsOfRemoteFile($file);
+        if (empty($previousExtractedData['width']) || empty($previousExtractedData['height'])) {
+            $imageDimensions = $this->getImageDimensionsOfRemoteFile($file);
             if ($imageDimensions !== null) {
                 $previousExtractedData['width'] = $imageDimensions[0];
                 $previousExtractedData['height'] = $imageDimensions[1];
@@ -116,10 +116,10 @@ class Extractor implements ExtractorInterface
     }
 
     /**
-     * @param File $file
+     * @param FileInterface $file
      * @return array|NULL
      */
-    public static function getImageDimensionsOfRemoteFile(File $file)
+    public function getImageDimensionsOfRemoteFile(FileInterface $file)
     {
         $fileNameAndPath = $file->getForLocalProcessing(false);
         $imageInfo = GeneralUtility::makeInstance('TYPO3\\CMS\Core\\Type\\File\\ImageInfo', $fileNameAndPath);
@@ -128,5 +128,4 @@ class Extractor implements ExtractorInterface
             $imageInfo->getHeight(),
         ];
     }
-
 }

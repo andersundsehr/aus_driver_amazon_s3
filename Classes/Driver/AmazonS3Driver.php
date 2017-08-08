@@ -413,7 +413,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param string $localFilePath
      * @return boolean TRUE if the operation succeeded
      * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\NotImplementedException
-     * @todo implement this
      */
     public function replaceFile($fileIdentifier, $localFilePath)
     {
@@ -1288,9 +1287,17 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         $result = $this->getListObjects($identifier);
         return array_filter($result['Contents'], function (&$object) use ($identifier, $recursive, $filter) {
-            return ($object['Key'] !== $identifier && ($recursive || substr_count(trim(str_replace($identifier, '',
-                        $object['Key']), '/'),
-                        '/') === 0) && ($filter === self::FILTER_ALL || $filter === self::FILTER_FOLDERS && $this->isDir($object['Key']) || $filter === self::FILTER_FILES && !$this->isDir($object['Key'])));
+            return (
+                $object['Key'] !== $identifier &&
+                (
+                    $recursive ||
+                    substr_count(trim(str_replace($identifier, '', $object['Key']), '/'), '/') === 0
+                ) && (
+                    $filter === self::FILTER_ALL ||
+                    $filter === self::FILTER_FOLDERS && $this->isDir($object['Key']) ||
+                    $filter === self::FILTER_FILES && !$this->isDir($object['Key'])
+                )
+            );
         });
     }
 

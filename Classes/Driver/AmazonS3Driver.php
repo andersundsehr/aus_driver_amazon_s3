@@ -148,7 +148,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             ResourceStorage::CAPABILITY_BROWSABLE
             | ResourceStorage::CAPABILITY_PUBLIC
             | ResourceStorage::CAPABILITY_WRITABLE;
-        $this->streamWrapperProtocol = 's3_' . substr(md5(uniqid()), 0, 7);
+        $this->streamWrapperProtocol = 's3-' . substr(md5(uniqid()), 0, 7);
         $this->s3Client = $s3Client;
     }
 

@@ -66,6 +66,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected $baseUrl = '';
 
     /**
+     * Stream wrapper protocol: Will be set in the constructor
+     *
+     * @var string
+     */
+    protected $streamWrapperProtocol = '';
+
+    /**
      * The identifier map used for renaming
      *
      * @var array
@@ -141,6 +148,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             ResourceStorage::CAPABILITY_BROWSABLE
             | ResourceStorage::CAPABILITY_PUBLIC
             | ResourceStorage::CAPABILITY_WRITABLE;
+        $this->streamWrapperProtocol = 's3_' . substr(md5(uniqid()), 0, 7);
         $this->s3Client = $s3Client;
     }
 
@@ -479,10 +487,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function getFileForLocalProcessing($fileIdentifier, $writable = true)
     {
-        $sourcePath = $this->getStreamWrapperPath($fileIdentifier);
         $temporaryPath = $this->getTemporaryPathForFile($fileIdentifier);
-        $result = copy($sourcePath, $temporaryPath);
-        if ($result === false) {
+        $this->s3Client->getObject(array(
+            'Bucket' => $this->configuration['bucket'],
+            'Key' => $fileIdentifier,
+            'SaveAs' => $temporaryPath,
+        ));
+        if (!is_file($temporaryPath)) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
         }
         if (!isset($this->temporaryPaths[$temporaryPath])) {
@@ -995,7 +1006,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
         if (!$this->s3Client) {
             $this->s3Client = new S3Client($configuration);
-            StreamWrapper::register($this->s3Client);
+            StreamWrapper::register($this->s3Client, $this->streamWrapperProtocol);
         }
         return $this;
     }
@@ -1241,7 +1252,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function getStreamWrapperPath($file)
     {
-        $basePath = 's3://' . $this->configuration['bucket'] . '/';
+        $basePath = $this->streamWrapperProtocol . '://' . $this->configuration['bucket'] . '/';
         if ($file instanceof FileInterface) {
             $identifier = $file->getIdentifier();
         } elseif ($file instanceof Folder) {

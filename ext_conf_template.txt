@@ -3,3 +3,6 @@ dnsPrefetch = 1
 
 # cat=basic//; type=boolean; label=LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:ausDriverAmazonS3.settings.doNotLoadAmazonLib
 doNotLoadAmazonLib = 0
+
+# cat=basic//; type=boolean; label=LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:ausDriverAmazonS3.settings.enablePermissionsCheck
+enablePermissionsCheck = 0

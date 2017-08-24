@@ -49,6 +49,9 @@
 			<trans-unit id="ausDriverAmazonS3.settings.doNotLoadAmazonLib">
 				<target>Amazon AWS PHP SDK nicht laden (Stellen Sie sicher, dass diese anderswo geladen wird. Im "composer mode" ist diese Einstellung wirkungslos)</target>
 			</trans-unit>
+			<trans-unit id="ausDriverAmazonS3.settings.enablePermissionsCheck">
+				<target>Prüfe Dateiberechtigungen (sehr langsam)</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

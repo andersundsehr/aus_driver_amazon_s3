@@ -132,7 +132,11 @@ class AmazonS3DriverTest extends UnitTestCase
         $info = $this->driver->getFileInfoByIdentifier($fileIdentifier);
         $this->assertEquals(
             ['name', 'identifier', 'ctime', 'mtime', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'],
-            array_keys($info)
+            array_keys($info),
+            '',
+            0.0,
+            10,
+            true // set this to true
         );
     }
 
@@ -153,6 +157,6 @@ class AmazonS3DriverTest extends UnitTestCase
             'Key' => $fileIdentifier
         ])->willReturn($result);
         $info = $this->driver->getFileInfoByIdentifier($fileIdentifier, $properties);
-        $this->assertEquals($properties, array_keys($info));
+        $this->assertEquals($properties, array_keys($info), '', 0.0, 10, true);
     }
 }

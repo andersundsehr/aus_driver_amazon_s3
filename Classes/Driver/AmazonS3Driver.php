@@ -80,12 +80,22 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected $identifierMap = [];
 
     /**
-     * Object existence is cached here like:
-     * $identifier => TRUE|FALSE
+     * Object meta data is cached here as array or null
+     * $identifier => [meta info as array]
      *
-     * @var array
+     * @var array[]
      */
-    protected $objectExistenceCache = array();
+    protected $metaInfoCache = array();
+
+    /**
+     * Generic request -> response cache
+     * Used for 'listObjectsV2' until now
+     *
+     * @var array[][]
+     */
+    protected $requestCache = array(
+        'listObjectsV2' => array(),
+    );
 
     /**
      * Object permissions are cached here in subarrays like:
@@ -246,34 +256,21 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param array $propertiesToExtract Array of properties which are be extracted
      *                                    If empty all will be extracted
      * @return array
+     * @throws \Exception
      */
     public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = array())
     {
-        $this->normalizeIdentifier($fileIdentifier);
-        $metadata = $this->s3Client->headObject(array(
-            'Bucket' => $this->configuration['bucket'],
-            'Key' => $fileIdentifier
-        ))->toArray();
-        /** @var \Aws\Api\DateTimeResult $lastModified */
-        $lastModified = $metadata['LastModified'];
-        $lastModifiedUnixTimestamp = $lastModified->getTimestamp();
-
-        $return = array(
-            'name' => basename($fileIdentifier),
-            'identifier' => $fileIdentifier,
-            'ctime' => $lastModifiedUnixTimestamp,
-            'mtime' => $lastModifiedUnixTimestamp,
-            'mimetype' => $metadata['ContentType'],
-            'size' => (integer)$metadata['ContentLength'],
-            'identifier_hash' => $this->hashIdentifier($fileIdentifier),
-            'folder_hash' => $this->hashIdentifier(PathUtility::dirname($fileIdentifier)),
-            'storage' => $this->storageUid
-        );
-
+        if (in_array('mimetype', $propertiesToExtract)) {
+            // force to reload the infos from S3 if the mime type was requested
+            $this->flushMetaInfoCache($fileIdentifier);
+        }
+        $return = $this->getMetaInfo($fileIdentifier);
+        if ($return === null) {
+            throw new \Exception('File does not exist', 1503500470);
+        }
         if (count($propertiesToExtract) > 0) {
             $return = array_intersect_key($return, array_flip($propertiesToExtract));
         }
-
         return $return;
     }
 
@@ -379,6 +376,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 unlink($localFilePath);
             }
         }
+        $this->flushMetaInfoCache($targetIdentifier);
 
         return $targetIdentifier;
     }
@@ -691,7 +689,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $result = $this->getListObjects(
             $folderIdentifier,
             [
-                'max-keys' => 1
+                'MaxKeys' => 1
             ]
         );
 
@@ -817,7 +815,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
         }
         if ($numberOfItems > 0) {
-             return array_splice($files, $start, $numberOfItems);
+            return array_splice($files, $start, $numberOfItems);
         } else {
             return $files;
         }
@@ -989,6 +987,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 'key' => (string)$this->configuration['key'],
                 'secret' => (string)$this->configuration['secretKey'],
             ),
+            'validation' => false,
         );
         if (!empty($this->configuration['signature'])) {
             $configuration['signature_version'] = $this->configuration['signature_version'];
@@ -1059,17 +1058,79 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function objectExists($identifier)
     {
+        return $this->getMetaInfo($identifier) !== null;
+    }
+
+    /**
+     * Get the meta information of an file or folder
+     *
+     * @param string $identifier
+     * @return array|null Returns an array with the meta info or "null"
+     */
+    protected function getMetaInfo($identifier)
+    {
         $this->normalizeIdentifier($identifier);
-        if (!isset($this->objectExistenceCache[$identifier])) {
+        if (!isset($this->metaInfoCache[$identifier])) {
             try {
-                $result = $this->s3Client->doesObjectExist($this->configuration['bucket'], $identifier);
+                $metadata = $this->s3Client->headObject(array(
+                    'Bucket' => $this->configuration['bucket'],
+                    'Key' => $identifier
+                ))->toArray();
+                $this->metaInfoCache[$identifier] = $this->getMetaInfoFromResponse($identifier, $metadata);
             } catch (\Exception $exc) {
-                echo $exc->getTraceAsString();
-                $result = false;
+                // Ignore file not found errors
+                if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
+                    echo $exc->getTraceAsString();
+                }
+                $this->metaInfoCache[$identifier] = null;
             }
-            $this->objectExistenceCache[$identifier] = $result;
         }
-        return $this->objectExistenceCache[$identifier];
+        return $this->metaInfoCache[$identifier];
+    }
+
+    /**
+     * @param string $identifier
+     * @param array $response
+     * @return array
+     */
+    protected function getMetaInfoFromResponse($identifier, $response)
+    {
+        /** @var \Aws\Api\DateTimeResult $lastModified */
+        $lastModified = $response['LastModified'];
+        $lastModifiedUnixTimestamp = $lastModified->getTimestamp();
+
+        $metaInfo = array(
+            'name' => basename($identifier),
+            'identifier' => $identifier,
+            'ctime' => $lastModifiedUnixTimestamp,
+            'mtime' => $lastModifiedUnixTimestamp,
+            'identifier_hash' => $this->hashIdentifier($identifier),
+            'folder_hash' => $this->hashIdentifier(PathUtility::dirname($identifier)),
+            'storage' => $this->storageUid
+        );
+        if (!empty($response['ContentType'])) {
+            $metaInfo['mimetype'] = $response['ContentType'];
+        }
+        if (!empty($response['ContentLength'])) {
+            $metaInfo['size'] = (int)$response['ContentLength'];
+        } elseif(!empty($response['size'])) {
+            $metaInfo['size'] = (int)$response['size'];
+        }
+        return $metaInfo;
+    }
+
+    /**
+     * @param string $function
+     * @param array $parameter
+     * @return array
+     */
+    protected function getCachedResponse($function, $parameter)
+    {
+        $cacheIdentifier = md5(serialize($parameter));
+        if (!isset($this->requestCache[$function][$cacheIdentifier])) {
+            $this->requestCache[$function][$cacheIdentifier] = $this->s3Client->$function($parameter)->toArray();
+        }
+        return $this->requestCache[$function][$cacheIdentifier];
     }
 
     /**
@@ -1078,10 +1139,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param $identifier
      * @return void
      */
-    protected function flushObjectExistenceCache($identifier)
+    protected function flushMetaInfoCache($identifier)
     {
         $this->normalizeIdentifier($identifier);
-        unset($this->objectExistenceCache[$identifier]);
+        unset($this->metaInfoCache[$identifier]);
     }
 
     /**
@@ -1098,7 +1159,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             $identifier = rtrim($identifier, '/') . '/';
         }
         if (!isset($this->objectPermissionsCache[$identifier])) {
-            if ($identifier === self::ROOT_FOLDER_IDENTIFIER) {
+            if (!isset(self::$settings['enablePermissionsCheck']) || empty(self::$settings['enablePermissionsCheck'])) {
+                $permissions = array('r' => true, 'w' => true,);
+            } elseif ($identifier === self::ROOT_FOLDER_IDENTIFIER) {
                 $permissions = array('r' => true, 'w' => true,);
             } else {
                 $permissions = array('r' => false, 'w' => false,);
@@ -1114,6 +1177,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                         if ($grant['Permission'] === 'FULL_CONTROL') {
                             $permissions['r'] = true;
                             $permissions['w'] = true;
+                            break;
                         }
                     }
                 } catch (\Exception $exception) {
@@ -1144,7 +1208,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected function deleteObject($identifier)
     {
         $this->s3Client->deleteObject(array('Bucket' => $this->configuration['bucket'], 'Key' => $identifier));
-        $this->flushObjectExistenceCache($identifier);
+        $this->flushMetaInfoCache($identifier);
         return !$this->s3Client->doesObjectExist($this->configuration['bucket'], $identifier);
     }
 
@@ -1177,7 +1241,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             'Body' => $body
         );
         $this->s3Client->putObject(array_merge_recursive($args, $overrideArgs));
-        $this->flushObjectExistenceCache($identifier);
+        $this->flushMetaInfoCache($identifier);
     }
 
     /**
@@ -1191,8 +1255,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         rename($this->getStreamWrapperPath($identifier), $this->getStreamWrapperPath($newIdentifier));
         $this->identifierMap[$identifier] = $newIdentifier;
-        $this->flushObjectExistenceCache($identifier);
-        $this->flushObjectExistenceCache($newIdentifier);
+        $this->flushMetaInfoCache($identifier);
+        $this->flushMetaInfoCache($newIdentifier);
     }
 
     /**
@@ -1324,23 +1388,36 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         $args = array(
             'Bucket' => $this->configuration['bucket'],
-            'Prefix' => $identifier
+            'Prefix' => $identifier,
         );
-        $result = $this->s3Client->listObjects(array_merge_recursive($args, $overrideArgs))->toArray();
+        $result = $this->getCachedResponse('listObjectsV2', array_merge_recursive($args, $overrideArgs));
+
+        // Cache the given meta info
+        foreach ($result['Contents'] as $content) {
+            $fileIdentifier = $identifier . $content['Key'];
+            $this->normalizeIdentifier($fileIdentifier);
+            if (!isset($this->metaInfoCache[$fileIdentifier])) {
+                $this->metaInfoCache[$fileIdentifier] = $this->getMetaInfoFromResponse($fileIdentifier, $content);
+            }
+        }
 
         // Amazon S3 lists max 1000 files, so we have to get all recursive
         if ($result['IsTruncated']) {
-            if ($result['NextMarker']) {
-                $overrideArgs['Marker'] = $result['NextMarker'];
-            } else {
-                $last = end($result['Contents']);
-                $overrideArgs['Marker'] = $last['Key'];
-                reset($result['Contents']);
-            }
+            $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
-            $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
-            if (!empty($result['CommonPrefixes']) && !empty($moreResults['CommonPrefixes'])) {
-                $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
+            if (is_array($moreResults['Contents'])) {
+                if (!is_array($result['Contents'])) {
+                    $result['Contents'] = $moreResults['Contents'];
+                } else {
+                    $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
+                }
+            }
+            if (is_array($moreResults['CommonPrefixes'])) {
+                if (!is_array($result['CommonPrefixes'])) {
+                    $result['CommonPrefixes'] = $moreResults['CommonPrefixes'];
+                } else {
+                    $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
+                }
             }
         }
         return $result;
@@ -1383,7 +1460,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             'Key' => $targetIdentifier,
             'CacheControl' => $this->getCacheControl($targetIdentifier)
         ));
-        $this->flushObjectExistenceCache($targetIdentifier);
+        $this->flushMetaInfoCache($targetIdentifier);
     }
 
     /**

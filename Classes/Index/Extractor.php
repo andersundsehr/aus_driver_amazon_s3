@@ -17,6 +17,7 @@ use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
+use TYPO3\CMS\Core\Type\File\ImageInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +38,7 @@ class Extractor implements ExtractorInterface
      */
     public function getFileTypeRestrictions()
     {
-        return array(File::FILETYPE_IMAGE);
+        return [File::FILETYPE_IMAGE];
     }
 
     /**
@@ -54,7 +55,7 @@ class Extractor implements ExtractorInterface
      */
     public function getDriverRestrictions()
     {
-        return array(AmazonS3Driver::DRIVER_TYPE);
+        return [AmazonS3Driver::DRIVER_TYPE];
     }
 
     /**
@@ -102,7 +103,7 @@ class Extractor implements ExtractorInterface
      * @param array $previousExtractedData optional, contains the array of already extracted data
      * @return array
      */
-    public function extractMetaData(File $file, array $previousExtractedData = array())
+    public function extractMetaData(File $file, array $previousExtractedData = [])
     {
         if (empty($previousExtractedData['width']) || empty($previousExtractedData['height'])) {
             $imageDimensions = $this->getImageDimensionsOfRemoteFile($file);
@@ -122,7 +123,7 @@ class Extractor implements ExtractorInterface
     public function getImageDimensionsOfRemoteFile(FileInterface $file)
     {
         $fileNameAndPath = $file->getForLocalProcessing(false);
-        $imageInfo = GeneralUtility::makeInstance('TYPO3\\CMS\Core\\Type\\File\\ImageInfo', $fileNameAndPath);
+        $imageInfo = GeneralUtility::makeInstance(ImageInfo::class, $fileNameAndPath);
         return [
             $imageInfo->getWidth(),
             $imageInfo->getHeight(),

@@ -16,6 +16,7 @@ namespace AUS\AusDriverAmazonS3\Signal;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -71,7 +72,7 @@ class FileIndexRepository
      */
     protected function getExtractor()
     {
-        return GeneralUtility::makeInstance('AUS\\AusDriverAmazonS3\\Index\\Extractor');
+        return GeneralUtility::makeInstance(Extractor::class);
     }
 
     /**
@@ -79,6 +80,6 @@ class FileIndexRepository
      */
     protected function getMetaDataRepository()
     {
-        return GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\MetaDataRepository');
+        return GeneralUtility::makeInstance(MetaDataRepository::class);
     }
 }

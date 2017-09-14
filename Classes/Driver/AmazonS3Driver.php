@@ -849,7 +849,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param bool $sortRev TRUE to indicate reverse sorting (last to first)
      *
      * @return array of Folder Identifier
-     * @toDo: Implement params $start, $numberOfItems, $recursive, $folderNameFilterCallbacks, $sort, $sort
+     * @toDo: Implement params $start, $numberOfItems, $recursive, $sort, $sortRev
      */
     public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $folderNameFilterCallbacks = [], $sort = '', $sortRev = false)
     {
@@ -862,6 +862,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             foreach ($response['CommonPrefixes'] as $folderCandidate) {
                 $key = $folderCandidate['Prefix'];
                 $folderName = basename(rtrim($key, '/'));
+
+                if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
+                  continue;
+                }
+
                 if ($folderName !== $this->getProcessingFolder()) {
                     $folders[$key] = $key;
                 }

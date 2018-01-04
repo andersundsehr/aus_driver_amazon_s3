@@ -1398,11 +1398,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $result = $this->getCachedResponse('listObjectsV2', array_merge_recursive($args, $overrideArgs));
 
         // Cache the given meta info
-        foreach ($result['Contents'] as $content) {
-            $fileIdentifier = $identifier . $content['Key'];
-            $this->normalizeIdentifier($fileIdentifier);
-            if (!isset($this->metaInfoCache[$fileIdentifier])) {
-                $this->metaInfoCache[$fileIdentifier] = $this->getMetaInfoFromResponse($fileIdentifier, $content);
+        if (is_array($result['Contents'])) {
+            foreach ($result['Contents'] as $content) {
+                $fileIdentifier = $identifier . $content['Key'];
+                $this->normalizeIdentifier($fileIdentifier);
+                if (!isset($this->metaInfoCache[$fileIdentifier])) {
+                    $this->metaInfoCache[$fileIdentifier] = $this->getMetaInfoFromResponse($fileIdentifier, $content);
+                }
             }
         }
 

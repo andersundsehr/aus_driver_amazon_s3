@@ -14,17 +14,20 @@ namespace AUS\AusDriverAmazonS3\Driver;
 
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
+use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -1026,7 +1029,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             $this->getFilesInFolder(static::ROOT_FOLDER_IDENTIFIER);
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
             $message = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                FlashMessage::class,
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.message', static::EXTENSION_NAME),
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.title', static::EXTENSION_NAME),
                 FlashMessage::OK
@@ -1035,7 +1038,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         } catch (\Exception $exception) {
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
             $message = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                FlashMessage::class,
                 $exception->getMessage(),
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestFailed.title', static::EXTENSION_NAME),
                 FlashMessage::WARNING
@@ -1049,9 +1052,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function getMessageQueue()
     {
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = $objectManager->get('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessageService = $objectManager->get(FlashMessageService::class);
         return $flashMessageService->getMessageQueueByIdentifier();
     }
 
@@ -1191,7 +1194,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                         $messageQueue = $this->getMessageQueue();
                         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
                         $message = GeneralUtility::makeInstance(
-                            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                            FlashMessage::class,
                             $exception->getMessage(),
                             '',
                             FlashMessage::WARNING
@@ -1306,7 +1309,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 $this->charsetConversion = $GLOBALS['LANG']->csConvObj;
             } else {
                 // The object may not exist yet, so we need to create it now. Happens in the Install Tool for example.
-                $this->charsetConversion = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+                $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
             }
         }
         return $this->charsetConversion;
@@ -1526,7 +1529,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         if (!$this->storage) {
             /** @var $storageRepository \TYPO3\CMS\Core\Resource\StorageRepository */
-            $storageRepository = GeneralUtility::makeInstance('TYPO3\CMS\Core\Resource\StorageRepository');
+            $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
             $this->storage = $storageRepository->findByUid($this->storageUid);
         }
         return $this->storage;

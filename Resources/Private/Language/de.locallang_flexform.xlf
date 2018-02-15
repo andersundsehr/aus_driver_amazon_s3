@@ -33,6 +33,9 @@
 			<trans-unit id="driverConfiguration.signature.auto">
 				<target>automatisch</target>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.caseSensitive">
+				<target>Benutzt groß-/kleinschreibungsabhängige Bezeichner (case sensitive)</target>
+			</trans-unit>
 			<trans-unit id="driverConfiguration.message.connectionTestFailed.title">
 				<target>AWS S3 Verbindung fehlgeschlagen</target>
 			</trans-unit>

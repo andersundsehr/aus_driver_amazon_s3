@@ -33,6 +33,9 @@
 			<trans-unit id="driverConfiguration.signature.auto">
 				<source>auto</source>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.caseSensitive">
+				<source>Case sensitive file system?</source>
+			</trans-unit>
 			<trans-unit id="driverConfiguration.message.connectionTestFailed.title">
 				<source>AWS S3 connection failed</source>
 			</trans-unit>

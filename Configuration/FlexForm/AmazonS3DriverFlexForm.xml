@@ -155,6 +155,15 @@
 					</config>
 				</TCEforms>
 			</signature>
+			<caseSensitive>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.caseSensitive</label>
+					<config>
+						<type>check</type>
+						<default>1</default>
+					</config>
+				</TCEforms>
+			</caseSensitive>
 		</el>
 	</ROOT>
 </T3DataStructure>

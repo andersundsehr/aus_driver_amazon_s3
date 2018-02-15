@@ -27,6 +27,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -183,7 +184,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public static function loadExternalClasses()
     {
-        if ((!GeneralUtility::compat_version('7.6.0') || !Bootstrap::usesComposerClassLoading()) && !function_exists('Aws\\manifest')) {
+        if (!Bootstrap::usesComposerClassLoading() && !function_exists('Aws\\manifest')) {
             require_once(GeneralUtility::getFileAbsFileName('EXT:' . self::EXTENSION_KEY . '/Resources/Private/PHP/Aws/aws-autoloader.php'));
         }
     }
@@ -1302,15 +1303,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected function getCharsetConversion()
     {
         if (!isset($this->charsetConversion)) {
-            if (TYPO3_MODE === 'FE') {
-                $this->charsetConversion = $GLOBALS['TSFE']->csConvObj;
-            } elseif (is_object($GLOBALS['LANG'])) {
-                // BE assumed:
-                $this->charsetConversion = $GLOBALS['LANG']->csConvObj;
-            } else {
-                // The object may not exist yet, so we need to create it now. Happens in the Install Tool for example.
-                $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
-            }
+            $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
         }
         return $this->charsetConversion;
     }

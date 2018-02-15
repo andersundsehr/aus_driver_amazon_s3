@@ -20,6 +20,7 @@
 					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.region</label>
 					<config>
 						<type>select</type>
+						<renderType>selectSingle</renderType>
 						<items type="array">
 							<numIndex index="0" type="array">
 								<numIndex index="0">US East (N. Virginia) - us-east-1</numIndex>
@@ -114,6 +115,7 @@
 					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol</label>
 					<config>
 						<type>select</type>
+						<renderType>selectSingle</renderType>
 						<size>1</size>
 						<minitems>1</minitems>
 						<maxitems>1</maxitems>
@@ -139,6 +141,7 @@
 					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature</label>
 					<config>
 						<type>select</type>
+						<renderType>selectSingle</renderType>
 						<size>1</size>
 						<minitems>1</minitems>
 						<maxitems>1</maxitems>

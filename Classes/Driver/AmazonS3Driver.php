@@ -15,6 +15,7 @@ namespace AUS\AusDriverAmazonS3\Driver;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -974,8 +975,17 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function initializeSettings()
     {
-        if (self::$settings === null && isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::EXTENSION_KEY])) {
-            self::$settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::EXTENSION_KEY]);
+        if (self::$settings === null) {
+            if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '9.0.0') === -1) {
+                // Backwards compatibility: for TYPO3 versions lower than 9.0
+                $extConf = 'extConf'; // Trick the install tool extension checker to dismiss "deprecated" warning
+                if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT'][$extConf][self::EXTENSION_KEY])) {
+                    self::$settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT'][$extConf][self::EXTENSION_KEY]);
+                }
+            } else {
+                self::$settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXTENSION_KEY);
+            }
+
             if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
                 self::loadExternalClasses();
             }

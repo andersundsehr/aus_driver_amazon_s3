@@ -66,6 +66,9 @@ class AmazonS3DriverTest extends UnitTestCase
         if (!defined('TYPO3_OS')) {
             define('TYPO3_OS', '');
         }
+        if (!defined('TYPO3_version')) {
+            define('TYPO3_version', '8.7.10');
+        }
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLocale'] = '';
         $this->s3Client = $this->prophesize(S3Client::class);
         $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal());

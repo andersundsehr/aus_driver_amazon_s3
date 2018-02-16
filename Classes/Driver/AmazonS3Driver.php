@@ -870,10 +870,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
                   continue;
                 }
-
-                if ($folderName !== $this->getProcessingFolder()) {
-                    $folders[$key] = $key;
+                if ($key === static::ROOT_FOLDER_IDENTIFIER) {
+                    continue;
                 }
+                if ($folderName === $this->getProcessingFolder()) {
+                    continue;
+                }
+
+                $folders[$key] = $key;
             }
         }
         return $folders;

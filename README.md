@@ -1,6 +1,7 @@
-[![Packagist Release](https://img.shields.io/packagist/v/andersundsehr/aus-driver-amazon-s3.svg)](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
-[![Travis](https://img.shields.io/travis/andersundsehr/aus_driver_amazon_s3.svg)](https://travis-ci.org/andersundsehr/aus_driver_amazon_s3)
-[![GitHub License](https://img.shields.io/github/license/andersundsehr/aus_driver_amazon_s3.svg)](https://github.com/andersundsehr/aus_driver_amazon_s3/blob/master/LICENSE.txt)
+[![Packagist Release](https://img.shields.io/packagist/v/andersundsehr/aus-driver-amazon-s3.svg?style=flat-square)](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
+[![Travis](https://img.shields.io/travis/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://travis-ci.org/andersundsehr/aus_driver_amazon_s3)
+[![GitHub License](https://img.shields.io/github/license/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://github.com/andersundsehr/aus_driver_amazon_s3/blob/master/LICENSE.txt)
+[![Code Climate](https://img.shields.io/codeclimate/github/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://codeclimate.com/github/andersundsehr/aus_driver_amazon_s3)
 
 # TYPO3 Extension: Amazon AWS S3 FAL driver (CDN)
 
@@ -8,7 +9,7 @@ This is a driver for the file abstraction layer (FAL) to support Amazon AWS S3.
 
 You can create a file storage which allows you to upload/download and link the files to an AWS S3 bucket. It also supports the TYPO3 CMS image rendering.
 
-Requires TYPO3 7.6 - 8.7
+Requires TYPO3 7.6 - 9.x
 
 German blog post: [TYPO3 CDN with Amazon S3](https://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn)
 

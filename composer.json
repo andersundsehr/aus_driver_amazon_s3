@@ -17,6 +17,7 @@
   "require-dev": {
     "typo3/cms": "^7.6 || ^8.7 || ^9.1",
     "phpunit/phpunit": "^5.6",
+    "pluswerk/grumphp-config": "2.*",
     "nimut/testing-framework": "^2.0"
   },
   "autoload": {
@@ -51,6 +52,9 @@
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
+    },
+    "pluswerk/grumphp-config": {
+      "auto-setting": false
     }
   }
 }

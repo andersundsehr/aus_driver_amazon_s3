@@ -67,6 +67,7 @@ class AmazonS3DriverTest extends UnitTestCase
             define('TYPO3_OS', '');
         }
         if (!defined('TYPO3_version')) {
+            // @codingStandardsIgnoreLine
             define('TYPO3_version', '8.7.10');
         }
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLocale'] = '';

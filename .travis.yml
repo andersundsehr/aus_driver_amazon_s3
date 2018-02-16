@@ -27,3 +27,4 @@ install:
 
 script:
    - composer test
+   - .Build/bin/grumphp run

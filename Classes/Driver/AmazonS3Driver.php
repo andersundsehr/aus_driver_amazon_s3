@@ -650,8 +650,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $this->sortObjectsForNestedFolderOperations($subObjects);
 
         foreach ($subObjects as $subObject) {
-            $newIdentifier = $targetFolderIdentifier . $newFolderName . '/' . substr($subObject['Key'],
-                    strlen($sourceFolderIdentifier));
+            $newIdentifier = $targetFolderIdentifier . $newFolderName . '/' . substr(
+                $subObject['Key'],
+                strlen($sourceFolderIdentifier)
+            );
             $this->renameObject($subObject['Key'], $newIdentifier);
         }
         return $this->identifierMap;
@@ -675,8 +677,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $this->sortObjectsForNestedFolderOperations($subObjects);
 
         foreach ($subObjects as $subObject) {
-            $newIdentifier = $targetFolderIdentifier . $newFolderName . '/' . substr($subObject['Key'],
-                    strlen($sourceFolderIdentifier));
+            $newIdentifier = $targetFolderIdentifier . $newFolderName . '/' . substr(
+                $subObject['Key'],
+                strlen($sourceFolderIdentifier)
+            );
             $this->copyObject($subObject['Key'], $newIdentifier);
         }
 
@@ -810,8 +814,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
                 $fileName = basename($fileCandidate['Key']);
                 // check filter
-                if (!$this->applyFilterMethodsToDirectoryItem($filenameFilterCallbacks, $fileName,
-                    $fileCandidate['Key'], $folderIdentifier)
+                if (!$this->applyFilterMethodsToDirectoryItem(
+                    $filenameFilterCallbacks,
+                    $fileName,
+                    $fileCandidate['Key'],
+                    $folderIdentifier
+                )
                 ) {
                     continue;
                 }
@@ -869,7 +877,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 $folderName = basename(rtrim($key, '/'));
 
                 if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
-                  continue;
+                    continue;
                 }
                 if ($key === static::ROOT_FOLDER_IDENTIFIER) {
                     continue;
@@ -1016,8 +1024,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             $configuration['signature_version'] = $this->configuration['signature_version'];
         }
 
-        if (
-            isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing']) &&
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing']) &&
             is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'])
         ) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'] as $funcName) {
@@ -1136,7 +1143,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         }
         if (!empty($response['ContentLength'])) {
             $metaInfo['size'] = (int)$response['ContentLength'];
-        } elseif(!empty($response['size'])) {
+        } elseif (!empty($response['size'])) {
             $metaInfo['size'] = (int)$response['size'];
         }
         return $metaInfo;
@@ -1295,8 +1302,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         $fileName = $this->getCharsetConversion()->specCharsToASCII('utf-8', $fileName);
         // Replace unwanted characters by underscores
-        $cleanFileName = preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/', '_',
-            trim($fileName));
+        $cleanFileName = preg_replace(
+            '/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/',
+            '_',
+            trim($fileName)
+        );
 
         // Strip trailing dots and return
         $cleanFileName = rtrim($cleanFileName, '.');
@@ -1576,7 +1586,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @throws \RuntimeException
      * @return bool
      */
-    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier) {
+    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier)
+    {
         foreach ($filterMethods as $filter) {
             if (is_array($filter)) {
                 $result = call_user_func($filter, $itemName, $itemIdentifier, $parentIdentifier, [], $this);
@@ -1591,5 +1602,4 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         }
         return true;
     }
-
 }

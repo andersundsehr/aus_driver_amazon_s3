@@ -1,6 +1,7 @@
-[![Packagist Release](https://img.shields.io/packagist/v/andersundsehr/aus-driver-amazon-s3.svg)](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
-[![Travis](https://img.shields.io/travis/andersundsehr/aus_driver_amazon_s3.svg)](https://travis-ci.org/andersundsehr/aus_driver_amazon_s3)
-[![GitHub License](https://img.shields.io/github/license/andersundsehr/aus_driver_amazon_s3.svg)](https://github.com/andersundsehr/aus_driver_amazon_s3/blob/master/LICENSE.txt)
+[![Packagist Release](https://img.shields.io/packagist/v/andersundsehr/aus-driver-amazon-s3.svg?style=flat-square)](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
+[![Travis](https://img.shields.io/travis/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://travis-ci.org/andersundsehr/aus_driver_amazon_s3)
+[![GitHub License](https://img.shields.io/github/license/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://github.com/andersundsehr/aus_driver_amazon_s3/blob/master/LICENSE.txt)
+[![Code Climate](https://img.shields.io/codeclimate/github/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://codeclimate.com/github/andersundsehr/aus_driver_amazon_s3)
 
 # TYPO3 Extension: Amazon AWS S3 FAL driver (CDN)
 

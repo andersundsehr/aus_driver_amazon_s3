@@ -12,7 +12,7 @@
   "license": "GPL-2.0+",
   "require": {
     "php": ">=5.6.0",
-    "aws/aws-sdk-php": "^3.52"
+    "aws/aws-sdk-php": "^3.55"
   },
   "require-dev": {
     "typo3/cms": "^7.6 || ^8.7 || ^9.1",

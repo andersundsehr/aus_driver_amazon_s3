@@ -1,10 +1,10 @@
 <?php
 /** @var string $_EXTKEY */
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'anders und sehr: Amazon AWS S3 FAL driver (CDN)',
+    'title' => 'Amazon AWS S3 FAL driver (CDN)',
     'description' => 'Provides a FAL driver for the Amazon Web Service S3.',
     'category' => 'be',
-    'version' => '1.7.0',
+    'version' => '1.7.1',
     'state' => 'stable',
     'uploadfolder' => false,
     'createDirs' => '',

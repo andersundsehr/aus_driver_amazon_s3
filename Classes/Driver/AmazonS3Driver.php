@@ -1356,15 +1356,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * @param string &$identifier
-     */
-    protected function normalizeIdentifier(&$identifier)
-    {
-        if ($identifier !== '/') {
-            $identifier = ltrim($identifier, '/');
-            $identifier = str_replace('//', '/', $identifier);
-        }
-    }
+    * @param string &$identifier
+    */
+   protected function normalizeIdentifier(&$identifier)
+   {
+       $identifier = str_replace('//', '/', $identifier);
+       if ($identifier !== '/') {
+           $identifier = ltrim($identifier, '/');
+       }
+   }
 
     /**
      * @return void

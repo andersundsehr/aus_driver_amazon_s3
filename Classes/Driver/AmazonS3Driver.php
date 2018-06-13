@@ -1383,9 +1383,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function normalizeIdentifier(&$identifier)
     {
+        $identifier = str_replace('//', '/', $identifier);
         if ($identifier !== '/') {
             $identifier = ltrim($identifier, '/');
-            $identifier = str_replace('//', '/', $identifier);
         }
     }
 

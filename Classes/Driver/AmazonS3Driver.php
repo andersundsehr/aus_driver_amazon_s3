@@ -30,6 +30,7 @@ use TYPO3\CMS\Core\Resource\Exception;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -148,6 +149,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @var array
      */
     protected $temporaryPaths = [];
+
+    /**
+     * @var Dispatcher
+     */
+    protected $signalSlotDispatcher;
 
     /**
      * AmazonS3Driver constructor.
@@ -499,10 +505,27 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (!is_file($temporaryPath)) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
         }
+        $this->emitGetFileForLocalProcessingSignal($fileIdentifier, $temporaryPath, $writable);
         if (!isset($this->temporaryPaths[$temporaryPath])) {
             $this->temporaryPaths[$temporaryPath] = $temporaryPath;
         }
         return $temporaryPath;
+    }
+
+    /**
+     * @param string $fileIdentifier
+     * @param string $temporaryPath
+     * @param bool $writable
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     */
+    protected function emitGetFileForLocalProcessingSignal(&$fileIdentifier, &$temporaryPath, &$writable)
+    {
+        list($fileIdentifier, $temporaryPath, $writable) = $this->getSignalSlotDispatcher()->dispatch(
+            self::class,
+            'getFileForLocalProcessing',
+            [$fileIdentifier, $temporaryPath, $writable]
+        );
     }
 
     /**
@@ -1601,5 +1624,18 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
         }
         return true;
+    }
+
+    /**
+     * Get the SignalSlot dispatcher
+     *
+     * @return Dispatcher
+     */
+    protected function getSignalSlotDispatcher()
+    {
+        if (!isset($this->signalSlotDispatcher)) {
+            $this->signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
+        }
+        return $this->signalSlotDispatcher;
     }
 }

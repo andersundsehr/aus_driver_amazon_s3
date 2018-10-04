@@ -11,10 +11,10 @@
   "license": "GPL-2.0+",
   "require": {
     "php": ">=5.6.0",
-    "aws/aws-sdk-php": "^3.55"
+    "aws/aws-sdk-php": "^3.68"
   },
   "require-dev": {
-    "typo3/cms": "^7.6 || ^8.7 || ^9.1",
+    "typo3/cms": "^7.6 || ^8.7 || ^9.5",
     "phpunit/phpunit": "^5.6",
     "pluswerk/grumphp-config": "2.*",
     "nimut/testing-framework": "^2.0"

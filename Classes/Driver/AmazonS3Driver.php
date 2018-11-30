@@ -23,6 +23,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
 use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
@@ -910,6 +911,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 }
 
                 $folders[$key] = $key;
+
+                if($recursive){
+                    $subFolders = $this->getFoldersInFolder($key, $start, $numberOfItems, $recursive, $folderNameFilterCallbacks, $sort, $sortRev);
+                    ArrayUtility::mergeRecursiveWithOverrule($folders, $subFolders, true, false, false);
+                }
             }
         }
         return $folders;

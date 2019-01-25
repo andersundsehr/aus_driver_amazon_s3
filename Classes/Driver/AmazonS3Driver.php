@@ -1133,7 +1133,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             } catch (\Exception $exc) {
                 // Ignore file not found errors
                 if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
-                    echo $exc->getTraceAsString();
+                    GeneralUtility::devLog($exc->getMessage(), 'aus_driver_amazon_s3', GeneralUtility::SYSLOG_SEVERITY_WARNING);
                 }
                 $this->metaInfoCache[$identifier] = null;
             }

@@ -293,7 +293,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function fileExists($identifier)
     {
-        if (substr($identifier, -1) === '/') {
+        if (substr($identifier, -1) === '/' || $identifier === '') {
             return false;
         }
         return $this->objectExists($identifier);

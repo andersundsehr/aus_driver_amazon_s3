@@ -1,7 +1,7 @@
 {
   "name": "andersundsehr/aus-driver-amazon-s3",
   "type": "typo3-cms-extension",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "Provides a FAL driver for the Amazon Web Service AWS S3.",
   "support": {
     "source": "https://github.com/andersundsehr/aus_driver_amazon_s3.git",
@@ -10,11 +10,11 @@
   },
   "license": "GPL-2.0+",
   "require": {
-    "php": ">=5.6.0",
-    "aws/aws-sdk-php": "^3.68"
+    "php": ">=7.0.0",
+    "aws/aws-sdk-php": "^3.87"
   },
   "require-dev": {
-    "typo3/cms": "^7.6 || ^8.7 || ^9.5",
+    "typo3/cms": "^8.7 || ^9.5",
     "phpunit/phpunit": "^5.6",
     "pluswerk/grumphp-config": "2.*",
     "nimut/testing-framework": "^2.0"

@@ -17,6 +17,8 @@ use Aws\S3\StreamWrapper;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Log\LogLevel;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -1154,7 +1156,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             } catch (\Exception $exc) {
                 // Ignore file not found errors
                 if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
-                    echo $exc->getTraceAsString();
+                    /** @var \TYPO3\CMS\Core\Log\Logger $logger */
+                    $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+                    $logger->log(LogLevel::WARNING, $exc->getMessage(), $exc->getTrace());
                 }
                 $this->metaInfoCache[$identifier] = null;
             }

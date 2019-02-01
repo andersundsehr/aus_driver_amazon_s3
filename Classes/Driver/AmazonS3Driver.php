@@ -885,7 +885,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param bool $sortRev TRUE to indicate reverse sorting (last to first)
      *
      * @return array of Folder Identifier
-     * @toDo: Implement params $start, $numberOfItems, $recursive, $sort, $sortRev
+     * @toDo: Implement params $start, $numberOfItems, $sort, $sortRev
      */
     public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $folderNameFilterCallbacks = [], $sort = '', $sortRev = false)
     {
@@ -893,23 +893,44 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $folders = [];
 
         $folderIdentifier = $folderIdentifier === self::ROOT_FOLDER_IDENTIFIER ? '' : $folderIdentifier;
-        $response = $this->getListObjects($folderIdentifier, ['Delimiter' => '/']);
-        if ($response['CommonPrefixes']) {
-            foreach ($response['CommonPrefixes'] as $folderCandidate) {
-                $key = $folderCandidate['Prefix'];
-                $folderName = basename(rtrim($key, '/'));
+        if ($recursive) {
+            // search folders recursive
+            $response = $this->getListObjects($folderIdentifier);
+            if ($response['Contents']) {
+                foreach ($response['Contents'] as $folderCandidate) {
+                    $key = '/' . $folderCandidate['Key'];
+                    $folderName = basename(rtrim($key, '/'));
 
-                if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
-                    continue;
-                }
-                if ($key === static::ROOT_FOLDER_IDENTIFIER) {
-                    continue;
-                }
-                if ($folderName === $this->getProcessingFolder()) {
-                    continue;
-                }
+                    // filter only folders
+                    if (substr($key, -1) !== '/') {
+                        continue;
+                    }
+                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
+                        continue;
+                    }
+                    if ($folderName === $this->getProcessingFolder()) {
+                        continue;
+                    }
 
-                $folders[$key] = $key;
+                    $folders[$key] = $key;
+                }
+            }
+        } else {
+            // search folders on the current level (non-recursive)
+            $response = $this->getListObjects($folderIdentifier, ['Delimiter' => '/']);
+            if ($response['CommonPrefixes']) {
+                foreach ($response['CommonPrefixes'] as $folderCandidate) {
+                    $key = '/' . $folderCandidate['Prefix'];
+                    $folderName = basename(rtrim($key, '/'));
+                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
+                        continue;
+                    }
+                    if ($folderName === $this->getProcessingFolder()) {
+                        continue;
+                    }
+
+                    $folders[$key] = $key;
+                }
             }
         }
         return $folders;

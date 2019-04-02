@@ -62,6 +62,10 @@
 								<numIndex index="0">South America (São Paulo) - sa-east-1</numIndex>
 								<numIndex index="1">sa-east-1</numIndex>
 							</numIndex>
+							<numIndex index="10" type="array">
+								<numIndex index="0">Canada - ca-central-1</numIndex>
+								<numIndex index="1">ca-central-1</numIndex>
+							</numIndex>
 						</items>
 						<size>1</size>
 						<minitems>1</minitems>

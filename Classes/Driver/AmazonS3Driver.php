@@ -869,7 +869,31 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function countFilesInFolder($folderIdentifier, $recursive = false, array $filenameFilterCallbacks = [])
     {
-        return count($this->getFilesInFolder($folderIdentifier, 0, 0, $recursive, $filenameFilterCallbacks));
+        if( $recursive || count($filenameFilterCallbacks) )
+            return count($this->getFilesInFolder($folderIdentifier, 0, 0, $recursive, $filenameFilterCallbacks));
+
+        $this->normalizeIdentifier($folderIdentifier);
+        if ($folderIdentifier === self::ROOT_FOLDER_IDENTIFIER) {
+            $folderIdentifier = '';
+        }
+
+        $args = [
+            'Bucket' => $this->configuration['bucket'],
+            'Prefix' => $folderIdentifier,
+            'Delimiter' => '/'
+        ];
+
+        $count = 0;
+
+        do {
+            $awsResult = $this->s3Client->listObjectsV2($args);
+            $count += $awsResult->get('KeyCount') - count($awsResult->get('CommonPrefixes')) - 1;
+
+            if($awsResult->get('IsTruncated'))
+                $args['ContinuationToken'] = $awsResult->get('NextContinuationToken');
+        } while ($awsResult->get('IsTruncated'));
+
+        return $count;
     }
 
     /**
@@ -895,46 +919,27 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $folders = [];
 
         $folderIdentifier = $folderIdentifier === self::ROOT_FOLDER_IDENTIFIER ? '' : $folderIdentifier;
-        if ($recursive) {
-            // search folders recursive
-            $response = $this->getListObjects($folderIdentifier);
-            if ($response['Contents']) {
-                foreach ($response['Contents'] as $folderCandidate) {
-                    $key = '/' . $folderCandidate['Key'];
-                    $folderName = basename(rtrim($key, '/'));
-
-                    // filter only folders
-                    if (substr($key, -1) !== '/') {
-                        continue;
-                    }
-                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
-                        continue;
-                    }
-                    if ($folderName === $this->getProcessingFolder()) {
-                        continue;
-                    }
-
-                    $folders[$key] = $key;
+        // search folders on the current level (non-recursive)
+        $response = $this->getCommonPrefixes($folderIdentifier, ['Delimiter' => '/']);
+        if ($response['CommonPrefixes']) {
+            foreach ($response['CommonPrefixes'] as $folderCandidate) {
+                $key = '/' . $folderCandidate['Prefix'];
+                $folderName = basename(rtrim($key, '/'));
+                if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
+                    continue;
                 }
-            }
-        } else {
-            // search folders on the current level (non-recursive)
-            $response = $this->getListObjects($folderIdentifier, ['Delimiter' => '/']);
-            if ($response['CommonPrefixes']) {
-                foreach ($response['CommonPrefixes'] as $folderCandidate) {
-                    $key = '/' . $folderCandidate['Prefix'];
-                    $folderName = basename(rtrim($key, '/'));
-                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
-                        continue;
-                    }
-                    if ($folderName === $this->getProcessingFolder()) {
-                        continue;
-                    }
+                if ($folderName === $this->getProcessingFolder()) {
+                    continue;
+                }
 
-                    $folders[$key] = $key;
+                $folders[$key] = $key;
+
+                if($recursive) {
+                    $folders = array_merge( $folders, $this->getFoldersInFolder($folderCandidate['Prefix'], $start, $numberOfItems, $recursive, $folderNameFilterCallbacks, $sort, $sortRev) );
                 }
             }
         }
+
         return $folders;
     }
 
@@ -1450,6 +1455,44 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 )
             );
         });
+    }
+
+    /**
+     * Recursive function to get all common prefixes within a folder
+     * It is recursive because Amazon S3 lists max 1000 objects by one request
+     *
+     * @param string $identifier
+     * @param array $overrideArgs
+     * @return array
+     */
+    protected function getCommonPrefixes($identifier, $overrideArgs = [])
+    {
+        $args = [
+            'Bucket' => $this->configuration['bucket'],
+            'Prefix' => $identifier
+        ];
+
+        $awsResult = $this->s3Client->listObjectsV2(array_merge_recursive($args, $overrideArgs));
+        $result = array(
+            'CommonPrefixes' => $awsResult->get('CommonPrefixes')
+        );
+
+        if(!is_array($result['CommonPrefixes']))
+            $result['CommonPrefixes'] = array();
+
+        // Amazon S3 lists max 1000 files, so we have to get all recursive
+        if ($awsResult->get('IsTruncated')) {
+            $overrideArgs['ContinuationToken'] = $awsResult->get('NextContinuationToken');
+            $moreResults = $this->getCommonPrefixes($identifier, $overrideArgs);
+            if (is_array($moreResults['CommonPrefixes'])) {
+                if (!is_array($result['CommonPrefixes'])) {
+                    $result['CommonPrefixes'] = $moreResults['CommonPrefixes'];
+                } else {
+                    $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
+                }
+            }
+        }
+        return $result;
     }
 
     /**

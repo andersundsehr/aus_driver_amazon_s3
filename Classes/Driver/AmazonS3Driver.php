@@ -3,15 +3,16 @@ namespace AUS\AusDriverAmazonS3\Driver;
 
 /***
  *
- * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ * This file is part of an extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2017 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
+use AUS\AusDriverAmazonS3\S3Adapter\MultipartUploaderAdapter;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
@@ -361,6 +362,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param bool $removeOriginal if set the original file will be removed
      *                                after successful operation
      * @return string the identifier of the new file
+     * @throws \Exception
      */
     public function addFile($localFilePath, $targetFolderIdentifier, $newFileName = '', $removeOriginal = true)
     {
@@ -377,13 +379,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                 copy($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
             }
         } else { // upload local file
-            $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-            $contentType = finfo_file($fileInfo, $localFilePath);
-            finfo_close($fileInfo);
-            $this->createObject($targetIdentifier, file_get_contents($localFilePath), [
-                'ContentType' => $contentType,
-                'CacheControl' => $this->getCacheControl($targetIdentifier),
-            ]);
+            $this->normalizeIdentifier($targetIdentifier);
+
+            $multipartUploadAdapter = GeneralUtility::makeInstance(MultipartUploaderAdapter::class, $this->s3Client);
+            $multipartUploadAdapter->upload(
+                $localFilePath,
+                $targetIdentifier,
+                $this->configuration['bucket'],
+                $this->getCacheControl($targetIdentifier)
+            );
 
             if ($removeOriginal) {
                 unlink($localFilePath);

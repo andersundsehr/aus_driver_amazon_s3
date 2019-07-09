@@ -3,7 +3,7 @@ namespace AUS\AusDriverAmazonS3\Signal;
 
 /***
  *
- * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ * This file is part of an extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.

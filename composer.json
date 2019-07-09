@@ -14,7 +14,7 @@
   },
   "require-dev": {
     "pluswerk/grumphp-config": "2.*",
-    "typo3/testing-framework": "^4.1"
+    "typo3/testing-framework": "^2.0 || ^4.1"
   },
   "autoload": {
     "psr-4": {

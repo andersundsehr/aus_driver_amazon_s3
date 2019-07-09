@@ -33,6 +33,27 @@ A hook class might look like this: ::
 
 	}
 
+Initialize public base URL:
+^^^^^^^^^^^^^^^^^^^^^
+
+You can set the public base URL in the configuration of your driver (TYPO3 backend).
+But maybe you want to set this on an other place.
+
+So you have to use the following hook in your own ext_loaclconf.php: ::
+
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_driver_amazon_s3']['initializeBaseUrl-postProcessing'][] = \Vendor\ExtensionName\Hooks\AmazonS3DriverHook::class . '->initializeBaseUrl';
+
+A hook class might look like this: ::
+
+	namespace Vendor\ExtensionName\Hooks;
+
+	class AmazonS3DriverHook {
+
+		public function initializeBaseUrl(&$params, $obj){
+			$params['baseUrl'] = 'https://example.com';
+		}
+
+	}
 
 Cache Control Header:
 ^^^^^^^^^^^^^^^^^^^^^

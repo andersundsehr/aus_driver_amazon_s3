@@ -76,6 +76,8 @@ Edit in “Extension Manager” the following extension settings:
 
 ## Extend Extension
 
+### Initialize S3 Client
+
 If you use your own Amazon AWS SDK, you may want to work with your own S3 client object.
 
 So you have to use the following hook in your own ext\_loaclconf.php:
@@ -96,5 +98,41 @@ class AmazonS3DriverHook {
   }
 }
 ```
+
+### Initialize public base URL
+
+You can set the public base URL in the configuration of your driver (TYPO3 backend).
+But maybe you want to set this on an other place.
+
+So you have to use the following hook in your own ext\_loaclconf.php:
+
+```php
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_driver_amazon_s3']['initializeBaseUrl-postProcessing'][] = \Vendor\ExtensionName\Hooks\AmazonS3DriverHook::class . '->initializeBaseUrl';
+```
+
+A hook class might look like this:
+
+```php
+namespace Vendor\ExtensionName\Hooks;
+
+class AmazonS3DriverHook {
+
+  public function initializeBaseUrl(array &$params, $obj){
+    $params['baseUrl'] = 'https://example.com';
+  }
+}
+```
+
+### Cache Control Header
+
+There is a default setting to set the cache control header's max age for all file types. If you want to use special cache headers, you can use this hook:
+
+```php
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_driver_amazon_s3']['getCacheControl'][] = 'Vendor\ExtensionName\Hooks\AmazonS3DriverHook->getCacheControl';
+```
+
+You can modify the parameter "cacheControl" as you wish. Please Notice: Amazon S3 set the cache header only once - while uploading / creating or copy the file.
+
+### More
 
 If you wish other hooks - don’t be shy: [GitHub issue tracking: Amazon S3 FAL Driver](https://github.com/andersundsehr/aus_driver_amazon_s3/issues)

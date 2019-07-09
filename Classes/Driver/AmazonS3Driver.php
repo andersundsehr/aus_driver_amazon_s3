@@ -1017,13 +1017,24 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if ($protocol == 'auto') {
             $protocol = GeneralUtility::getIndpEnv('TYPO3_SSL') ? 'https://' : 'http://';
         }
-        $this->baseUrl = $protocol;
+        $baseUrl = $protocol;
 
         if (isset($this->configuration['publicBaseUrl']) && $this->configuration['publicBaseUrl'] !== '') {
-            $this->baseUrl .= rtrim($this->configuration['publicBaseUrl'], '/');
+            $baseUrl .= rtrim($this->configuration['publicBaseUrl'], '/');
         } else {
-            $this->baseUrl .= $this->configuration['bucket'] . '.s3.amazonaws.com';
+            $baseUrl .= $this->configuration['bucket'] . '.s3.amazonaws.com';
         }
+
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing']) &&
+            is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing'])
+        ) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing'] as $funcName) {
+                $params = ['baseUrl' => &$baseUrl];
+                GeneralUtility::callUserFunction($funcName, $params, $this);
+            }
+        }
+
+        $this->baseUrl = $baseUrl;
         return $this;
     }
 

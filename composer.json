@@ -5,8 +5,8 @@
   "description": "Provides a FAL driver for the Amazon Web Service AWS S3.",
   "support": {
     "source": "https://github.com/andersundsehr/aus_driver_amazon_s3.git",
-    "issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
-    "docs": "https://docs.typo3.org/typo3cms/extensions/aus_driver_amazon_s3/"
+    "issues": "https://github.com/andersundsehr/aus_driver_amazon_s3/issues",
+    "docs": "https://docs.typo3.org/p/andersundsehr/aus-driver-amazon-s3/master/en-us/"
   },
   "license": "LGPL-3.0-or-later",
   "require": {

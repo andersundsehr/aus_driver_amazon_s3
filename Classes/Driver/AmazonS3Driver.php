@@ -441,6 +441,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         $contents = file_get_contents($localFilePath);
         $written = $this->setFileContents($fileIdentifier, $contents);
+        $this->flushMetaInfoCache($fileIdentifier);
         return $written > 0;
     }
 

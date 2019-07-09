@@ -8,13 +8,12 @@
     "issues": "https://forge.typo3.org/projects/extension-aus_driver_amazon_s3",
     "docs": "https://docs.typo3.org/typo3cms/extensions/aus_driver_amazon_s3/"
   },
-  "license": "GPL-2.0+",
+  "license": "LGPL-3.0-or-later",
   "require": {
-    "php": ">=7.0.0",
-    "aws/aws-sdk-php": "^3.87"
+    "typo3/cms-core": "^8.7.8",
+    "aws/aws-sdk-php": "^3.105"
   },
   "require-dev": {
-    "typo3/cms": "^8.7 || ^9.5",
     "phpunit/phpunit": "^5.6",
     "pluswerk/grumphp-config": "2.*",
     "nimut/testing-framework": "^2.0"
@@ -49,6 +48,7 @@
   },
   "extra": {
     "typo3/cms": {
+      "extension-key": "aus_driver_amazon_s3",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
     },

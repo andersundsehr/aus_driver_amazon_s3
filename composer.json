@@ -9,12 +9,12 @@
   },
   "license": "LGPL-3.0-or-later",
   "require": {
-    "typo3/cms-core": "^8.7 || ^9.5",
+    "typo3/cms-core": "^9.5",
     "aws/aws-sdk-php": "^3.105"
   },
   "require-dev": {
     "pluswerk/grumphp-config": "2.*",
-    "typo3/testing-framework": "^2.0 || ^4.1"
+    "typo3/testing-framework": "^4.1"
   },
   "autoload": {
     "psr-4": {

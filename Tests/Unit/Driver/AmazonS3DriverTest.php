@@ -56,11 +56,11 @@ class AmazonS3DriverTest extends UnitTestCase
     {
         parent::setUp();
         \PHPUnit\Framework\Error\Deprecated::$enabled = false;
-
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [];
 
         $this->s3Client = $this->prophesize(S3Client::class);
         $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal());
+        $this->driver->setStorageUid(42);
         $this->driver->initialize();
     }
 
@@ -112,8 +112,9 @@ class AmazonS3DriverTest extends UnitTestCase
     public function testGetFileInfoByIdentifier()
     {
         $fileIdentifier = 'foo/bar/test.file';
+        $lastModifiedDateTime = new DateTimeResult();
         $result = new Result([
-            'LastModified' => new DateTimeResult(),
+            'LastModified' => $lastModifiedDateTime,
             'ContentType' => 'image/png',
             'ContentLength' => 123,
         ]);
@@ -122,14 +123,25 @@ class AmazonS3DriverTest extends UnitTestCase
             'Key' => $fileIdentifier
         ])->willReturn($result);
         $info = $this->driver->getFileInfoByIdentifier($fileIdentifier);
+
         $this->assertEquals(
-            ['name', 'identifier', 'ctime', 'mtime', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'],
+            ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'],
             array_keys($info),
             '',
             0.0,
             10,
             true // set this to true
         );
+        $this->assertEquals(basename($fileIdentifier), $info['name']);
+        $this->assertEquals($fileIdentifier, $info['identifier']);
+        $this->assertEquals($lastModifiedDateTime->getTimestamp(), $info['ctime']);
+        $this->assertEquals($lastModifiedDateTime->getTimestamp(), $info['mtime']);
+        $this->assertEquals(sha1('/' . $fileIdentifier), $info['identifier_hash']);
+        $this->assertEquals(sha1('/' . dirname($fileIdentifier)), $info['folder_hash']);
+        $this->assertEquals('file', $info['extension']);
+        $this->assertEquals('image/png', $info['mimetype']);
+        $this->assertEquals(123, $info['size']);
+        $this->assertEquals($this->driver->getStorageUid(), $info['storage']);
     }
 
     /**
@@ -150,5 +162,44 @@ class AmazonS3DriverTest extends UnitTestCase
         ])->willReturn($result);
         $info = $this->driver->getFileInfoByIdentifier($fileIdentifier, $properties);
         $this->assertEquals($properties, array_keys($info), '', 0.0, 10, true);
+    }
+
+
+    /**
+     * @test
+     */
+    public function testGetFileInfoByIdentifierWithPseudoMimeType()
+    {
+        $fileIdentifier = 'foo/bar/test.youtube';
+        $lastModifiedDateTime = new DateTimeResult();
+        $result = new Result([
+            'LastModified' => $lastModifiedDateTime,
+            'ContentType' => 'text/plain',
+            'ContentLength' => 12345,
+        ]);
+        $this->s3Client->headObject([
+            'Bucket' => $this->testConfiguration['bucket'],
+            'Key' => $fileIdentifier
+        ])->willReturn($result);
+        $info = $this->driver->getFileInfoByIdentifier($fileIdentifier);
+
+        $this->assertEquals(
+            ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'],
+            array_keys($info),
+            '',
+            0.0,
+            10,
+            true // set this to true
+        );
+        $this->assertEquals(basename($fileIdentifier), $info['name']);
+        $this->assertEquals($fileIdentifier, $info['identifier']);
+        $this->assertEquals($lastModifiedDateTime->getTimestamp(), $info['ctime']);
+        $this->assertEquals($lastModifiedDateTime->getTimestamp(), $info['mtime']);
+        $this->assertEquals(sha1('/' . $fileIdentifier), $info['identifier_hash']);
+        $this->assertEquals(sha1('/' . dirname($fileIdentifier)), $info['folder_hash']);
+        $this->assertEquals('youtube', $info['extension']);
+        $this->assertEquals('video/youtube', $info['mimetype']);
+        $this->assertEquals(12345, $info['size']);
+        $this->assertEquals($this->driver->getStorageUid(), $info['storage']);
     }
 }

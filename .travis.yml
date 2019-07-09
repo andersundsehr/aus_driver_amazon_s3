@@ -1,5 +1,7 @@
 language: php
 
+sudo: true
+
 matrix:
   allow_failures:
     - php: nightly
@@ -16,14 +18,20 @@ matrix:
 
 cache:
   directories:
-    - .composer/cache
+    - $HOME/.composer/cache
 
-before_install:
-  - alias composer=composer\ --no-interaction && composer selfupdate
-
-install:
-  - travis_retry composer install --no-progress --profile --no-scripts --no-suggest $ignorePlatformReqs
+before_script:
+  - Build/Scripts/runTests.sh -s composerInstall -p $TRAVIS_PHP_VERSION
 
 script:
-   - composer test
-   - .Build/bin/grumphp run
+  - >
+    echo "Running composer validate"
+    Build/Scripts/runTests.sh -s composerValidate -p $TRAVIS_PHP_VERSION
+  - >
+    echo "Running unit tests";
+    Build/Scripts/runTests.sh -s unit -p $TRAVIS_PHP_VERSION
+  - >
+    echo "Running php lint";
+    Build/Scripts/runTests.sh -s lint -p $TRAVIS_PHP_VERSION
+  - >
+    .Build/bin/grumphp run

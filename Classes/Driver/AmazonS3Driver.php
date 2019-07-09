@@ -18,6 +18,7 @@ use Aws\S3\StreamWrapper;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -191,10 +192,24 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * loadExternalClasses
+     * @throws \Exception
      */
     public static function loadExternalClasses()
     {
-        if (!Bootstrap::usesComposerClassLoading() && !function_exists('Aws\\manifest')) {
+        $loadSdk = false;
+        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '9.4.0') === -1) {
+            // Backwards compatibility: for TYPO3 versions lower than 9.0
+            $loadSdk = !Bootstrap::usesComposerClassLoading() && !function_exists('Aws\\manifest');
+        } elseif (version_compare(VersionNumberUtility::getNumericTypo3Version(), '10.0.0') === -1) {
+            // Backwards compatibility: for TYPO3 versions lower than 10.0
+            $loadSdk = !Environment::isComposerMode() && !function_exists('Aws\\manifest');
+        } else {
+            // Throw an exception if composer mode is not enabled with TYPO3 10 or higher
+            if (!Environment::isComposerMode()) {
+                throw new \Exception('Composer mode is not supported for TYPO3 version 10 or higher');
+            }
+        }
+        if ($loadSdk) {
             require_once(GeneralUtility::getFileAbsFileName('EXT:' . self::EXTENSION_KEY . '/Resources/Private/PHP/Aws/aws-autoloader.php'));
         }
     }

@@ -3,35 +3,30 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
 
 /***
  *
- * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ * This file is part of an extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2017 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use AUS\AusDriverAmazonS3\Signal\FileIndexRepository;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 
 /**
  * Class FileIndexRepositoryTest
  *
- * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
+ * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @package AUS\AusDriverAmazonS3\Tests\Unit\Signal
  */
 class FileIndexRepositoryTest extends UnitTestCase
 {
-    /**
-     * @var array
-     */
-    protected $testFilesToDelete = [];
-
     /**
      * @test
      */
@@ -44,7 +39,7 @@ class FileIndexRepositoryTest extends UnitTestCase
         $extractor = $this->prophesize(Extractor::class);
         $extractor->getImageDimensionsOfRemoteFile($file)->willReturn(null);
 
-        $mock = $this->getMock(FileIndexRepository::class, ['getStorage', 'getExtractor', 'getMetaDataRepository']);
+        $mock = $this->getMockBuilder(FileIndexRepository::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
         $mock->expects($this->exactly(1))->method('getStorage')->willReturn($storage->reveal());
         $mock->expects($this->exactly(1))->method('getExtractor')->willReturn($extractor->reveal());
         $mock->recordUpdatedOrCreated([
@@ -66,7 +61,7 @@ class FileIndexRepositoryTest extends UnitTestCase
         $extractor = $this->prophesize(Extractor::class);
         $extractor->getImageDimensionsOfRemoteFile($file)->willReturn(null);
 
-        $mock = $this->getMock(FileIndexRepository::class, ['getStorage', 'getExtractor', 'getMetaDataRepository']);
+        $mock = $this->getMockBuilder(FileIndexRepository::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($storage->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($extractor->reveal());
         $mock->recordUpdatedOrCreated([
@@ -88,7 +83,7 @@ class FileIndexRepositoryTest extends UnitTestCase
         $extractor = $this->prophesize(Extractor::class);
         $extractor->getImageDimensionsOfRemoteFile($file)->willReturn(null);
 
-        $mock = $this->getMock(FileIndexRepository::class, ['getStorage', 'getExtractor', 'getMetaDataRepository']);
+        $mock = $this->getMockBuilder(FileIndexRepository::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($storage->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($extractor->reveal());
         $mock->recordUpdatedOrCreated([

@@ -3,34 +3,29 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Index;
 
 /***
  *
- * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ * This file is part of an extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2017 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ExtractorTest
  *
- * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
+ * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @package AUS\AusDriverAmazonS3\Tests\Unit\Index
  */
 class ExtractorTest extends UnitTestCase
 {
-    /**
-     * @var array
-     */
-    protected $testFilesToDelete = [];
-
     /**
      * @var Extractor
      */
@@ -149,7 +144,7 @@ class ExtractorTest extends UnitTestCase
     public function testExtractMetaDataIfRequired()
     {
         $file = $this->prophesize(File::class);
-        $mock = $this->getMock(Extractor::class, ['getImageDimensionsOfRemoteFile']);
+        $mock = $this->getMockBuilder(Extractor::class)->setMethods(['getImageDimensionsOfRemoteFile'])->getMock();
         $mock->expects($this->exactly(1))->method('getImageDimensionsOfRemoteFile')->willReturn([200, 100]);
         $this->assertEquals(
             [
@@ -166,7 +161,7 @@ class ExtractorTest extends UnitTestCase
     public function testExtractNoMetaDataIfNotRequired()
     {
         $file = $this->prophesize(File::class);
-        $mock = $this->getMock(Extractor::class, ['getImageDimensionsOfRemoteFile']);
+        $mock = $this->getMockBuilder(Extractor::class)->setMethods(['getImageDimensionsOfRemoteFile'])->getMock();
         $mock->expects($this->exactly(0))->method('getImageDimensionsOfRemoteFile')->willReturn([200, 100]);
         $result = $mock->extractMetaData(
             $file->reveal(),

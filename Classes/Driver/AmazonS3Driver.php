@@ -12,6 +12,7 @@ namespace AUS\AusDriverAmazonS3\Driver;
  *
  ***/
 
+use AUS\AusDriverAmazonS3\S3Adapter\MetaInfoDownloadAdapter;
 use AUS\AusDriverAmazonS3\S3Adapter\MultipartUploaderAdapter;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
@@ -1013,6 +1014,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         return $this->capabilities;
     }
 
+    /**
+     * @return int
+     */
+    public function getStorageUid(): int
+    {
+        return $this->storageUid;
+    }
+
 
 
 
@@ -1186,7 +1195,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                     'Bucket' => $this->configuration['bucket'],
                     'Key' => $identifier
                 ])->toArray();
-                $this->metaInfoCache[$identifier] = $this->getMetaInfoFromResponse($identifier, $metadata);
+                $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
+                $this->metaInfoCache[$identifier] = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
             } catch (\Exception $exc) {
                 // Ignore file not found errors
                 if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
@@ -1198,37 +1208,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
         }
         return $this->metaInfoCache[$identifier];
-    }
-
-    /**
-     * @param string $identifier
-     * @param array $response
-     * @return array
-     */
-    protected function getMetaInfoFromResponse($identifier, $response)
-    {
-        /** @var \Aws\Api\DateTimeResult $lastModified */
-        $lastModified = $response['LastModified'];
-        $lastModifiedUnixTimestamp = $lastModified->getTimestamp();
-
-        $metaInfo = [
-            'name' => basename($identifier),
-            'identifier' => $identifier,
-            'ctime' => $lastModifiedUnixTimestamp,
-            'mtime' => $lastModifiedUnixTimestamp,
-            'identifier_hash' => $this->hashIdentifier($identifier),
-            'folder_hash' => $this->hashIdentifier(PathUtility::dirname($identifier)),
-            'storage' => $this->storageUid
-        ];
-        if (!empty($response['ContentType'])) {
-            $metaInfo['mimetype'] = $response['ContentType'];
-        }
-        if (!empty($response['ContentLength'])) {
-            $metaInfo['size'] = (int)$response['ContentLength'];
-        } elseif (!empty($response['size'])) {
-            $metaInfo['size'] = (int)$response['size'];
-        }
-        return $metaInfo;
     }
 
     /**
@@ -1500,12 +1479,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         $result = $this->getCachedResponse('listObjectsV2', array_merge_recursive($args, $overrideArgs));
 
         // Cache the given meta info
+        $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
         if (is_array($result['Contents'])) {
             foreach ($result['Contents'] as $content) {
                 $fileIdentifier = $identifier . $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
                 if (!isset($this->metaInfoCache[$fileIdentifier])) {
-                    $this->metaInfoCache[$fileIdentifier] = $this->getMetaInfoFromResponse($fileIdentifier, $content);
+                    $this->metaInfoCache[$fileIdentifier] = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content);
                 }
             }
         }

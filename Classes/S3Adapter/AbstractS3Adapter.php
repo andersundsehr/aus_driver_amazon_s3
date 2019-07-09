@@ -31,7 +31,7 @@ class AbstractS3Adapter
      * AbstractS3Adapter constructor.
      * @param S3Client $s3Client
      */
-    public function __construct(S3Client $s3Client)
+    public function __construct(S3Client $s3Client = null)
     {
         $this->s3Client = $s3Client;
     }

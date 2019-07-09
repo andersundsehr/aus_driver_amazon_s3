@@ -3,12 +3,12 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
 
 /***
  *
- * This file is part of an "anders und sehr" Extension for TYPO3 CMS.
+ * This file is part of an extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2017 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
@@ -16,22 +16,17 @@ use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use Aws\Api\DateTimeResult;
 use Aws\Result;
 use Aws\S3\S3Client;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * Class AmazonS3DriverTest
  *
- * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
+ * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @package AUS\AusDriverAmazonS3\Tests\Unit\Driver
  */
 class AmazonS3DriverTest extends UnitTestCase
 {
-    /**
-     * @var array
-     */
-    protected $testFilesToDelete = [];
-
     /**
      * @var AmazonS3Driver
      */
@@ -60,17 +55,10 @@ class AmazonS3DriverTest extends UnitTestCase
     public function setUp()
     {
         parent::setUp();
-        if (!defined('TYPO3_MODE')) {
-            define('TYPO3_MODE', 'BE');
-        }
-        if (!defined('TYPO3_OS')) {
-            define('TYPO3_OS', '');
-        }
-        if (!defined('TYPO3_version')) {
-            // @codingStandardsIgnoreLine
-            define('TYPO3_version', '8.7.10');
-        }
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['systemLocale'] = '';
+        \PHPUnit\Framework\Error\Deprecated::$enabled = false;
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [];
+
         $this->s3Client = $this->prophesize(S3Client::class);
         $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal());
         $this->driver->initialize();

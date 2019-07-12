@@ -5,9 +5,9 @@
 ---
 conf.py:
   copyright: 2019
-  project: Amazon S3 FAL Driver
-  version: 1.8
-  release: 1.8.0
+  project: Amazon AWS S3 FAL driver (CDN)
+  version: 1.9
+  release: 1.9.0
   latex_documents:
   - - Index
     - aus_driver_amazon_s3.tex

@@ -8,7 +8,7 @@ namespace AUS\AusDriverAmazonS3\Signal;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2017 Markus Hölzle <m.hoelzle@andersundsehr.com>, anders und sehr GmbH
+ * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  * Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
  *
  ***/
@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Signals for metadata update
  *
- * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
+ * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @author Stefan Lamm <s.lamm@andersundsehr.com>
  * @package AUS\AusDriverAmazonS3\Signal
  */

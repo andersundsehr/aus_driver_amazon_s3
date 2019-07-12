@@ -42,7 +42,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * Class AmazonS3Driver
  * Driver for Amazon Simple Storage Service (S3)
  *
- * @author Markus Hölzle <m.hoelzle@andersundsehr.com>
+ * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @package AUS\AusDriverAmazonS3\Driver
  */
 class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver

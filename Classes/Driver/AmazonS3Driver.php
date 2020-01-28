@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Driver;
 
 /***
  *
@@ -11,6 +10,8 @@ namespace AUS\AusDriverAmazonS3\Driver;
  * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Driver;
 
 use AUS\AusDriverAmazonS3\S3Adapter\MetaInfoDownloadAdapter;
 use AUS\AusDriverAmazonS3\S3Adapter\MultipartUploaderAdapter;
@@ -332,7 +333,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (substr($identifier, -1) !== '/') {
             $identifier .= '/';
         }
-        return $this->objectExists($identifier);
+        $v = $this->s3Client->listObjectsV2([
+            'Bucket' => $this->configuration['bucket'],
+            'Prefix' => $identifier,
+            'MaxKeys' => 1
+        ]);
+        $contents = $v->get('Contents') ?: [];
+        return count($contents) !== 0;
     }
 
     /**
@@ -860,12 +867,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
                 $fileName = basename($fileCandidate['Key']);
                 // check filter
-                if (!$this->applyFilterMethodsToDirectoryItem(
-                    $filenameFilterCallbacks,
-                    $fileName,
-                    $fileCandidate['Key'],
-                    $folderIdentifier
-                )
+                if (
+                    !$this->applyFilterMethodsToDirectoryItem(
+                        $filenameFilterCallbacks,
+                        $fileName,
+                        $fileCandidate['Key'],
+                        $folderIdentifier
+                    )
                 ) {
                     continue;
                 }
@@ -1049,7 +1057,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             $baseUrl .= $this->configuration['bucket'] . '.s3.amazonaws.com';
         }
 
-        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing']) &&
+        if (
+            isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing']) &&
             is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing'])
         ) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing'] as $funcName) {
@@ -1113,7 +1122,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             $configuration['signature_version'] = $this->configuration['signature_version'];
         }
 
-        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing']) &&
+        if (
+            isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing']) &&
             is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'])
         ) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing'] as $funcName) {
@@ -1556,7 +1566,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param array $objects S3 Objects as arrays with at least the Key field set
      * @return void
      */
-    protected function sortObjectsForNestedFolderOperations(array& $objects)
+    protected function sortObjectsForNestedFolderOperations(array &$objects)
     {
         usort($objects, function ($object1, $object2) {
             if (substr($object1['Key'], -1) === '/') {

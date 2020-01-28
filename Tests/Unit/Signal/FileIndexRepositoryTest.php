@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
 
 /***
  *
@@ -11,6 +10,8 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
  * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;

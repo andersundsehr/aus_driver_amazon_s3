@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Signal;
 
 /***
  *
@@ -12,6 +11,8 @@ namespace AUS\AusDriverAmazonS3\Signal;
  * Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Signal;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;

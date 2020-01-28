@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
 
 /***
  *
@@ -11,6 +10,8 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
  * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use Aws\Api\DateTimeResult;

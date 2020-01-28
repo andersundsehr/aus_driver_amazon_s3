@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Index;
 
 /***
  *
@@ -12,6 +11,8 @@ namespace AUS\AusDriverAmazonS3\Index;
  * Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Index;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Resource\File;

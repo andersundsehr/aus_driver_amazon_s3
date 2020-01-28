@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\S3Adapter;
 
 /***
  *
@@ -11,6 +10,8 @@ namespace AUS\AusDriverAmazonS3\S3Adapter;
  * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\S3Adapter;
 
 use Aws\S3\S3Client;
 

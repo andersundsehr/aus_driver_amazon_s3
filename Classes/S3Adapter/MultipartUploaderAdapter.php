@@ -23,6 +23,8 @@ use Aws\S3\MultipartUploader;
  */
 class MultipartUploaderAdapter extends AbstractS3Adapter
 {
+    const MAX_RETRIES = 10;
+
     /**
      * @param string $localFilePath File path and name on local storage
      * @param string $targetFilePath File path and name on target S3 bucket
@@ -45,6 +47,7 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
         ]);
 
         // Upload and recover from errors
+        $errorCount = 0;
         do {
             try {
                 $result = $uploader->upload();
@@ -52,8 +55,9 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
                 $uploader = new MultipartUploader($this->s3Client, $localFilePath, [
                     'state' => $e->getState(),
                 ]);
+                $errorCount++;
             }
-        } while (!isset($result));
+        } while (!isset($result) && $errorCount < self::MAX_RETRIES);
 
         // Abort a multipart upload if failed
         try {

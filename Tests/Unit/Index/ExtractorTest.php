@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Tests\Unit\Index;
 
 /***
  *
@@ -8,15 +7,18 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Index;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
+namespace AUS\AusDriverAmazonS3\Tests\Unit\Index;
+
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Class ExtractorTest
@@ -24,8 +26,10 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @package AUS\AusDriverAmazonS3\Tests\Unit\Index
  */
-class ExtractorTest extends UnitTestCase
+class ExtractorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Extractor
      */
@@ -34,7 +38,7 @@ class ExtractorTest extends UnitTestCase
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->extractor = new Extractor();

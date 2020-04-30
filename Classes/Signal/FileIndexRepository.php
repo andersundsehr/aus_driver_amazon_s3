@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Signal;
 
 /***
  *
@@ -8,16 +7,19 @@ namespace AUS\AusDriverAmazonS3\Signal;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
  * Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Signal;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -37,7 +39,7 @@ class FileIndexRepository
     public function recordUpdatedOrCreated($data)
     {
         if ($data['type'] === File::FILETYPE_IMAGE) {
-            $storage = $this->getStorage($data['storage']);
+            $storage = $this->getStorage((int) $data['storage']);
 
             // only process on our driver type where data was missing
             if ($storage->getDriverType() !== AmazonS3Driver::DRIVER_TYPE) {
@@ -60,11 +62,11 @@ class FileIndexRepository
 
     /**
      * @param int $uid
-     * @return \TYPO3\CMS\Core\Resource\ResourceStorage
+     * @return ResourceStorage
      */
-    protected function getStorage($uid)
+    protected function getStorage(int $uid): ResourceStorage
     {
-        return ResourceFactory::getInstance()->getStorageObject($uid);
+        return GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($uid);
     }
 
     /**

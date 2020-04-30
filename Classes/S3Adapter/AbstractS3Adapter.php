@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\S3Adapter;
 
 /***
  *
@@ -8,9 +7,11 @@ namespace AUS\AusDriverAmazonS3\S3Adapter;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\S3Adapter;
 
 use Aws\S3\S3Client;
 

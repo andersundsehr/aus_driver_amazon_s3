@@ -9,12 +9,13 @@
   },
   "license": "LGPL-3.0-or-later",
   "require": {
-    "typo3/cms-core": "^8.7.8 || ^9.5",
-    "aws/aws-sdk-php": "^3.106"
+    "typo3/cms-core": "^9.5.0 || ^10.4",
+    "aws/aws-sdk-php": "^3.136"
   },
   "require-dev": {
     "pluswerk/grumphp-config": "2.*",
-    "typo3/testing-framework": "^2.0 || ^4.1"
+    "typo3/testing-framework": "^4.1 || ^6.2",
+    "phpspec/prophecy-phpunit": "^2.0"
   },
   "autoload": {
     "psr-4": {
@@ -40,7 +41,7 @@
       "TYPO3\\TestingFramework\\Composer\\ExtensionTestEnvironment::prepare"
     ],
     "test": [
-      "./Build/Scripts/runTests.sh -s composerInstall && ./Build/Scripts/runTests.sh -s composerValidate && ./Build/Scripts/runTests.sh -s unit && ./Build/Scripts/runTests.sh -s lint"
+      "./Build/Scripts/runTests.sh -p '7.3' -s composerInstall && ./Build/Scripts/runTests.sh -p '7.3' -s composerValidate && ./Build/Scripts/runTests.sh -p '7.3' -s unit && ./Build/Scripts/runTests.sh -p '7.3' -s lint"
     ]
   },
   "extra": {

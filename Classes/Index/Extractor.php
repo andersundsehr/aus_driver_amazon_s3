@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Index;
 
 /***
  *
@@ -8,10 +7,12 @@ namespace AUS\AusDriverAmazonS3\Index;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
  * Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Index;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Resource\File;

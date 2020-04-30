@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
 
 /***
  *
@@ -8,15 +7,18 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use AUS\AusDriverAmazonS3\Signal\FileIndexRepository;
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 
@@ -26,8 +28,10 @@ use TYPO3\CMS\Core\Resource\ResourceStorage;
  * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @package AUS\AusDriverAmazonS3\Tests\Unit\Signal
  */
-class FileIndexRepositoryTest extends UnitTestCase
+class FileIndexRepositoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @test
      */

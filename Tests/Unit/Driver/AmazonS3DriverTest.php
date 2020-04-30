@@ -1,5 +1,4 @@
 <?php
-namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
 
 /***
  *
@@ -8,15 +7,18 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2019 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
+
+namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use Aws\Api\DateTimeResult;
 use Aws\Result;
 use Aws\S3\S3Client;
-use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 /**
@@ -25,8 +27,10 @@ use Prophecy\Prophecy\ObjectProphecy;
  * @author Markus Hölzle <typo3@markus-hoelzle.de>
  * @package AUS\AusDriverAmazonS3\Tests\Unit\Driver
  */
-class AmazonS3DriverTest extends UnitTestCase
+class AmazonS3DriverTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var AmazonS3Driver
      */
@@ -52,25 +56,15 @@ class AmazonS3DriverTest extends UnitTestCase
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        \PHPUnit\Framework\Error\Deprecated::$enabled = false;
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [];
 
         $this->s3Client = $this->prophesize(S3Client::class);
         $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal());
         $this->driver->setStorageUid(42);
         $this->driver->initialize();
-    }
-
-    /**
-     * @test
-     */
-    public function testConstructorConfigurationParameter()
-    {
-        $driver = new AmazonS3Driver($this->testConfiguration);
-        $this->assertAttributeEquals($this->testConfiguration, 'configuration', $driver);
     }
 
     /**
@@ -118,20 +112,17 @@ class AmazonS3DriverTest extends UnitTestCase
             'ContentType' => 'image/png',
             'ContentLength' => 123,
         ]);
+        $expectedInfoKeys = ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'];
         $this->s3Client->headObject([
             'Bucket' => $this->testConfiguration['bucket'],
             'Key' => $fileIdentifier
         ])->willReturn($result);
         $info = $this->driver->getFileInfoByIdentifier($fileIdentifier);
+        $infoKeys = array_keys($info);
 
-        $this->assertEquals(
-            ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'],
-            array_keys($info),
-            '',
-            0.0,
-            10,
-            true // set this to true
-        );
+        sort($infoKeys);
+        sort($expectedInfoKeys);
+        $this->assertEquals($expectedInfoKeys, $infoKeys);
         $this->assertEquals(basename($fileIdentifier), $info['name']);
         $this->assertEquals($fileIdentifier, $info['identifier']);
         $this->assertEquals($lastModifiedDateTime->getTimestamp(), $info['ctime']);
@@ -161,7 +152,10 @@ class AmazonS3DriverTest extends UnitTestCase
             'Key' => $fileIdentifier
         ])->willReturn($result);
         $info = $this->driver->getFileInfoByIdentifier($fileIdentifier, $properties);
-        $this->assertEquals($properties, array_keys($info), '', 0.0, 10, true);
+        $infoKeys = array_keys($info);
+        sort($infoKeys);
+        sort($properties);
+        $this->assertEquals($properties, $infoKeys);
     }
 
 
@@ -177,20 +171,17 @@ class AmazonS3DriverTest extends UnitTestCase
             'ContentType' => 'text/plain',
             'ContentLength' => 12345,
         ]);
+        $expectedInfoKeys = ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'];
         $this->s3Client->headObject([
             'Bucket' => $this->testConfiguration['bucket'],
             'Key' => $fileIdentifier
         ])->willReturn($result);
         $info = $this->driver->getFileInfoByIdentifier($fileIdentifier);
+        $infoKeys = array_keys($info);
 
-        $this->assertEquals(
-            ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'],
-            array_keys($info),
-            '',
-            0.0,
-            10,
-            true // set this to true
-        );
+        sort($infoKeys);
+        sort($expectedInfoKeys);
+        $this->assertEquals($expectedInfoKeys, $infoKeys);
         $this->assertEquals(basename($fileIdentifier), $info['name']);
         $this->assertEquals($fileIdentifier, $info['identifier']);
         $this->assertEquals($lastModifiedDateTime->getTimestamp(), $info['ctime']);

@@ -28,7 +28,6 @@
     }
   },
   "replace": {
-    "aus_driver_amazon_s3": "self.version",
     "typo3-ter/aus_driver_amazon_s3": "self.version",
     "typo3-ter/aus-driver-amazon-s3": "self.version"
   },

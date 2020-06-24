@@ -209,7 +209,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
         }
         if ($loadSdk) {
-            require_once(GeneralUtility::getFileAbsFileName('EXT:' . self::EXTENSION_KEY . '/Resources/Private/PHP/Aws/aws-autoloader.php'));
+            require \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::EXTENSION_KEY) . '/Resources/Private/PHP/vendor/autoload.php';
         }
     }
 

@@ -1197,7 +1197,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             return true;
         }
         $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
-        return count($objects) > 0;
+        return is_array($objects['Contents']) ? count($objects['Contents']) > 0 : false;
     }
 
     /**

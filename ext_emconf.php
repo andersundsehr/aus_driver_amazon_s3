@@ -12,7 +12,7 @@ $EM_CONF[$_EXTKEY] = [
     'clearcacheonload' => false,
     'author' => 'Markus Hölzle',
     'author_email' => 'typo3@markus-hoelzle.de',
-    'author_company' => 'anders und sehr GmbH',
+    'author_company' => 'different.technology',
     'constraints' =>
         [
             'depends' =>

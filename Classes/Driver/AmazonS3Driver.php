@@ -322,7 +322,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (substr($identifier, -1) !== '/') {
             $identifier .= '/';
         }
-        return $this->objectExists($identifier);
+        return $this->prefixExists($identifier);
     }
 
     /**
@@ -344,7 +344,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function folderExistsInFolder($folderName, $folderIdentifier)
     {
-        return $this->objectExists($folderIdentifier . $folderName . '/');
+        return $this->prefixExists($folderIdentifier . $folderName . '/');
     }
 
     /**
@@ -1179,9 +1179,25 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param string $identifier
      * @return bool
      */
-    protected function objectExists($identifier)
+    protected function objectExists(string $identifier): bool
     {
         return $this->getMetaInfo($identifier) !== null;
+    }
+
+    /**
+     * Checks if an prefix exists.
+     * This is necessary because a folder is not an object for S3.
+     *
+     * @param string $identifier
+     * @return bool
+     */
+    protected function prefixExists(string $identifier): bool
+    {
+        if ($this->objectExists($identifier)) {
+            return true;
+        }
+        $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
+        return count($objects) > 0;
     }
 
     /**

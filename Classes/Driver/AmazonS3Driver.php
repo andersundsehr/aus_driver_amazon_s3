@@ -387,13 +387,21 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         } else { // upload local file
             $this->normalizeIdentifier($targetIdentifier);
 
-            $multipartUploadAdapter = GeneralUtility::makeInstance(MultipartUploaderAdapter::class, $this->s3Client);
-            $multipartUploadAdapter->upload(
-                $localFilePath,
-                $targetIdentifier,
-                $this->configuration['bucket'],
-                $this->getCacheControl($targetIdentifier)
-            );
+            if (filesize($localFilePath) === 0) { // Multipart uploader would fail to upload empty files
+                $this->s3Client->upload(
+                    $this->configuration['bucket'],
+                    $targetIdentifier,
+                    ''
+                );
+            } else {
+                $multipartUploadAdapter = GeneralUtility::makeInstance(MultipartUploaderAdapter::class, $this->s3Client);
+                $multipartUploadAdapter->upload(
+                    $localFilePath,
+                    $targetIdentifier,
+                    $this->configuration['bucket'],
+                    $this->getCacheControl($targetIdentifier)
+                );
+            }
 
             if ($removeOriginal) {
                 unlink($localFilePath);

@@ -2,11 +2,12 @@ imports:
   - { resource: .Build/vendor/pluswerk/grumphp-config/grumphp.yml }
 
 parameters:
-  bin_dir: ./.Build/bin
-  ascii:
-    failed: ./.Build/vendor/pluswerk/grumphp-config/logo.txt
-    succeeded: ./.Build/vendor/pluswerk/grumphp-config/logo.txt
   convention.yamllint_ignore_pattern:
     - "Documentation/Settings.yml"
   convention.phpcslint_ignore_pattern:
     - "Resources/Private/PHP/*"
+grumphp:
+  bin_dir: ./.Build/bin
+  ascii:
+    failed: ./.Build/vendor/pluswerk/grumphp-config/logo.txt
+    succeeded: ./.Build/vendor/pluswerk/grumphp-config/logo.txt

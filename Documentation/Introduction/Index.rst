@@ -15,9 +15,9 @@ You can create a file storage which allows you to upload/download and link the f
 
 Requires TYPO3 CMS 9.5 or higher
 
-German blog post: `TYPO3 CDN with Amazon S3 <http://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn>`_
+German blog post: `TYPO3 CDN with AWS S3 <http://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn>`_
 
-Issue tracking: `GitHub Issues: Amazon S3 FAL Driver <https://github.com/andersundsehr/aus_driver_amazon_s3/issues>`_
+Issue tracking: `GitHub Issues: AWS S3 FAL Driver <https://github.com/andersundsehr/aus_driver_amazon_s3/issues>`_
 
 
 .. figure:: ../Images/aus_driver_amazon_s3-filelist.png

@@ -14,7 +14,7 @@ Requires TYPO3 9.5 - 10.4
 
 German blog post: [TYPO3 CDN with Amazon S3](https://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn)
 
-Issue tracking: [GitHub: Amazon S3 FAL Driver](https://github.com/andersundsehr/aus_driver_amazon_s3/issues)
+Issue tracking: [GitHub: AWS S3 FAL Driver](https://github.com/andersundsehr/aus_driver_amazon_s3/issues)
 
 Packagist: [andersundsehr/aus-driver-amazon-s3](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
 
@@ -29,7 +29,7 @@ Packagist: [andersundsehr/aus-driver-amazon-s3](https://packagist.org/packages/a
 > composer require andersundsehr/aus-driver-amazon-s3
 > ```
 
-1.  Add a new file storage with the “Amazon S3” driver to root page (pid = 0).
+1.  Add a new file storage with the “AWS S3” driver to root page (pid = 0).
 2.  Configure your file storage
 
 ## Configuration
@@ -132,7 +132,7 @@ There is a default setting to set the cache control header's max age for all fil
 $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_driver_amazon_s3']['getCacheControl'][] = 'Vendor\ExtensionName\Hooks\AmazonS3DriverHook->getCacheControl';
 ```
 
-You can modify the parameter "cacheControl" as you wish. Please Notice: Amazon S3 set the cache header only once - while uploading / creating or copy the file.
+You can modify the parameter "cacheControl" as you wish. Please Notice: AWS S3 set the cache header only once - while uploading / creating or copy the file.
 
 ### More
 

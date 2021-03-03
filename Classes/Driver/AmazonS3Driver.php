@@ -1443,6 +1443,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     protected function getSubObjects($identifier, $recursive = true, $filter = self::FILTER_ALL)
     {
         $result = $this->getListObjects($identifier);
+        if (!is_array($result['Contents'])) {
+            return [];
+        }
         return array_filter($result['Contents'], function (&$object) use ($identifier, $recursive, $filter) {
             return (
                 $object['Key'] !== $identifier &&
@@ -1460,7 +1463,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Recursive function to get all objects of a folder
-     * It is recursive because Amazon S3 lists max 1000 objects by one request
+     * It is recursive because AWS S3 lists max 1000 objects by one request
      *
      * @param string $identifier
      * @param array $overrideArgs

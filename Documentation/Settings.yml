@@ -11,7 +11,7 @@ conf.py:
   latex_documents:
   - - Index
     - aus_driver_amazon_s3.tex
-    - Amazon S3 FAL Driver
+    - AWS S3 FAL Driver
     - Markus Hölzle
     - manual
   latex_elements:

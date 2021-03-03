@@ -7,7 +7,7 @@ if (!defined('TYPO3_MODE')) {
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['registeredDrivers'][\AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::DRIVER_TYPE] = [
     'class' => \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::class,
     'flexFormDS' => 'FILE:EXT:' . \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::EXTENSION_KEY . '/Configuration/FlexForm/AmazonS3DriverFlexForm.xml',
-    'label' => 'Amazon S3',
+    'label' => 'AWS S3',
     'shortName' => \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::DRIVER_TYPE,
 ];
 

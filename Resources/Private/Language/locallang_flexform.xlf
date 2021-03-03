@@ -4,19 +4,19 @@
 		<header/>
 		<body>
 			<trans-unit id="driverConfiguration.region">
-				<source>Amazon S3: Region</source>
+				<source>AWS S3: Region</source>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.bucket">
-				<source>Amazon S3: Bucket</source>
+				<source>AWS S3: Bucket</source>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.key">
-				<source>Amazon S3: Key</source>
+				<source>AWS S3: Key</source>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.secretKey">
-				<source>Amazon S3: Secret key</source>
+				<source>AWS S3: Secret key</source>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.publicBaseUrl">
-				<source>Amazon S3: Public base URL (optional)</source>
+				<source>AWS S3: Public base URL (optional)</source>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.cacheHeaderDuration">
 				<source>Cache header: max age (in seconds, optional)</source>

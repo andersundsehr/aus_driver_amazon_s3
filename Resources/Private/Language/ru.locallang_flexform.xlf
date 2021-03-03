@@ -4,19 +4,19 @@
 		<header/>
 		<body>
 			<trans-unit id="driverConfiguration.region">
-				<target>Amazon S3: Регион (Region)</target>
+				<target>AWS S3: Регион (Region)</target>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.bucket">
-				<target>Amazon S3: Раздел (Bucket)</target>
+				<target>AWS S3: Раздел (Bucket)</target>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.key">
-				<target>Amazon S3: Ключ (Key)</target>
+				<target>AWS S3: Ключ (Key)</target>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.secretKey">
-				<target>Amazon S3: Секретный Ключ (Secret Key)</target>
+				<target>AWS S3: Секретный Ключ (Secret Key)</target>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.publicBaseUrl">
-				<target>Amazon S3: Публичный базовый URL (необязательно)</target>
+				<target>AWS S3: Публичный базовый URL (необязательно)</target>
 			</trans-unit>
 			<trans-unit id="driverConfiguration.protocol">
 				<target>Протокол</target>

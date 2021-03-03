@@ -9,7 +9,7 @@
 Installation
 ------------
 
-Add a new file storage with the "Amazon S3" driver to root page (pid = 0).
+Add a new file storage with the "AWS S3" driver to root page (pid = 0).
 
 
 .. figure:: ../../Images/aus_driver_amazon_s3-list.png

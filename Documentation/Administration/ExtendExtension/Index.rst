@@ -62,9 +62,9 @@ There is a default setting to set the cache control header's max age for all fil
 
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['aus_driver_amazon_s3']['getCacheControl'][] = 'Vendor\ExtensionName\Hooks\AmazonS3DriverHook->getCacheControl';
 
-You can modify the parameter "cacheControl" as you wish. Please Notice: Amazon S3 set the cache header only once - while uploading / creating or copy the file.
+You can modify the parameter "cacheControl" as you wish. Please Notice: AWS S3 set the cache header only once - while uploading / creating or copy the file.
 
 More features:
 ^^^^^^^^^^^^^^
 
-If you wish other hooks - don't be shy: `TYPO3 Forge: Amazon S3 FAL Driver <http://forge.typo3.org/projects/extension-aus_driver_amazon_s3>`_
+If you wish other hooks - don't be shy: `TYPO3 Forge: AWS S3 FAL Driver <http://forge.typo3.org/projects/extension-aus_driver_amazon_s3>`_

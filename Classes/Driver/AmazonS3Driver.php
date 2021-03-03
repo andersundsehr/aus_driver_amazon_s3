@@ -19,7 +19,6 @@ use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -29,6 +28,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
 use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
@@ -198,18 +198,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public static function loadExternalClasses()
     {
-        $loadSdk = false;
-        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '10.0.0') === -1) {
-            // Backwards compatibility: for TYPO3 versions lower than 10.0
-            $loadSdk = !Environment::isComposerMode() && !function_exists('Aws\\manifest');
-        } else {
-            // Throw an exception if composer mode is not enabled with TYPO3 10 or higher
-            if (!Environment::isComposerMode()) {
-                throw new \Exception('Composer mode is not supported for TYPO3 version 10 or higher');
-            }
-        }
+        // Backwards compatibility: for TYPO3 versions lower than 10.0
+        $loadSdk = !Environment::isComposerMode() && !function_exists('Aws\\manifest');
         if ($loadSdk) {
-            require \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(self::EXTENSION_KEY) . '/Resources/Private/PHP/vendor/autoload.php';
+            require ExtensionManagementUtility::extPath(self::EXTENSION_KEY) . '/Resources/Private/PHP/vendor/autoload.php';
         }
     }
 
@@ -1124,6 +1116,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         }
 
         if (!$this->s3Client) {
+            if (empty($configuration['region'])) {
+                $configuration['region'] = 'eu-central-1'; // region is required, set default region
+            }
             $this->s3Client = new S3Client($configuration);
             StreamWrapper::register($this->s3Client, $this->streamWrapperProtocol);
         }

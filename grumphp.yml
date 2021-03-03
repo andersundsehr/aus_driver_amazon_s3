@@ -1,12 +1,53 @@
-imports:
-  - { resource: .Build/vendor/pluswerk/grumphp-config/grumphp.yml }
-
 parameters:
-  convention.yamllint_ignore_pattern:
-    - "Documentation/Settings.yml"
-  convention.phpcslint_ignore_pattern:
-    - "Resources/Private/PHP/*"
+  convention.process_timeout: 60
+  convention.security_checker_blocking: true
+  convention.jsonlint_ignore_pattern: []
+  convention.xmllint_ignore_pattern: []
+  convention.yamllint_ignore_pattern: ["Documentation/Settings.yml"]
+  convention.phpcslint_ignore_pattern: []
+  convention.xlifflint_ignore_pattern: ["#typo3conf/l10n/(.*)#"]
 grumphp:
+  stop_on_failure: false
+  hide_circumvention_tip: true
+  ignore_unstaged_changes: false #brocken
+  process_timeout: "%convention.process_timeout%"
   ascii:
     failed: ./.Build/vendor/pluswerk/grumphp-config/logo.txt
     succeeded: ./.Build/vendor/pluswerk/grumphp-config/logo.txt
+  tasks:
+    composer:
+      no_check_publish: true
+      with_dependencies: false
+      strict: false
+    git_commit_message:
+      max_subject_width: 120
+      max_body_width: 120
+      enforce_capitalized_subject: false
+    jsonlint:
+      detect_key_conflicts: true
+      ignore_patterns: "%convention.jsonlint_ignore_pattern%"
+    phpcs:
+      standard: "PSR12"
+      warning_severity: 900000
+      tab_width: 4
+      whitelist_patterns:
+        - "Classes/"
+        - "Configuration/"
+        - "Documentation/"
+        - "Tests/"
+    phplint: ~
+    xmllint:
+      ignore_patterns: "%convention.xmllint_ignore_pattern%"
+    yamllint:
+      ignore_patterns: "%convention.yamllint_ignore_pattern%"
+    xlifflint:
+      ignore_patterns: "%convention.xlifflint_ignore_pattern%"
+    securitychecker:
+      metadata:
+        blocking: "%convention.security_checker_blocking%"
+    plus_bom_fixer:
+      metadata:
+        priority: 1
+  extensions:
+    - PLUS\GrumPHPBomTask\ExtensionLoader
+    - PLUS\GrumPHPXliffTask\ExtensionLoader

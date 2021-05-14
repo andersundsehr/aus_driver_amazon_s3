@@ -9,6 +9,18 @@
 			<trans-unit id="driverConfiguration.bucket">
 				<source>AWS S3: Bucket</source>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.customHost">
+				<source>Custom host name</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.customHost-description">
+				<source>For S3-compatible services like MinIO. "Region" is ignored if this is filled.</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.pathStyleEndpoint">
+				<source>Use path-style endpoint</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.pathStyleEndpoint-description">
+				<source>Put the bucket in the URL path and not the domain. Example: "http://s3.amazonaws.com/bucket" instead of "http://bucket.s3.amazonaws.com".</source>
+			</trans-unit>
 			<trans-unit id="driverConfiguration.key">
 				<source>AWS S3: Key</source>
 			</trans-unit>

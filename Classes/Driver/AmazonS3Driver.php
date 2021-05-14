@@ -1112,6 +1112,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (!empty($this->configuration['signature'])) {
             $configuration['signature_version'] = $this->configuration['signature_version'];
         }
+        if (!empty($this->configuration['customHost'])) {
+            $configuration['endpoint'] = $this->configuration['customHost'];
+        }
+        if (!empty($this->configuration['pathStyleEndpoint'])) {
+            $configuration['use_path_style_endpoint'] = true;
+        }
 
         if (
             isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing']) &&

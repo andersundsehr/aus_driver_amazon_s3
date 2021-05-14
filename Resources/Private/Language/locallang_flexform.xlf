@@ -30,6 +30,9 @@
 			<trans-unit id="driverConfiguration.publicBaseUrl">
 				<source>AWS S3: Public base URL (optional)</source>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.publicBaseUrl-description">
+				<source>Without protocol - "Protocol" setting is used here.</source>
+			</trans-unit>
 			<trans-unit id="driverConfiguration.cacheHeaderDuration">
 				<source>Cache header: max age (in seconds, optional)</source>
 			</trans-unit>

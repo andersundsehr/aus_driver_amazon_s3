@@ -483,7 +483,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         if ($deleteRecursively) {
             $items = $this->getListObjects($folderIdentifier);
-            foreach ($items['Contents'] as $object) {
+            foreach ($items['Contents'] ?? [] as $object) {
                 // Filter the folder itself
                 if ($object['Key'] !== $folderIdentifier) {
                     if ($this->isDir($object['Key'])) {
@@ -747,7 +747,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         );
 
         // Contents will always include the folder itself
-        if (sizeof($result['Contents']) > 1) {
+        if (isset($result['Contents']) && sizeof($result['Contents']) > 1) {
             return false;
         }
         return true;

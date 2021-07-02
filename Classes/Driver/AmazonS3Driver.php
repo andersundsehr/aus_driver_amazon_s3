@@ -1199,11 +1199,16 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function prefixExists(string $identifier): bool
     {
-        if ($this->objectExists($identifier)) {
+        $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
+        if (is_array($objects['Contents']) && count($objects['Contents']) > 0) {
             return true;
         }
-        $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
-        return is_array($objects['Contents']) ? count($objects['Contents']) > 0 : false;
+
+        //Do the HEAD call to work around MinIO speciality/bug:
+        //- empty directories do not appear in ListObjectsV2 call
+        //- empty directories appear in HEAD call
+        //Since empty directories are the exception, we try the HEAD call last
+        return $this->objectExists($identifier);
     }
 
     /**

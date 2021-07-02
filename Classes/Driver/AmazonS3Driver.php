@@ -1513,6 +1513,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
         }
 
+        if (isset($overrideArgs['MaxKeys']) && $overrideArgs['MaxKeys'] <= 1000) {
+            return $result;
+        }
+
         // Amazon S3 lists max 1000 files, so we have to get all recursive
         if ($result['IsTruncated']) {
             $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];

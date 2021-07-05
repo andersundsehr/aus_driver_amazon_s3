@@ -344,7 +344,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function folderExistsInFolder($folderName, $folderIdentifier)
     {
-        return $this->prefixExists($folderIdentifier . $folderName . '/');
+        return $this->prefixExists(rtrim($folderIdentifier, '/') . '/' . $folderName . '/');
     }
 
     /**

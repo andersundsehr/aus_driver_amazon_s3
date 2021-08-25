@@ -1226,6 +1226,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                     'Bucket' => $this->configuration['bucket'],
                     'Key' => $identifier
                 ])->toArray();
+                $this->emitAfterMetadataRequestSignal($identifier, $metadata);
                 $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
                 $this->metaInfoCache[$identifier] = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
             } catch (\Exception $exc) {
@@ -1239,6 +1240,19 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
             }
         }
         return $this->metaInfoCache[$identifier];
+    }
+
+    /**
+     * @param string $fileIdentifier
+     * @param array $temporaryPath
+     */
+    protected function emitAfterMetadataRequestSignal(&$fileIdentifier, &$metadata)
+    {
+        [$fileIdentifier, $metadata] = $this->getSignalSlotDispatcher()->dispatch(
+            self::class,
+            'AfterMetadataRequest',
+            [$fileIdentifier, $metadata]
+        );
     }
 
     /**

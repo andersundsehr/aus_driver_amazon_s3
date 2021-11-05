@@ -117,6 +117,27 @@
 					</config>
 				</TCEforms>
 			</region>
+			<customHost>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost</label>
+					<description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost-description</description>
+					<config>
+						<type>input</type>
+						<renderType>inputLink</renderType>
+						<size>30</size>
+					</config>
+				</TCEforms>
+			</customHost>
+			<pathStyleEndpoint>
+				<TCEforms>
+					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint</label>
+					<description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint-description</description>
+					<config>
+						<type>check</type>
+						<default>0</default>
+					</config>
+				</TCEforms>
+			</pathStyleEndpoint>
 			<key>
 				<TCEforms>
 					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.key</label>
@@ -139,6 +160,7 @@
 			<publicBaseUrl>
 				<TCEforms>
 					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl</label>
+					<description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl-description</description>
 					<config>
 						<type>input</type>
 						<size>30</size>

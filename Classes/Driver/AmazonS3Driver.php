@@ -344,7 +344,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     public function folderExistsInFolder($folderName, $folderIdentifier)
     {
-        return $this->prefixExists($folderIdentifier . $folderName . '/');
+        return $this->prefixExists(rtrim($folderIdentifier, '/') . '/' . $folderName . '/');
     }
 
     /**
@@ -483,7 +483,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
     {
         if ($deleteRecursively) {
             $items = $this->getListObjects($folderIdentifier);
-            foreach ($items['Contents'] as $object) {
+            foreach ($items['Contents'] ?? [] as $object) {
                 // Filter the folder itself
                 if ($object['Key'] !== $folderIdentifier) {
                     if ($this->isDir($object['Key'])) {
@@ -747,7 +747,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         );
 
         // Contents will always include the folder itself
-        if (sizeof($result['Contents']) > 1) {
+        if (isset($result['Contents']) && sizeof($result['Contents']) > 1) {
             return false;
         }
         return true;
@@ -1112,6 +1112,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
         if (!empty($this->configuration['signature'])) {
             $configuration['signature_version'] = $this->configuration['signature_version'];
         }
+        if (!empty($this->configuration['customHost'])) {
+            $configuration['endpoint'] = $this->configuration['customHost'];
+        }
+        if (!empty($this->configuration['pathStyleEndpoint'])) {
+            $configuration['use_path_style_endpoint'] = true;
+        }
 
         if (
             isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeClient-preProcessing']) &&
@@ -1193,11 +1199,16 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      */
     protected function prefixExists(string $identifier): bool
     {
-        if ($this->objectExists($identifier)) {
+        $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
+        if (is_array($objects['Contents']) && count($objects['Contents']) > 0) {
             return true;
         }
-        $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
-        return is_array($objects['Contents']) ? count($objects['Contents']) > 0 : false;
+
+        //Do the HEAD call to work around MinIO speciality/bug:
+        //- empty directories do not appear in ListObjectsV2 call
+        //- empty directories appear in HEAD call
+        //Since empty directories are the exception, we try the HEAD call last
+        return $this->objectExists($identifier);
     }
 
     /**
@@ -1343,7 +1354,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
      * @param string $body
      * @param array $overrideArgs
      */
-    protected function createObject($identifier, $body = ' ', $overrideArgs = [])
+    protected function createObject($identifier, $body = '', $overrideArgs = [])
     {
         $this->normalizeIdentifier($identifier);
         $args = [
@@ -1511,6 +1522,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver
                     $this->metaInfoCache[$fileIdentifier] = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content);
                 }
             }
+        }
+
+        if (isset($overrideArgs['MaxKeys']) && $overrideArgs['MaxKeys'] <= 1000) {
+            return $result;
         }
 
         // Amazon S3 lists max 1000 files, so we have to get all recursive

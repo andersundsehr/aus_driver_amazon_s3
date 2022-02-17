@@ -225,7 +225,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             ->initializeSettings()
             ->initializeClient();
         // Test connection if we are in the edit view of this storage
-        if ($this->isBackend() && !empty($_GET['edit']['sys_file_storage'])) {
+        if ($this->isBackend() && isset($_GET['edit']['sys_file_storage']) && !empty($_GET['edit']['sys_file_storage'])) {
             $this->testConnection();
         }
     }
@@ -944,7 +944,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         } else {
             // search folders on the current level (non-recursive)
             $response = $this->getListObjects($folderIdentifier, ['Delimiter' => '/']);
-            if ($response['CommonPrefixes']) {
+            if (isset($response['CommonPrefixes']) && $response['CommonPrefixes']) {
                 foreach ($response['CommonPrefixes'] as $folderCandidate) {
                     $key = '/' . $folderCandidate['Prefix'];
                     $folderName = basename(rtrim($key, '/'));
@@ -1232,7 +1232,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function prefixExists(string $identifier): bool
     {
         $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
-        if (is_array($objects['Contents']) && count($objects['Contents']) > 0) {
+        if (isset($objects['Contents']) && is_array($objects['Contents']) && count($objects['Contents']) > 0) {
             return true;
         }
 
@@ -1546,7 +1546,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
 
         // Cache the given meta info
         $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-        if (is_array($result['Contents'])) {
+        if (isset($result['Contents']) && is_array($result['Contents'])) {
             foreach ($result['Contents'] as $content) {
                 $fileIdentifier = $identifier . $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
@@ -1564,15 +1564,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if ($result['IsTruncated']) {
             $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
-            if (is_array($moreResults['Contents'])) {
-                if (!is_array($result['Contents'])) {
+            if (isset($moreResults['Contents']) && is_array($moreResults['Contents'])) {
+                if (isset($result['Contents']) === false || !is_array($result['Contents'])) {
                     $result['Contents'] = $moreResults['Contents'];
                 } else {
                     $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
                 }
             }
-            if (is_array($moreResults['CommonPrefixes'])) {
-                if (!is_array($result['CommonPrefixes'])) {
+            if (isset($moreResults['CommonPrefixes']) && is_array($moreResults['CommonPrefixes'])) {
+                if (isset($result['CommonPrefixes']) === false || !is_array($result['CommonPrefixes'])) {
                     $result['CommonPrefixes'] = $moreResults['CommonPrefixes'];
                 } else {
                     $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);

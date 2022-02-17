@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -224,7 +225,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             ->initializeSettings()
             ->initializeClient();
         // Test connection if we are in the edit view of this storage
-        if (TYPO3_MODE === 'BE' && !empty($_GET['edit']['sys_file_storage'])) {
+        if ($this->isBackend() && !empty($_GET['edit']['sys_file_storage'])) {
             $this->testConnection();
         }
     }
@@ -1114,7 +1115,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
                 self::loadExternalClasses();
             }
-            if (TYPO3_MODE === 'FE' && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
+            if ($this->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
                 $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
             }
         }
@@ -1335,7 +1336,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     }
                 } catch (\Exception $exception) {
                     // Show warning in backend list module
-                    if (TYPO3_MODE === 'BE' && $_GET['M'] === 'file_FilelistList') {
+                    if ($this->isBackend() && $_GET['M'] === 'file_FilelistList') {
                         $messageQueue = $this->getMessageQueue();
                         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
                         $message = GeneralUtility::makeInstance(
@@ -1745,5 +1746,19 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $this->signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         }
         return $this->signalSlotDispatcher;
+    }
+
+    private function isBackend(): bool
+    {
+        return (defined('TYPO3_MODE') && TYPO3_MODE === 'BE')
+            || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()
+            ;
+    }
+
+    private function isFrontend(): bool
+    {
+        return (defined('TYPO3_MODE') && TYPO3_MODE === 'FE')
+            || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()
+            ;
     }
 }

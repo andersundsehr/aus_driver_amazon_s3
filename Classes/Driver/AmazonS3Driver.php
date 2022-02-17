@@ -1564,19 +1564,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if ($result['IsTruncated']) {
             $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
-            if (isset($moreResults['Contents']) && is_array($moreResults['Contents'])) {
-                if (isset($result['Contents']) === false || !is_array($result['Contents'])) {
-                    $result['Contents'] = $moreResults['Contents'];
-                } else {
-                    $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
-                }
+            if (isset($moreResults['Contents'])) {
+                $result = $this->mergeArrays($result, $moreResults, 'Contents');
             }
-            if (isset($moreResults['CommonPrefixes']) && is_array($moreResults['CommonPrefixes'])) {
-                if (isset($result['CommonPrefixes']) === false || !is_array($result['CommonPrefixes'])) {
-                    $result['CommonPrefixes'] = $moreResults['CommonPrefixes'];
-                } else {
-                    $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
-                }
+            if (isset($moreResults['CommonPrefixes'])) {
+                $result = $this->mergeArrays($result, $moreResults, 'CommonPrefixes');
             }
         }
         return $result;
@@ -1760,5 +1752,20 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         return (defined('TYPO3_MODE') && TYPO3_MODE === 'FE')
             || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()
             ;
+    }
+
+    private function mergeArrays(array $initialArray, array $additions, string $arrayKey): array
+    {
+        if (isset($additions[$arrayKey]) === false || is_array($additions[$arrayKey]) === false) {
+            return $initialArray;
+        }
+
+        if (isset($initialArray[$arrayKey]) === false || !is_array($initialArray[$arrayKey])) {
+            $initialArray[$arrayKey] = $additions[$arrayKey];
+        } else {
+            $initialArray[$arrayKey] = array_merge($initialArray[$arrayKey], $additions[$arrayKey]);
+        }
+
+        return $initialArray;
     }
 }

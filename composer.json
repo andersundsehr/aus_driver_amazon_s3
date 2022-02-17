@@ -14,7 +14,7 @@
     "aws/aws-sdk-php": "^3.136"
   },
   "require-dev": {
-    "pluswerk/grumphp-config": "^4.0",
+    "pluswerk/grumphp-config": "^5.0",
     "typo3/testing-framework": "^4.1 || ^6.2",
     "phpspec/prophecy-phpunit": "^2.0"
   },

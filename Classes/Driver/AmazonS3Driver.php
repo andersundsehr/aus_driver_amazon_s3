@@ -1179,7 +1179,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $messageQueue = $this->getMessageQueue();
         $localizationPrefix = 'LLL:' . $this->languageFile . ':driverConfiguration.message.';
         try {
-            $this->getFilesInFolder(static::ROOT_FOLDER_IDENTIFIER);
+            $this->folderExists(static::ROOT_FOLDER_IDENTIFIER);
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,

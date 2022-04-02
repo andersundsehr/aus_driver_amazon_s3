@@ -7,7 +7,7 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2022 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
@@ -15,13 +15,14 @@ namespace AUS\AusDriverAmazonS3\Driver;
 
 use AUS\AusDriverAmazonS3\S3Adapter\MetaInfoDownloadAdapter;
 use AUS\AusDriverAmazonS3\S3Adapter\MultipartUploaderAdapter;
+use AUS\AusDriverAmazonS3\Service\CompatibilityService;
+use AUS\AusDriverAmazonS3\Service\FileNameService;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -38,7 +39,6 @@ use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -65,8 +65,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     const FILTER_FILES = 'files';
 
     const ROOT_FOLDER_IDENTIFIER = '/';
-
-    const UNSAFE_FILENAME_CHARACTER_EXPRESSION = '\\x00-\\x2C\\/\\x3A-\\x3F\\x5B-\\x60\\x7B-\\xBF';
 
     /**
      * @var S3Client
@@ -146,11 +144,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected static $settings = null;
 
     /**
-     * @var \TYPO3\CMS\Core\Charset\CharsetConverter
-     */
-    protected $charsetConversion = null;
-
-    /**
      * @var string
      */
     protected $languageFile = 'EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf';
@@ -166,6 +159,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected $signalSlotDispatcher;
 
     /**
+     * @var CompatibilityService
+     */
+    protected $compatibilityService;
+
+    /**
      * AmazonS3Driver constructor.
      *
      * @param array $configuration
@@ -174,6 +172,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     public function __construct(array $configuration = [], $s3Client = null)
     {
         parent::__construct($configuration);
+        $this->compatibilityService = GeneralUtility::makeInstance(CompatibilityService::class);
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
         $this->capabilities =
             ResourceStorage::CAPABILITY_BROWSABLE
@@ -225,7 +224,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             ->initializeSettings()
             ->initializeClient();
         // Test connection if we are in the edit view of this storage
-        if ($this->isBackend() && isset($_GET['edit']['sys_file_storage']) && !empty($_GET['edit']['sys_file_storage'])) {
+        if (
+            $this->compatibilityService->isBackend()
+            && isset($_GET['edit']['sys_file_storage']) && !empty($_GET['edit']['sys_file_storage'])
+        ) {
             $this->testConnection();
         }
     }
@@ -1107,7 +1109,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
                 self::loadExternalClasses();
             }
-            if ($this->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
+            if ($this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
                 $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
             }
         }
@@ -1197,10 +1199,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected function getMessageQueue()
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = $objectManager->get(FlashMessageService::class);
-        return $flashMessageService->getMessageQueueByIdentifier();
+        return GeneralUtility::makeInstance(FlashMessageService::class)->getMessageQueueByIdentifier();
     }
 
     /**
@@ -1328,7 +1327,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     }
                 } catch (\Exception $exception) {
                     // Show warning in backend list module
-                    if ($this->isBackend() && $_GET['M'] === 'file_FilelistList') {
+                    if ($this->compatibilityService->isBackend() && $_GET['M'] === 'file_FilelistList') {
                         $messageQueue = $this->getMessageQueue();
                         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
                         $message = GeneralUtility::makeInstance(
@@ -1416,36 +1415,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function sanitizeFileName($fileName, $charset = '')
     {
-        $fileName = $this->getCharsetConversion()->specCharsToASCII('utf-8', $fileName);
-        // Replace unwanted characters by underscores
-        $cleanFileName = preg_replace(
-            '/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/',
-            '_',
-            trim($fileName)
-        );
-
-        // Strip trailing dots and return
-        $cleanFileName = rtrim($cleanFileName, '.');
-        if ($cleanFileName === '') {
-            throw new Exception\InvalidFileNameException(
-                'File name ' . $fileName . ' is invalid.',
-                1320288991
-            );
-        }
-        return $cleanFileName;
-    }
-
-    /**
-     * Gets the charset conversion object.
-     *
-     * @return \TYPO3\CMS\Core\Charset\CharsetConverter
-     */
-    protected function getCharsetConversion()
-    {
-        if (!isset($this->charsetConversion)) {
-            $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
-        }
-        return $this->charsetConversion;
+        return GeneralUtility::makeInstance(FileNameService::class)
+            ->sanitizeFileName((string)$fileName, (string)$charset);
     }
 
     /**
@@ -1557,10 +1528,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
             if (isset($moreResults['Contents'])) {
-                $result = $this->mergeArrays($result, $moreResults, 'Contents');
+                $result = $this->mergeResultArray($result, $moreResults, 'Contents');
             }
             if (isset($moreResults['CommonPrefixes'])) {
-                $result = $this->mergeArrays($result, $moreResults, 'CommonPrefixes');
+                $result = $this->mergeResultArray($result, $moreResults, 'CommonPrefixes');
             }
         }
         return $result;
@@ -1733,27 +1704,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         return $this->signalSlotDispatcher;
     }
 
-    protected function isBackend(): bool
-    {
-        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
-            // Backwards compatibility: for TYPO3 versions lower than 11.0
-            return TYPO3_MODE === 'BE';
-        } else {
-            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
-        }
-    }
-
-    protected function isFrontend(): bool
-    {
-        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
-            // Backwards compatibility: for TYPO3 versions lower than 11.0
-            return TYPO3_MODE === 'FE';
-        } else {
-            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
-        }
-    }
-
-    protected function mergeArrays(array $initialArray, array $additions, string $arrayKey): array
+    protected function mergeResultArray(array $initialArray, array $additions, string $arrayKey): array
     {
         if (isset($additions[$arrayKey]) === false || is_array($additions[$arrayKey]) === false) {
             return $initialArray;

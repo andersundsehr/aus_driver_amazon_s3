@@ -1,0 +1,31 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron:  '27 4 * * *'
+
+jobs:
+  testsuite:
+    name: all tests
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php: [ '7.2', '7.3', '7.4', '8.0', '8.1']
+        minMax: [ 'composerInstallMin', 'composerInstallMax' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Composer
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s ${{ matrix.minMax }}
+
+      - name: Composer validate
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate
+
+      - name: Lint PHP
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
+
+      - name: Unit tests
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit

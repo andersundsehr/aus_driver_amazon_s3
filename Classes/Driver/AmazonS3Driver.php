@@ -1740,21 +1740,27 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         return $this->signalSlotDispatcher;
     }
 
-    private function isBackend(): bool
+    protected function isBackend(): bool
     {
-        return (defined('TYPO3_MODE') && TYPO3_MODE === 'BE')
-            || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()
-            ;
+        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
+            // Backwards compatibility: for TYPO3 versions lower than 11.0
+            return TYPO3_MODE === 'BE';
+        } else {
+            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        }
     }
 
-    private function isFrontend(): bool
+    protected function isFrontend(): bool
     {
-        return (defined('TYPO3_MODE') && TYPO3_MODE === 'FE')
-            || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()
-            ;
+        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
+            // Backwards compatibility: for TYPO3 versions lower than 11.0
+            return TYPO3_MODE === 'FE';
+        } else {
+            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
+        }
     }
 
-    private function mergeArrays(array $initialArray, array $additions, string $arrayKey): array
+    protected function mergeArrays(array $initialArray, array $additions, string $arrayKey): array
     {
         if (isset($additions[$arrayKey]) === false || is_array($additions[$arrayKey]) === false) {
             return $initialArray;

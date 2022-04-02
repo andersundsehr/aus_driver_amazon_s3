@@ -20,6 +20,10 @@ use Aws\S3\S3Client;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Core\ApplicationContext;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 
 /**
  * Class AmazonS3DriverTest
@@ -60,11 +64,35 @@ class AmazonS3DriverTest extends TestCase
     {
         parent::setUp();
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [];
+        $GLOBALS['TYPO3_CONF_VARS']['LOG'] = [];
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['FileInfo']['fileExtensionToMimeType']['youtube'] = 'video/youtube';
+        $GLOBALS['TSFE'] = new \stdClass();
+
+        Environment::initialize(
+            $this->prophesize(ApplicationContext::class)->reveal(),
+            false,
+            true,
+            '',
+            '',
+            '',
+            '',
+            '',
+            ''
+        );
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getAttribute('applicationType')->willReturn(SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $GLOBALS['TYPO3_REQUEST'] = $request->reveal();
 
         $this->s3Client = $this->prophesize(S3Client::class);
         $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal());
         $this->driver->setStorageUid(42);
         $this->driver->initialize();
+    }
+
+    public function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST'], $GLOBALS['TSFE']);
+        parent::tearDown();
     }
 
     /**

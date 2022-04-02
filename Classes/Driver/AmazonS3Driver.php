@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -224,7 +225,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             ->initializeSettings()
             ->initializeClient();
         // Test connection if we are in the edit view of this storage
-        if (TYPO3_MODE === 'BE' && !empty($_GET['edit']['sys_file_storage'])) {
+        if ($this->isBackend() && isset($_GET['edit']['sys_file_storage']) && !empty($_GET['edit']['sys_file_storage'])) {
             $this->testConnection();
         }
     }
@@ -943,7 +944,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         } else {
             // search folders on the current level (non-recursive)
             $response = $this->getListObjects($folderIdentifier, ['Delimiter' => '/']);
-            if ($response['CommonPrefixes']) {
+            if (isset($response['CommonPrefixes']) && $response['CommonPrefixes']) {
                 foreach ($response['CommonPrefixes'] as $folderCandidate) {
                     $key = '/' . $folderCandidate['Prefix'];
                     $folderName = basename(rtrim($key, '/'));
@@ -1114,7 +1115,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
                 self::loadExternalClasses();
             }
-            if (TYPO3_MODE === 'FE' && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
+            if ($this->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
                 $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
             }
         }
@@ -1178,7 +1179,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $messageQueue = $this->getMessageQueue();
         $localizationPrefix = 'LLL:' . $this->languageFile . ':driverConfiguration.message.';
         try {
-            $this->getFilesInFolder(static::ROOT_FOLDER_IDENTIFIER);
+            $this->folderExists(static::ROOT_FOLDER_IDENTIFIER);
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,
@@ -1231,7 +1232,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function prefixExists(string $identifier): bool
     {
         $objects = $this->getListObjects($identifier, ['MaxKeys' => 1]);
-        if (is_array($objects['Contents']) && count($objects['Contents']) > 0) {
+        if (isset($objects['Contents']) && is_array($objects['Contents']) && count($objects['Contents']) > 0) {
             return true;
         }
 
@@ -1335,7 +1336,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     }
                 } catch (\Exception $exception) {
                     // Show warning in backend list module
-                    if (TYPO3_MODE === 'BE' && $_GET['M'] === 'file_FilelistList') {
+                    if ($this->isBackend() && $_GET['M'] === 'file_FilelistList') {
                         $messageQueue = $this->getMessageQueue();
                         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
                         $message = GeneralUtility::makeInstance(
@@ -1545,7 +1546,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
 
         // Cache the given meta info
         $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-        if (is_array($result['Contents'])) {
+        if (isset($result['Contents']) && is_array($result['Contents'])) {
             foreach ($result['Contents'] as $content) {
                 $fileIdentifier = $identifier . $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
@@ -1563,19 +1564,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if ($result['IsTruncated']) {
             $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];
             $moreResults = $this->getListObjects($identifier, $overrideArgs);
-            if (is_array($moreResults['Contents'])) {
-                if (!is_array($result['Contents'])) {
-                    $result['Contents'] = $moreResults['Contents'];
-                } else {
-                    $result['Contents'] = array_merge($result['Contents'], $moreResults['Contents']);
-                }
+            if (isset($moreResults['Contents'])) {
+                $result = $this->mergeArrays($result, $moreResults, 'Contents');
             }
-            if (is_array($moreResults['CommonPrefixes'])) {
-                if (!is_array($result['CommonPrefixes'])) {
-                    $result['CommonPrefixes'] = $moreResults['CommonPrefixes'];
-                } else {
-                    $result['CommonPrefixes'] = array_merge($result['CommonPrefixes'], $moreResults['CommonPrefixes']);
-                }
+            if (isset($moreResults['CommonPrefixes'])) {
+                $result = $this->mergeArrays($result, $moreResults, 'CommonPrefixes');
             }
         }
         return $result;
@@ -1745,5 +1738,40 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $this->signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         }
         return $this->signalSlotDispatcher;
+    }
+
+    protected function isBackend(): bool
+    {
+        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
+            // Backwards compatibility: for TYPO3 versions lower than 11.0
+            return TYPO3_MODE === 'BE';
+        } else {
+            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        }
+    }
+
+    protected function isFrontend(): bool
+    {
+        if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
+            // Backwards compatibility: for TYPO3 versions lower than 11.0
+            return TYPO3_MODE === 'FE';
+        } else {
+            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
+        }
+    }
+
+    protected function mergeArrays(array $initialArray, array $additions, string $arrayKey): array
+    {
+        if (isset($additions[$arrayKey]) === false || is_array($additions[$arrayKey]) === false) {
+            return $initialArray;
+        }
+
+        if (isset($initialArray[$arrayKey]) === false || !is_array($initialArray[$arrayKey])) {
+            $initialArray[$arrayKey] = $additions[$arrayKey];
+        } else {
+            $initialArray[$arrayKey] = array_merge($initialArray[$arrayKey], $additions[$arrayKey]);
+        }
+
+        return $initialArray;
     }
 }

@@ -10,11 +10,11 @@
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": ">=7.2",
-    "typo3/cms-core": "^9.5.0 || ^10.4.10",
+    "typo3/cms-core": "^9.5.0 || ^10.4.10 || ^11.5.6",
     "aws/aws-sdk-php": "^3.136"
   },
   "require-dev": {
-    "pluswerk/grumphp-config": "^4.0",
+    "pluswerk/grumphp-config": "^5.0",
     "typo3/testing-framework": "^4.1 || ^6.2",
     "phpspec/prophecy-phpunit": "^2.0"
   },
@@ -34,7 +34,13 @@
   },
   "config": {
     "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin"
+    "bin-dir": ".Build/bin",
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true,
+      "phpro/grumphp": true,
+      "pluswerk/grumphp-config": true
+    }
   },
   "scripts": {
     "post-autoload-dump": [

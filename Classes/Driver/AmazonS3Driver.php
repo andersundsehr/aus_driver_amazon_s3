@@ -848,7 +848,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $overrideArgs['Delimiter'] = '/';
         }
         $response = $this->getListObjects($folderIdentifier, $overrideArgs);
-        if ($response['Contents']) {
+        if (isset($response['Contents'])) {
             foreach ($response['Contents'] as $fileCandidate) {
                 // skip directory entries
                 if (substr($fileCandidate['Key'], -1) === '/') {
@@ -1102,15 +1102,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function initializeSettings()
     {
         if (self::$settings === null) {
-            if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '9.0.0') === -1) {
-                // Backwards compatibility: for TYPO3 versions lower than 9.0
-                $extConf = 'extConf'; // Trick the install tool extension checker to dismiss "deprecated" warning
-                if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT'][$extConf][self::EXTENSION_KEY])) {
-                    self::$settings = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT'][$extConf][self::EXTENSION_KEY]);
-                }
-            } else {
-                self::$settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXTENSION_KEY);
-            }
+            self::$settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXTENSION_KEY);
 
             if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
                 self::loadExternalClasses();
@@ -1648,9 +1640,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function getCacheControl($pathAndFilename)
     {
         $cacheControl = $this->configuration['cacheHeaderDuration'] ? 'max-age=' . $this->configuration['cacheHeaderDuration'] : '';
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['getCacheControl'])) {
+        $cacheControlHooks = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['getCacheControl'] ?? null;
+        if (is_array($cacheControlHooks)) {
             $fileExtension = pathinfo($pathAndFilename, PATHINFO_EXTENSION);
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['getCacheControl'] as $funcName) {
+            foreach ($cacheControlHooks as $funcName) {
                 $params = [
                     'cacheControl' => &$cacheControl,
                     'pathAndFilename' => $pathAndFilename,

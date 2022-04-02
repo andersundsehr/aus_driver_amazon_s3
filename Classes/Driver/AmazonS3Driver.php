@@ -1068,7 +1068,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected function initializeBaseUrl()
     {
-        $protocol = $this->configuration['protocol'];
+        $protocol = $this->configuration['protocol'] ?? '';
         if ($protocol == 'auto') {
             $protocol = GeneralUtility::getIndpEnv('TYPO3_SSL') ? 'https://' : 'http://';
         }
@@ -1077,7 +1077,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if (isset($this->configuration['publicBaseUrl']) && $this->configuration['publicBaseUrl'] !== '') {
             $baseUrl .= rtrim($this->configuration['publicBaseUrl'], '/');
         } else {
-            $baseUrl .= $this->configuration['bucket'] . '.s3.amazonaws.com';
+            $baseUrl .= ($this->configuration['bucket'] ?? '') . '.s3.amazonaws.com';
         }
 
         if (
@@ -1131,10 +1131,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     {
         $configuration = [
             'version' => '2006-03-01',
-            'region' => (string)$this->configuration['region'],
+            'region' => $this->configuration['region'] ?? '',
             'credentials' => [
-                'key' => (string)$this->configuration['key'],
-                'secret' => (string)$this->configuration['secretKey'],
+                'key' => $this->configuration['key'] ?? '',
+                'secret' => $this->configuration['secretKey'] ?? '',
             ],
             'validation' => false,
         ];
@@ -1179,7 +1179,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $messageQueue = $this->getMessageQueue();
         $localizationPrefix = 'LLL:' . $this->languageFile . ':driverConfiguration.message.';
         try {
-            $this->folderExists(static::ROOT_FOLDER_IDENTIFIER);
+            $this->prefixExists(static::ROOT_FOLDER_IDENTIFIER);
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $message */
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,
@@ -1539,7 +1539,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function getListObjects($identifier, $overrideArgs = [])
     {
         $args = [
-            'Bucket' => $this->configuration['bucket'],
+            'Bucket' => $this->configuration['bucket'] ?? '',
             'Prefix' => $identifier,
         ];
         $result = $this->getCachedResponse('listObjectsV2', array_merge_recursive($args, $overrideArgs));

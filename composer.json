@@ -43,8 +43,11 @@
     }
   },
   "scripts": {
+    "setupTest": [
+      "mkdir -p .Build/Web/typo3conf/ && ln -sfn ../../../../ .Build/Web/typo3conf/ext"
+    ],
     "test": [
-      "mkdir -p .Build/Web/typo3conf/ && ln -sfn ../../../../ .Build/Web/typo3conf/ext",
+      "@setupTest",
       "./Build/Scripts/runTests.sh -p '8.1' -s composerInstall && ./Build/Scripts/runTests.sh -p '8.1' -s composerValidate && ./Build/Scripts/runTests.sh -p '8.1' -s unit && ./Build/Scripts/runTests.sh -p '8.1' -s lint"
     ]
   },

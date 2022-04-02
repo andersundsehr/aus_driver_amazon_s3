@@ -4,7 +4,7 @@ parameters:
   convention.jsonlint_ignore_pattern: []
   convention.xmllint_ignore_pattern: []
   convention.yamllint_ignore_pattern: ["Documentation/Settings.yml"]
-  convention.phpcslint_ignore_pattern: []
+  convention.phplint_ignore_pattern: ["#Resources/Private/PHP/vendor/(.*)#"]
   convention.xlifflint_ignore_pattern: ["#typo3conf/l10n/(.*)#"]
 grumphp:
   stop_on_failure: false
@@ -35,7 +35,8 @@ grumphp:
         - "Configuration/"
         - "Documentation/"
         - "Tests/"
-    phplint: ~
+    phplint:
+      ignore_patterns: "%convention.phplint_ignore_pattern%"
     xmllint:
       ignore_patterns: "%convention.xmllint_ignore_pattern%"
     yamllint:

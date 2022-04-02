@@ -70,11 +70,14 @@ class ConfigurationProvider extends AbstractConfigurationProvider
      */
     public static function defaultProvider(array $config = [])
     {
-        $configProviders = [
-            self::env(),
-            self::ini(),
-            self::fallback()
-        ];
+        $configProviders = [self::env()];
+        if (
+            !isset($config['use_aws_shared_config_files'])
+            || $config['use_aws_shared_config_files'] != false
+        ) {
+            $configProviders[] = self::ini();
+        }
+        $configProviders[] = self::fallback();
 
         $memo = self::memoize(
             call_user_func_array('self::chain', $configProviders)
@@ -100,7 +103,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
             // Use config from environment variables, if available
             $useArnRegion = getenv(self::ENV_USE_ARN_REGION);
             if (!empty($useArnRegion)) {
-                return Promise\promise_for(
+                return Promise\Create::promiseFor(
                     new Configuration($useArnRegion)
                 );
             }
@@ -128,7 +131,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         $profile = $profile ?: (getenv(self::ENV_PROFILE) ?: 'default');
 
         return function () use ($profile, $filename) {
-            if (!is_readable($filename)) {
+            if (!@is_readable($filename)) {
                 return self::reject("Cannot read configuration from $filename");
             }
 
@@ -150,7 +153,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
                 $data[$profile][self::INI_USE_ARN_REGION] = false;
             }
 
-            return Promise\promise_for(
+            return Promise\Create::promiseFor(
                 new Configuration($data[$profile][self::INI_USE_ARN_REGION])
             );
         };
@@ -164,7 +167,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
     public static function fallback()
     {
         return function () {
-            return Promise\promise_for(
+            return Promise\Create::promiseFor(
                 new Configuration(self::DEFAULT_USE_ARN_REGION)
             );
         };

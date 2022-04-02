@@ -171,6 +171,10 @@ class AwsClient implements AwsClientInterface
      *   signature version to use with a service (e.g., v4). Note that
      *   per/operation signature version MAY override this requested signature
      *   version.
+     * - use_aws_shared_config_files: (bool, default=bool(true)) Set to false to
+     *   disable checking for shared config file in '~/.aws/config' and
+     *   '~/.aws/credentials'.  This will override the AWS_CONFIG_FILE
+     *   environment variable.
      * - validate: (bool, default=bool(true)) Set to false to disable
      *   client-side parameter validation.
      * - version: (string, required) The version of the webservice to
@@ -206,6 +210,7 @@ class AwsClient implements AwsClientInterface
         $this->addEndpointDiscoveryMiddleware($config, $args);
         $this->loadAliases();
         $this->addStreamRequestPayload();
+        $this->addRecursionDetection();
 
         if (isset($args['with_resolved'])) {
             $args['with_resolved']($config);
@@ -347,6 +352,9 @@ class AwsClient implements AwsClientInterface
             if (!empty($c['@context']['signing_region'])) {
                 $region = $c['@context']['signing_region'];
             }
+            if (!empty($c['@context']['signing_service'])) {
+                $name = $c['@context']['signing_service'];
+            }
             $authType = $api->getOperation($c->getName())['authtype'];
             switch ($authType){
                 case 'none':
@@ -394,6 +402,15 @@ class AwsClient implements AwsClientInterface
         $this->handlerList->prependSign(
             $streamRequestPayloadMiddleware,
             'StreamRequestPayloadMiddleware'
+        );
+    }
+
+    private function addRecursionDetection()
+    {
+        // Add recursion detection header to requests
+        // originating in supported Lambda runtimes
+        $this->handlerList->appendBuild(
+            Middleware::recursionDetection(), 'recursion-detection'
         );
     }
 

@@ -6,6 +6,6 @@
     "classmap-authoritative": true
   },
   "require": {
-    "aws/aws-sdk-php": "^3.136"
+    "aws/aws-sdk-php": "^3.218"
   }
 }

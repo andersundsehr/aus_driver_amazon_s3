@@ -75,11 +75,14 @@ class ConfigurationProvider extends AbstractConfigurationProvider
      */
     public static function defaultProvider(array $config = [])
     {
-        $configProviders = [
-            self::env(),
-            self::ini(),
-            self::fallback()
-        ];
+        $configProviders = [self::env()];
+        if (
+            !isset($config['use_aws_shared_config_files'])
+            || $config['use_aws_shared_config_files'] != false
+        ) {
+            $configProviders[] = self::ini();
+        }
+        $configProviders[] = self::fallback();
 
         $memo = self::memoize(
             call_user_func_array('self::chain', $configProviders)
@@ -108,7 +111,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
                 ? getenv(self::ENV_MAX_ATTEMPTS)
                 : self::DEFAULT_MAX_ATTEMPTS;
             if (!empty($mode)) {
-                return Promise\promise_for(
+                return Promise\Create::promiseFor(
                     new Configuration($mode, $maxAttempts)
                 );
             }
@@ -126,7 +129,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
     public static function fallback()
     {
         return function () {
-            return Promise\promise_for(
+            return Promise\Create::promiseFor(
                 new Configuration(self::DEFAULT_MODE, self::DEFAULT_MAX_ATTEMPTS)
             );
         };
@@ -152,7 +155,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         $profile = $profile ?: (getenv(self::ENV_PROFILE) ?: 'default');
 
         return function () use ($profile, $filename) {
-            if (!is_readable($filename)) {
+            if (!@is_readable($filename)) {
                 return self::reject("Cannot read configuration from $filename");
             }
             $data = \Aws\parse_ini_file($filename, true);
@@ -171,7 +174,7 @@ class ConfigurationProvider extends AbstractConfigurationProvider
                 ? $data[$profile][self::INI_MAX_ATTEMPTS]
                 : self::DEFAULT_MAX_ATTEMPTS;
 
-            return Promise\promise_for(
+            return Promise\Create::promiseFor(
                 new Configuration(
                     $data[$profile][self::INI_MODE],
                     $maxAttempts

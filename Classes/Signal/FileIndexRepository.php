@@ -31,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FileIndexRepository
 {
-
     /**
      * @param array $data
      * @return void|null

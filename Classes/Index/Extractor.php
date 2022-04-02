@@ -30,7 +30,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Extractor implements ExtractorInterface
 {
-
     /**
      * Returns an array of supported file types;
      * An empty array indicates all filetypes

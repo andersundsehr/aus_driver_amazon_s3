@@ -1,6 +1,6 @@
 parameters:
   convention.process_timeout: 60
-  # convention.security_checker_blocking: true
+  convention.security_checker_blocking: true
   convention.jsonlint_ignore_pattern: []
   convention.xmllint_ignore_pattern: []
   convention.yamllint_ignore_pattern: ["Documentation/Settings.yml"]
@@ -43,9 +43,10 @@ grumphp:
       ignore_patterns: "%convention.yamllint_ignore_pattern%"
     xlifflint:
       ignore_patterns: "%convention.xlifflint_ignore_pattern%"
-    # securitychecker:
-    #   metadata:
-    #     blocking: "%convention.security_checker_blocking%"
+    securitychecker_enlightn:
+      metadata:
+        blocking: "%convention.security_checker_blocking%"
+      run_always: true
     plus_bom_fixer:
       metadata:
         priority: 1

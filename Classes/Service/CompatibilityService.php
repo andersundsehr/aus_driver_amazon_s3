@@ -35,7 +35,8 @@ class CompatibilityService implements SingletonInterface
             // Backwards compatibility: for TYPO3 versions lower than 11.0
             return TYPO3_MODE === 'BE';
         } else {
-            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+            return ($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+
         }
     }
 
@@ -49,7 +50,7 @@ class CompatibilityService implements SingletonInterface
             // Backwards compatibility: for TYPO3 versions lower than 11.0
             return TYPO3_MODE === 'FE';
         } else {
-            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
+            return ($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
         }
     }
 }

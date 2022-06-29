@@ -1126,12 +1126,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $configuration = [
             'version' => '2006-03-01',
             'region' => $this->configuration['region'] ?? '',
-            'credentials' => [
-                'key' => $this->configuration['key'] ?? '',
-                'secret' => $this->configuration['secretKey'] ?? '',
-            ],
             'validation' => false,
         ];
+        if (!empty($this->configuration['key']) || !empty($this->configuration['secretKey'])) {
+            $configuration['credentials'] = [
+                'key' => $this->configuration['key'] ?? '',
+                'secret' => $this->configuration['secretKey'] ?? '',
+            ];
+        }
         if (!empty($GLOBALS['TYPO3_CONF_VARS']['HTTP']['proxy'])) {
             $configuration['http']['proxy'] = $GLOBALS['TYPO3_CONF_VARS']['HTTP']['proxy'];
         }

@@ -338,7 +338,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function fileExistsInFolder($fileName, $folderIdentifier)
     {
-        return $this->objectExists($folderIdentifier . $fileName);
+        return $this->objectExists(rtrim($folderIdentifier, '/') . '/' . $fileName);
     }
 
     /**

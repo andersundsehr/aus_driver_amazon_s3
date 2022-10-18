@@ -282,7 +282,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param array $propertiesToExtract Array of properties which are be extracted
      *                                    If empty all will be extracted
      * @return array
-     * @throws \Exception
+     * @throws \InvalidArgumentException If the file does not exist
      */
     public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = [])
     {
@@ -292,7 +292,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         }
         $return = $this->getMetaInfo($fileIdentifier);
         if ($return === null) {
-            throw new \Exception('File does not exist', 1503500470);
+            throw new \InvalidArgumentException('File ' . $fileIdentifier . ' does not exist', 1503500470);
         }
         if (count($propertiesToExtract) > 0) {
             $return = array_intersect_key($return, array_flip($propertiesToExtract));

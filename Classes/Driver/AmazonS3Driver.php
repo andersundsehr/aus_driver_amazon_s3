@@ -1138,7 +1138,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $configuration['http']['proxy'] = $GLOBALS['TYPO3_CONF_VARS']['HTTP']['proxy'];
         }
         if (!empty($this->configuration['signature'])) {
-            $configuration['signature_version'] = $this->configuration['signature_version'];
+            $configuration['signature_version'] = $this->configuration['signature'];
         }
         if (!empty($this->configuration['customHost'])) {
             $configuration['endpoint'] = $this->configuration['customHost'];

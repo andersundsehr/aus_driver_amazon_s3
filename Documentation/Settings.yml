@@ -4,7 +4,7 @@
 
 ---
 conf.py:
-  copyright: 2019
+  copyright: 2022
   project: Amazon AWS S3 FAL driver (CDN)
   version: 1.12
   release: 1.12.0

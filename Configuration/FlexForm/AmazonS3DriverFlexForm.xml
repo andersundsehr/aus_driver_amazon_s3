@@ -38,9 +38,17 @@
 								<numIndex index="0">US West (Oregon) - us-west-2</numIndex>
 								<numIndex index="1">us-west-2</numIndex>
 							</numIndex>
+							<numIndex index="22" type="array">
+								<numIndex index="0">Africa (Cape Town) - af-south-1</numIndex>
+								<numIndex index="1">af-south-1</numIndex>
+							</numIndex>
 							<numIndex index="4" type="array">
 								<numIndex index="0">Asia Pacific (Hong Kong) - ap-east-1</numIndex>
 								<numIndex index="1">ap-east-1</numIndex>
+							</numIndex>
+							<numIndex index="23" type="array">
+								<numIndex index="0">Asia Pacific (Jakarta) - ap-southeast-3</numIndex>
+								<numIndex index="1">ap-southeast-3</numIndex>
 							</numIndex>
 							<numIndex index="5" type="array">
 								<numIndex index="0">Asia Pacific (Mumbai) - ap-south-1</numIndex>
@@ -90,6 +98,10 @@
 								<numIndex index="0">EU (London) - eu-west-2</numIndex>
 								<numIndex index="1">eu-west-2</numIndex>
 							</numIndex>
+							<numIndex index="24" type="array">
+								<numIndex index="0">EU (Milan) - eu-south-1</numIndex>
+								<numIndex index="1">eu-south-1</numIndex>
+							</numIndex>
 							<numIndex index="17" type="array">
 								<numIndex index="0">EU (Paris) - eu-west-3</numIndex>
 								<numIndex index="1">eu-west-3</numIndex>
@@ -97,6 +109,10 @@
 							<numIndex index="18" type="array">
 								<numIndex index="0">EU (Stockholm) - eu-north-1</numIndex>
 								<numIndex index="1">eu-north-1</numIndex>
+							</numIndex>
+							<numIndex index="25" type="array">
+								<numIndex index="0">Middle East (Bahrain) - me-south-1</numIndex>
+								<numIndex index="1">me-south-1</numIndex>
 							</numIndex>
 							<numIndex index="19" type="array">
 								<numIndex index="0">South America (São Paulo) - sa-east-1</numIndex>

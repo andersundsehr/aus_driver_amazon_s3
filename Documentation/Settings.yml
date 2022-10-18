@@ -7,7 +7,7 @@ conf.py:
   copyright: 2022
   project: Amazon AWS S3 FAL driver (CDN)
   version: 1.12
-  release: 1.12.0
+  release: 1.12.1
   latex_documents:
   - - Index
     - aus_driver_amazon_s3.tex

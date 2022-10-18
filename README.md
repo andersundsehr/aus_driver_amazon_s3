@@ -12,7 +12,7 @@ You can create a file storage which allows you to upload/download and link the f
 
 Requires TYPO3 10.4 - 11.5
 
-German blog post: [TYPO3 CDN with Amazon S3](https://www.andersundsehr.com/blog/technik/typo3-performance-optimierung-durch-cdn)
+German blog post: [TYPO3 CDN with Amazon S3](https://www.andersundsehr.com/blog/typo3-performance-optimierung-durch-content-delivery-network-cdn/)
 
 Issue tracking: [GitHub: AWS S3 FAL Driver](https://github.com/andersundsehr/aus_driver_amazon_s3/issues)
 

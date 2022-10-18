@@ -23,12 +23,12 @@
 						<renderType>selectSingle</renderType>
 						<items type="array">
 							<numIndex index="0" type="array">
-								<numIndex index="0">US East (N. Virginia) - us-east-1</numIndex>
-								<numIndex index="1">us-east-1</numIndex>
-							</numIndex>
-							<numIndex index="1" type="array">
 								<numIndex index="0">US East (Ohio) - us-east-2</numIndex>
 								<numIndex index="1">us-east-2</numIndex>
+							</numIndex>
+							<numIndex index="1" type="array">
+								<numIndex index="0">US East (N. Virginia) - us-east-1</numIndex>
+								<numIndex index="1">us-east-1</numIndex>
 							</numIndex>
 							<numIndex index="2" type="array">
 								<numIndex index="0">US West (N. California) - us-west-1</numIndex>
@@ -38,92 +38,96 @@
 								<numIndex index="0">US West (Oregon) - us-west-2</numIndex>
 								<numIndex index="1">us-west-2</numIndex>
 							</numIndex>
-							<numIndex index="22" type="array">
+							<numIndex index="4" type="array">
 								<numIndex index="0">Africa (Cape Town) - af-south-1</numIndex>
 								<numIndex index="1">af-south-1</numIndex>
 							</numIndex>
-							<numIndex index="4" type="array">
+							<numIndex index="5" type="array">
 								<numIndex index="0">Asia Pacific (Hong Kong) - ap-east-1</numIndex>
 								<numIndex index="1">ap-east-1</numIndex>
 							</numIndex>
-							<numIndex index="23" type="array">
+							<numIndex index="6" type="array">
 								<numIndex index="0">Asia Pacific (Jakarta) - ap-southeast-3</numIndex>
 								<numIndex index="1">ap-southeast-3</numIndex>
 							</numIndex>
-							<numIndex index="5" type="array">
+							<numIndex index="7" type="array">
 								<numIndex index="0">Asia Pacific (Mumbai) - ap-south-1</numIndex>
 								<numIndex index="1">ap-south-1</numIndex>
 							</numIndex>
-							<numIndex index="6" type="array">
-								<numIndex index="0">Asia Pacific (Tokyo) - ap-northeast-1</numIndex>
-								<numIndex index="1">ap-northeast-1</numIndex>
-							</numIndex>
-							<numIndex index="7" type="array">
-								<numIndex index="0">Asia Pacific (Seoul) - ap-northeast-2</numIndex>
-								<numIndex index="1">ap-northeast-2</numIndex>
-							</numIndex>
 							<numIndex index="8" type="array">
-								<numIndex index="0">Asia Pacific (Osaka-Local) - ap-northeast-3</numIndex>
+								<numIndex index="0">Asia Pacific (Osaka) - ap-northeast-3</numIndex>
 								<numIndex index="1">ap-northeast-3</numIndex>
 							</numIndex>
 							<numIndex index="9" type="array">
+								<numIndex index="0">Asia Pacific (Seoul) - ap-northeast-2</numIndex>
+								<numIndex index="1">ap-northeast-2</numIndex>
+							</numIndex>
+							<numIndex index="10" type="array">
 								<numIndex index="0">Asia Pacific (Singapore) - ap-southeast-1</numIndex>
 								<numIndex index="1">ap-southeast-1</numIndex>
 							</numIndex>
-							<numIndex index="10" type="array">
+							<numIndex index="11" type="array">
 								<numIndex index="0">Asia Pacific (Sydney) - ap-southeast-2</numIndex>
 								<numIndex index="1">ap-southeast-2</numIndex>
 							</numIndex>
-							<numIndex index="11" type="array">
+							<numIndex index="12" type="array">
+								<numIndex index="0">Asia Pacific (Tokyo) - ap-northeast-1</numIndex>
+								<numIndex index="1">ap-northeast-1</numIndex>
+							</numIndex>
+							<numIndex index="13" type="array">
 								<numIndex index="0">Canada (Central) - ca-central-1</numIndex>
 								<numIndex index="1">ca-central-1</numIndex>
 							</numIndex>
-							<numIndex index="12" type="array">
+							<numIndex index="14" type="array">
 								<numIndex index="0">China (Beijing) - cn-north-1</numIndex>
 								<numIndex index="1">cn-north-1</numIndex>
 							</numIndex>
-							<numIndex index="13" type="array">
+							<numIndex index="15" type="array">
 								<numIndex index="0">China (Ningxia) - cn-northwest-1</numIndex>
 								<numIndex index="1">cn-northwest-1</numIndex>
 							</numIndex>
-							<numIndex index="14" type="array">
-								<numIndex index="0">EU (Frankfurt) - eu-central-1</numIndex>
+							<numIndex index="16" type="array">
+								<numIndex index="0">Europe (Frankfurt) - eu-central-1</numIndex>
 								<numIndex index="1">eu-central-1</numIndex>
 							</numIndex>
-							<numIndex index="15" type="array">
-								<numIndex index="0">EU (Ireland) - eu-west-1</numIndex>
+							<numIndex index="17" type="array">
+								<numIndex index="0">Europe (Ireland) - eu-west-1</numIndex>
 								<numIndex index="1">eu-west-1</numIndex>
 							</numIndex>
-							<numIndex index="16" type="array">
-								<numIndex index="0">EU (London) - eu-west-2</numIndex>
+							<numIndex index="18" type="array">
+								<numIndex index="0">Europe (London) - eu-west-2</numIndex>
 								<numIndex index="1">eu-west-2</numIndex>
 							</numIndex>
-							<numIndex index="24" type="array">
-								<numIndex index="0">EU (Milan) - eu-south-1</numIndex>
+							<numIndex index="19" type="array">
+								<numIndex index="0">Europe (Milan) - eu-south-1</numIndex>
 								<numIndex index="1">eu-south-1</numIndex>
 							</numIndex>
-							<numIndex index="17" type="array">
-								<numIndex index="0">EU (Paris) - eu-west-3</numIndex>
+							<numIndex index="20" type="array">
+								<numIndex index="0">Europe (Paris) - eu-west-3</numIndex>
 								<numIndex index="1">eu-west-3</numIndex>
 							</numIndex>
-							<numIndex index="18" type="array">
-								<numIndex index="0">EU (Stockholm) - eu-north-1</numIndex>
+							<numIndex index="21" type="array">
+								<numIndex index="0">Europe (Stockholm) - eu-north-1</numIndex>
 								<numIndex index="1">eu-north-1</numIndex>
 							</numIndex>
-							<numIndex index="25" type="array">
-								<numIndex index="0">Middle East (Bahrain) - me-south-1</numIndex>
-								<numIndex index="1">me-south-1</numIndex>
-							</numIndex>
-							<numIndex index="19" type="array">
+							<numIndex index="22" type="array">
 								<numIndex index="0">South America (São Paulo) - sa-east-1</numIndex>
 								<numIndex index="1">sa-east-1</numIndex>
 							</numIndex>
-							<numIndex index="20" type="array">
+							<numIndex index="23" type="array">
+								<numIndex index="0">Middle East (Bahrain) - me-south-1</numIndex>
+								<numIndex index="1">me-south-1</numIndex>
+							</numIndex>
+							<numIndex index="24" type="array">
+								<numIndex index="0">Middle East (UAE) - me-central-1</numIndex>
+								<numIndex index="1">me-central-1</numIndex>
+							</numIndex>
+							<numIndex index="25" type="array">
 								<numIndex index="0">AWS GovCloud (US-East) - us-gov-east-1</numIndex>
 								<numIndex index="1">us-gov-east-1</numIndex>
 							</numIndex>
-							<numIndex index="21" type="array">
-								<numIndex index="0">AWS GovCloud (US) - us-gov-west-1</numIndex>
+							<numIndex index="26" type="array">
+								<numIndex index="0">AWS GovCloud (US-West) - us-gov-west-1</numIndex>
 								<numIndex index="1">us-gov-west-1</numIndex>
 							</numIndex>
 						</items>

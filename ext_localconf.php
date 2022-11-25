@@ -4,12 +4,13 @@ if (!defined('TYPO3_MODE') && !defined('TYPO3')) {
     die('Access denied.');
 }
 
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['registeredDrivers'][\AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::DRIVER_TYPE] = [
-    'class' => \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::class,
-    'flexFormDS' => 'FILE:EXT:' . \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::EXTENSION_KEY . '/Configuration/FlexForm/AmazonS3DriverFlexForm.xml',
-    'label' => 'AWS S3',
-    'shortName' => \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::DRIVER_TYPE,
-];
+$driverRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Driver\DriverRegistry::class);
+$driverRegistry->registerDriverClass(
+    \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::class,
+    \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::DRIVER_TYPE,
+    'AWS S3',
+    'FILE:EXT:' . \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::EXTENSION_KEY . '/Configuration/FlexForm/AmazonS3DriverFlexForm.xml'
+);
 
 // register extractor
 \TYPO3\CMS\Core\Resource\Index\ExtractorRegistry::getInstance()->registerExtractionService(\AUS\AusDriverAmazonS3\Index\Extractor::class);

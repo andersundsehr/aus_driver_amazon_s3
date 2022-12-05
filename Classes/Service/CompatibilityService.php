@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace AUS\AusDriverAmazonS3\Service;
 
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
@@ -34,6 +35,8 @@ class CompatibilityService implements SingletonInterface
         if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
             // Backwards compatibility: for TYPO3 versions lower than 11.0
             return TYPO3_MODE === 'BE';
+        } elseif (Environment::isCli()) {
+            return false;
         } else {
             return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
         }
@@ -48,6 +51,8 @@ class CompatibilityService implements SingletonInterface
         if (version_compare(VersionNumberUtility::getNumericTypo3Version(), '11.0.0') === -1) {
             // Backwards compatibility: for TYPO3 versions lower than 11.0
             return TYPO3_MODE === 'FE';
+        } elseif (Environment::isCli()) {
+            return false;
         } else {
             return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
         }

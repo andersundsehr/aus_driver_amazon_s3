@@ -33,6 +33,12 @@
 			<trans-unit id="driverConfiguration.publicBaseUrl-description">
 				<source>Without protocol - "Protocol" setting is used here.</source>
 			</trans-unit>
+			<trans-unit id="driverConfiguration.baseFolder">
+				<source>Base folder</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.baseFolder-description">
+				<source>Root folder to use as base for all file operations. Other files and folders outside this base folder are not visible.</source>
+			</trans-unit>
 			<trans-unit id="driverConfiguration.cacheHeaderDuration">
 				<source>Cache header: max age (in seconds, optional)</source>
 			</trans-unit>

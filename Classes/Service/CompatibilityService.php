@@ -36,7 +36,7 @@ class CompatibilityService implements SingletonInterface
             // Backwards compatibility: for TYPO3 versions lower than 11.0
             return TYPO3_MODE === 'BE';
         } elseif (Environment::isCli()) {
-            return false;
+            return true;
         } else {
             return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
         }

@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('TYPO3_MODE') && !defined('TYPO3')) {
-    die('Access denied.');
-}
+defined('TYPO3') or die();
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['registeredDrivers'][\AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::DRIVER_TYPE] = [
     'class' => \AUS\AusDriverAmazonS3\Driver\AmazonS3Driver::class,

@@ -18,6 +18,7 @@ namespace AUS\AusDriverAmazonS3\Service;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This class is used to place functions which are more complex because keeping compatibility to older TYPO3 versions.
@@ -49,5 +50,17 @@ class CompatibilityService implements SingletonInterface
         }
         return isset($GLOBALS['TYPO3_REQUEST'])
             && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
+    }
+
+    /**
+     * Check if $str begins with $partStr
+     */
+    public function isFirstPartOfStr($str, $partStr): bool
+    {
+        if (PHP_MAJOR_VERSION >= 8) {
+            return str_starts_with($str, $partStr);
+        } else {
+            return GeneralUtility::isFirstPartOfStr($str, $partStr);
+        }
     }
 }

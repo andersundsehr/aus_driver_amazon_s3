@@ -785,7 +785,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $folderIdentifier .= '/';
         }
 
-        return GeneralUtility::isFirstPartOfStr($entryIdentifier, $folderIdentifier);
+        return $this->compatibilityService->isFirstPartOfStr($entryIdentifier, $folderIdentifier);
     }
 
     /**

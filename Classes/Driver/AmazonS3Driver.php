@@ -20,6 +20,8 @@ use AUS\AusDriverAmazonS3\Service\FileNameService;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
@@ -97,19 +99,17 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * Object meta data is cached here as array or null
      * $identifier => [meta info as array]
      *
-     * @var array[]
+     * @var FrontendInterface
      */
-    protected $metaInfoCache = [];
+    protected $metaInfoCache;
 
     /**
      * Generic request -> response cache
      * Used for 'listObjectsV2' until now
      *
-     * @var array[][]
+     * @var FrontendInterface
      */
-    protected $requestCache = [
-        'listObjectsV2' => [],
-    ];
+    protected $requestCache;
 
     /**
      * Object permissions are cached here in subarrays like:
@@ -164,8 +164,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected $compatibilityService;
 
     /**
-     * AmazonS3Driver constructor.
-     *
      * @param array $configuration
      * @param S3Client $s3Client
      */
@@ -181,6 +179,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             | ResourceStorage::CAPABILITY_HIERARCHICAL_IDENTIFIERS;
         $this->streamWrapperProtocol = 's3-' . substr(md5(uniqid()), 0, 7);
         $this->s3Client = $s3Client;
+        $this->metaInfoCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('ausdriveramazons3_metainfocache');
+        $this->requestCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('ausdriveramazons3_requestcache');
     }
 
     /**
@@ -549,7 +549,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected function emitGetFileForLocalProcessingSignal(&$fileIdentifier, &$temporaryPath, &$writable)
     {
-        list($fileIdentifier, $temporaryPath, $writable) = $this->getSignalSlotDispatcher()->dispatch(
+        [$fileIdentifier, $temporaryPath, $writable] = $this->getSignalSlotDispatcher()->dispatch(
             self::class,
             'getFileForLocalProcessing',
             [$fileIdentifier, $temporaryPath, $writable]
@@ -1246,14 +1246,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function getMetaInfo($identifier)
     {
         $this->normalizeIdentifier($identifier);
-        if (!isset($this->metaInfoCache[$identifier])) {
+        $cacheIdentifier = md5($identifier);
+        if (!$this->metaInfoCache->has($cacheIdentifier)) {
             try {
                 $metadata = $this->s3Client->headObject([
                     'Bucket' => $this->configuration['bucket'],
                     'Key' => $identifier
                 ])->toArray();
                 $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-                $this->metaInfoCache[$identifier] = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
+                $this->metaInfoCache->set($cacheIdentifier, $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata));
             } catch (\Exception $exc) {
                 // Ignore file not found errors
                 if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
@@ -1261,10 +1262,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
                     $logger->log(LogLevel::WARNING, $exc->getMessage(), $exc->getTrace());
                 }
-                $this->metaInfoCache[$identifier] = null;
+                $this->metaInfoCache->remove($cacheIdentifier);
             }
         }
-        return $this->metaInfoCache[$identifier];
+        return $this->metaInfoCache->get($cacheIdentifier);
     }
 
     /**
@@ -1274,11 +1275,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected function getCachedResponse($function, $parameter)
     {
-        $cacheIdentifier = md5(serialize($parameter));
-        if (!isset($this->requestCache[$function][$cacheIdentifier])) {
-            $this->requestCache[$function][$cacheIdentifier] = $this->s3Client->$function($parameter)->toArray();
+        $cacheIdentifier = md5($function) . '-' . md5(serialize($parameter));
+
+        if ($this->requestCache->has($cacheIdentifier)) {
+            return $this->requestCache->get($cacheIdentifier);
         }
-        return $this->requestCache[$function][$cacheIdentifier];
+
+        $result = $this->s3Client->$function($parameter)->toArray();
+        $this->requestCache->set($cacheIdentifier, $result);
+        return $result;
     }
 
     /**
@@ -1290,7 +1295,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function flushMetaInfoCache($identifier)
     {
         $this->normalizeIdentifier($identifier);
-        unset($this->metaInfoCache[$identifier]);
+        $this->metaInfoCache->flush();
     }
 
     /**
@@ -1502,22 +1507,24 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param array $overrideArgs
      * @return array
      */
-    protected function getListObjects($identifier, $overrideArgs = [])
+    protected function getListObjects($identifier, $overrideArgs = [], $inRecursion = false)
     {
         $args = [
             'Bucket' => $this->configuration['bucket'] ?? '',
             'Prefix' => $identifier,
         ];
         $result = $this->getCachedResponse('listObjectsV2', array_merge_recursive($args, $overrideArgs));
-
         // Cache the given meta info
         $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-        if (isset($result['Contents']) && is_array($result['Contents'])) {
+
+        // with many files we come to the recursion which lessens the home of a cache hit, so we do not create the cache here
+        if (!$inRecursion && isset($result['Contents']) && is_array($result['Contents'])) {
             foreach ($result['Contents'] as $content) {
-                $fileIdentifier = $identifier . $content['Key'];
+                $fileIdentifier = $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
-                if (!isset($this->metaInfoCache[$fileIdentifier])) {
-                    $this->metaInfoCache[$fileIdentifier] = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content);
+                $cacheIdentifier = md5($fileIdentifier);
+                if (!$this->metaInfoCache->has($cacheIdentifier)) {
+                    $this->metaInfoCache->set($cacheIdentifier, $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content));
                 }
             }
         }
@@ -1529,7 +1536,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         // Amazon S3 lists max 1000 files, so we have to get all recursive
         if ($result['IsTruncated']) {
             $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];
-            $moreResults = $this->getListObjects($identifier, $overrideArgs);
+            $moreResults = $this->getListObjects($identifier, $overrideArgs, true);
             if (isset($moreResults['Contents'])) {
                 $result = $this->mergeResultArray($result, $moreResults, 'Contents');
             }

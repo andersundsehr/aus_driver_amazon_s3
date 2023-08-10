@@ -148,7 +148,7 @@ class ExtractorTest extends TestCase
     public function testExtractMetaDataIfRequired()
     {
         $file = $this->prophesize(File::class);
-        $mock = $this->getMockBuilder(Extractor::class)->setMethods(['getImageDimensionsOfRemoteFile'])->getMock();
+        $mock = $this->getMockBuilder(Extractor::class)->onlyMethods(['getImageDimensionsOfRemoteFile'])->getMock();
         $mock->expects($this->exactly(1))->method('getImageDimensionsOfRemoteFile')->willReturn([200, 100]);
         $this->assertEquals(
             [
@@ -165,7 +165,7 @@ class ExtractorTest extends TestCase
     public function testExtractNoMetaDataIfNotRequired()
     {
         $file = $this->prophesize(File::class);
-        $mock = $this->getMockBuilder(Extractor::class)->setMethods(['getImageDimensionsOfRemoteFile'])->getMock();
+        $mock = $this->getMockBuilder(Extractor::class)->onlyMethods(['getImageDimensionsOfRemoteFile'])->getMock();
         $mock->expects($this->exactly(0))->method('getImageDimensionsOfRemoteFile')->willReturn([200, 100]);
         $result = $mock->extractMetaData(
             $file->reveal(),

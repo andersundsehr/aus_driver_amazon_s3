@@ -118,9 +118,9 @@ class Extractor implements ExtractorInterface
 
     /**
      * @param FileInterface $file
-     * @return array|NULL
+     * @return array
      */
-    public function getImageDimensionsOfRemoteFile(FileInterface $file)
+    public function getImageDimensionsOfRemoteFile(FileInterface $file): array
     {
         $fileNameAndPath = $file->getForLocalProcessing(false);
         $imageInfo = GeneralUtility::makeInstance(ImageInfo::class, $fileNameAndPath);

@@ -35,28 +35,11 @@ class MetaDataUpdateServiceTest extends TestCase
     /**
      * @test
      */
-    public function testRecordUpdatedOrCreatedHandleImageFileType()
-    {
-        $file = $this->prophesize(File::class)->reveal();
-
-        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
-        $mock->expects($this->exactly(1))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
-        $mock->expects($this->exactly(1))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
-        $mock->updateMetadata([
-            'type' => File::FILETYPE_IMAGE,
-            'storage' => 42,
-            'identifier' => 'foo/bar.file',
-        ]);
-    }
-
-    /**
-     * @test
-     */
     public function testRecordUpdatedOrCreatedDoNotHandleUnknownFileType()
     {
         $file = $this->prophesize(File::class)->reveal();
 
-        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
+        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->onlyMethods(['getStorage', 'getExtractor'])->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
         $mock->updateMetadata([
@@ -73,7 +56,7 @@ class MetaDataUpdateServiceTest extends TestCase
     {
         $file = $this->prophesize(File::class)->reveal();
 
-        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
+        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->onlyMethods(['getStorage', 'getExtractor'])->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
         $mock->updateMetadata([

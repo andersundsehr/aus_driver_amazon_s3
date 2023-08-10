@@ -7,20 +7,21 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2022 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2023 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
 namespace AUS\AusDriverAmazonS3\Driver;
 
+use AUS\AusDriverAmazonS3\Event\GetFileForLocalProcessingEvent;
 use AUS\AusDriverAmazonS3\S3Adapter\MetaInfoDownloadAdapter;
 use AUS\AusDriverAmazonS3\S3Adapter\MultipartUploaderAdapter;
 use AUS\AusDriverAmazonS3\Service\CompatibilityService;
 use AUS\AusDriverAmazonS3\Service\FileNameService;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\Response;
@@ -39,8 +40,6 @@ use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -153,10 +152,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected $temporaryPaths = [];
 
-    /**
-     * @var Dispatcher
-     */
-    protected $signalSlotDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * @var CompatibilityService
@@ -169,9 +165,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param array $configuration
      * @param S3Client $s3Client
      */
-    public function __construct(array $configuration = [], $s3Client = null)
+    public function __construct(array $configuration = [], $s3Client = null, EventDispatcherInterface $eventDispatcher = null)
     {
         parent::__construct($configuration);
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $this->compatibilityService = GeneralUtility::makeInstance(CompatibilityService::class);
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
         $this->capabilities =
@@ -533,27 +530,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if (!is_file($temporaryPath)) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
         }
-        $this->emitGetFileForLocalProcessingSignal($fileIdentifier, $temporaryPath, $writable);
+        /** @var GetFileForLocalProcessingEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new GetFileForLocalProcessingEvent($fileIdentifier, $temporaryPath, $writable)
+        );
+        $temporaryPath = $event->getTemporaryPath();
         if (!isset($this->temporaryPaths[$temporaryPath])) {
             $this->temporaryPaths[$temporaryPath] = $temporaryPath;
         }
         return $temporaryPath;
-    }
-
-    /**
-     * @param string $fileIdentifier
-     * @param string $temporaryPath
-     * @param bool $writable
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     */
-    protected function emitGetFileForLocalProcessingSignal(&$fileIdentifier, &$temporaryPath, &$writable)
-    {
-        list($fileIdentifier, $temporaryPath, $writable) = $this->getSignalSlotDispatcher()->dispatch(
-            self::class,
-            'getFileForLocalProcessing',
-            [$fileIdentifier, $temporaryPath, $writable]
-        );
     }
 
     /**
@@ -1692,19 +1677,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             }
         }
         return true;
-    }
-
-    /**
-     * Get the SignalSlot dispatcher
-     *
-     * @return Dispatcher
-     */
-    protected function getSignalSlotDispatcher()
-    {
-        if (!isset($this->signalSlotDispatcher)) {
-            $this->signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        }
-        return $this->signalSlotDispatcher;
     }
 
     protected function mergeResultArray(array $initialArray, array $additions, string $arrayKey): array

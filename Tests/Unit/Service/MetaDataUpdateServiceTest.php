@@ -7,15 +7,15 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2023 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
-namespace AUS\AusDriverAmazonS3\Tests\Unit\Signal;
+namespace AUS\AusDriverAmazonS3\Tests\Unit\Service;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
-use AUS\AusDriverAmazonS3\Signal\FileIndexRepository;
+use AUS\AusDriverAmazonS3\Service\MetaDataUpdateService;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -26,28 +26,11 @@ use TYPO3\CMS\Core\Resource\ResourceStorage;
  * Class FileIndexRepositoryTest
  *
  * @author Markus Hölzle <typo3@markus-hoelzle.de>
- * @package AUS\AusDriverAmazonS3\Tests\Unit\Signal
+ * @package AUS\AusDriverAmazonS3\Tests\Unit\Service
  */
-class FileIndexRepositoryTest extends TestCase
+class MetaDataUpdateServiceTest extends TestCase
 {
     use ProphecyTrait;
-
-    /**
-     * @test
-     */
-    public function testRecordUpdatedOrCreatedHandleImageFileType()
-    {
-        $file = $this->prophesize(File::class)->reveal();
-
-        $mock = $this->getMockBuilder(FileIndexRepository::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
-        $mock->expects($this->exactly(1))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
-        $mock->expects($this->exactly(1))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
-        $mock->recordUpdatedOrCreated([
-            'type' => File::FILETYPE_IMAGE,
-            'storage' => 42,
-            'identifier' => 'foo/bar.file',
-        ]);
-    }
 
     /**
      * @test
@@ -56,10 +39,10 @@ class FileIndexRepositoryTest extends TestCase
     {
         $file = $this->prophesize(File::class)->reveal();
 
-        $mock = $this->getMockBuilder(FileIndexRepository::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
+        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->onlyMethods(['getStorage', 'getExtractor'])->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
-        $mock->recordUpdatedOrCreated([
+        $mock->updateMetadata([
             'type' => File::FILETYPE_UNKNOWN,
             'storage' => 42,
             'identifier' => 'foo/bar.file',
@@ -73,10 +56,10 @@ class FileIndexRepositoryTest extends TestCase
     {
         $file = $this->prophesize(File::class)->reveal();
 
-        $mock = $this->getMockBuilder(FileIndexRepository::class)->setMethods(['getStorage', 'getExtractor'])->getMock();
+        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->onlyMethods(['getStorage', 'getExtractor'])->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
-        $mock->recordUpdatedOrCreated([
+        $mock->updateMetadata([
             'type' => File::FILETYPE_APPLICATION,
             'storage' => 42,
             'identifier' => 'foo/bar.file',

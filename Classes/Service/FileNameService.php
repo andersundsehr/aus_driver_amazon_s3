@@ -44,7 +44,7 @@ class FileNameService implements SingletonInterface
      */
     public function sanitizeFileName(string $fileName, string $charset = ''): string
     {
-        $fileName = $this->getCharsetConversion()->specCharsToASCII('utf-8', $fileName);
+        $fileName = $this->getCharsetConversionObject()->specCharsToASCII('utf-8', $fileName);
         // Replace unwanted characters by underscores
         $cleanFileName = preg_replace(
             '/[' . $this->unsafeFilenameCharacterExpression . '\\xC0-\\xFF]/',
@@ -63,7 +63,7 @@ class FileNameService implements SingletonInterface
         return $cleanFileName;
     }
 
-    protected function getCharsetConversion(): CharsetConverter
+    protected function getCharsetConversionObject(): CharsetConverter
     {
         if (!isset($this->charsetConversion)) {
             $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);

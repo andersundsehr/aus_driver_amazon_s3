@@ -1,0 +1,19 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  AUS\AusDriverAmazonS3\:
+    resource: '../Classes/*'
+
+  AUS\AusDriverAmazonS3\EventListener\AfterFileAddedToIndexEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'ausDriverAmazonS3'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileAddedToIndexEvent
+  AUS\AusDriverAmazonS3\EventListener\AfterFileUpdatedInIndexEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'ausDriverAmazonS3'
+        event: TYPO3\CMS\Core\Resource\Event\AfterFileUpdatedInIndexEvent

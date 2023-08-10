@@ -24,6 +24,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
 /**
  * Class AmazonS3DriverTest
@@ -84,7 +85,8 @@ class AmazonS3DriverTest extends TestCase
         $GLOBALS['TYPO3_REQUEST'] = $request->reveal();
 
         $this->s3Client = $this->prophesize(S3Client::class);
-        $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal());
+        $eventDispatcher = $this->prophesize(EventDispatcher::class);
+        $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal(), $eventDispatcher->reveal());
         $this->driver->setStorageUid(42);
         $this->driver->initialize();
     }

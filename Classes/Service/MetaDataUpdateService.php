@@ -7,79 +7,63 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2020 Markus Hölzle <typo3@markus-hoelzle.de>
- * Stefan Lamm <s.lamm@andersundsehr.com>, anders und sehr GmbH
+ * (c) 2023 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
-namespace AUS\AusDriverAmazonS3\Signal;
+declare(strict_types=1);
+
+namespace AUS\AusDriverAmazonS3\Service;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
-use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Signals for metadata update
- *
- * @author Markus Hölzle <typo3@markus-hoelzle.de>
- * @author Stefan Lamm <s.lamm@andersundsehr.com>
- * @package AUS\AusDriverAmazonS3\Signal
+ * This class is used from event listeners to update the metadata
  */
-class FileIndexRepository
+class MetaDataUpdateService implements SingletonInterface
 {
-    /**
-     * @param array $data
-     * @return void|null
-     */
-    public function recordUpdatedOrCreated($data)
+    public function updateMetadata(array $fileProperties): void
     {
-        if ($data['type'] === File::FILETYPE_IMAGE) {
-            $storage = $this->getStorage((int) $data['storage']);
+        if ($fileProperties['type'] === AbstractFile::FILETYPE_IMAGE) {
+            $storage = $this->getStorage((int) $fileProperties['storage']);
 
             // only process on our driver type where data was missing
             if ($storage->getDriverType() !== AmazonS3Driver::DRIVER_TYPE) {
-                return null;
+                return;
             }
 
-            $file = $storage->getFile($data['identifier']);
+            $file = $storage->getFile($fileProperties['identifier']);
             $imageDimensions = $this->getExtractor()->getImageDimensionsOfRemoteFile($file);
 
             if ($imageDimensions !== null) {
                 $metaDataRepository = $this->getMetaDataRepository();
-                $metaData = $metaDataRepository->findByFileUid($data['uid']);
+                $metaData = $metaDataRepository->findByFileUid($fileProperties['uid']);
 
                 $metaData['width'] = $imageDimensions[0];
                 $metaData['height'] = $imageDimensions[1];
-                $metaDataRepository->update($data['uid'], $metaData);
+                $metaDataRepository->update($fileProperties['uid'], $metaData);
             }
         }
     }
 
-    /**
-     * @param int $uid
-     * @return ResourceStorage
-     */
     protected function getStorage(int $uid): ResourceStorage
     {
         return GeneralUtility::makeInstance(ResourceFactory::class)->getStorageObject($uid);
     }
 
-    /**
-     * @return \AUS\AusDriverAmazonS3\Index\Extractor
-     */
-    protected function getExtractor()
+    protected function getExtractor(): Extractor
     {
         return GeneralUtility::makeInstance(Extractor::class);
     }
 
-    /**
-     * @return \TYPO3\CMS\Core\Resource\Index\MetaDataRepository
-     */
-    protected function getMetaDataRepository()
+    protected function getMetaDataRepository(): MetaDataRepository
     {
         return GeneralUtility::makeInstance(MetaDataRepository::class);
     }

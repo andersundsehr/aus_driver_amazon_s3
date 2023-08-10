@@ -9,14 +9,17 @@
   },
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": ">=7.2",
-    "typo3/cms-core": "^10.4.11 || ^11.5.6",
-    "aws/aws-sdk-php": "^3.218"
+    "php": ">=7.4",
+    "typo3/cms-core": "^11.5.6 || ^12.4.5",
+    "aws/aws-sdk-php": "^3.278"
   },
   "require-dev": {
     "pluswerk/grumphp-config": "^5.0",
-    "typo3/testing-framework": "^4.1 || ^6.2",
-    "phpspec/prophecy-phpunit": "^2.0"
+    "typo3/testing-framework": "^7.0",
+    "phpspec/prophecy": "dev-master",
+    "phpspec/prophecy-phpunit": "dev-master",
+    "saschaegerer/phpstan-typo3": "^1.8.9",
+    "ssch/typo3-rector": "^1.3.5"
   },
   "autoload": {
     "psr-4": {
@@ -38,8 +41,10 @@
     "allow-plugins": {
       "typo3/class-alias-loader": true,
       "typo3/cms-composer-installers": true,
+      "phpstan/extension-installer": true,
       "phpro/grumphp": true,
-      "pluswerk/grumphp-config": true
+      "pluswerk/grumphp-config": true,
+      "ergebnis/composer-normalize": true
     }
   },
   "scripts": {
@@ -48,7 +53,7 @@
     ],
     "test": [
       "@setupTest",
-      "./Build/Scripts/runTests.sh -p '8.1' -s composerInstall && ./Build/Scripts/runTests.sh -p '8.1' -s composerValidate && ./Build/Scripts/runTests.sh -p '8.1' -s unit && ./Build/Scripts/runTests.sh -p '8.1' -s lint"
+      "./Build/Scripts/runTests.sh -p '8.2' -s composerInstall && ./Build/Scripts/runTests.sh -p '8.2' -s composerValidate && ./Build/Scripts/runTests.sh -p '8.2' -s unit && ./Build/Scripts/runTests.sh -p '8.2' -s lint"
     ]
   },
   "extra": {
@@ -58,10 +63,10 @@
       "web-dir": ".Build/Web"
     },
     "pluswerk/grumphp-config": {
-      "auto-setting": false
+      "auto-setting": true
     },
     "grumphp": {
-      "config-default-path": "grumphp.yml"
+      "config-default-path": "vendor/pluswerk/grumphp-config/grumphp.yml"
     }
   }
 }

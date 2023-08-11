@@ -1387,6 +1387,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         ];
         $this->s3Client->putObject(array_merge_recursive($args, $overrideArgs));
         $this->flushMetaInfoCache($identifier);
+        $this->resetRequestCache();
     }
 
     /**
@@ -1402,6 +1403,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->identifierMap[$identifier] = $newIdentifier;
         $this->flushMetaInfoCache($identifier);
         $this->flushMetaInfoCache($newIdentifier);
+        $this->resetRequestCache();
     }
 
     /**

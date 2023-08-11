@@ -492,7 +492,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     if ($this->isDir($object['Key'])) {
                         $subFolder = $this->getFolder($object['Key']);
                         if ($subFolder) {
-                            $this->deleteFolder($subFolder, $deleteRecursively);
+                            $this->deleteFolder($subFolder->getIdentifier(), $deleteRecursively);
                         }
                     } else {
                         unlink($this->getStreamWrapperPath($object['Key']));

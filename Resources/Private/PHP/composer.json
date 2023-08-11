@@ -1,11 +1,11 @@
 {
   "config": {
     "platform": {
-      "php": "7.2.0"
+      "php": "7.4.0"
     },
     "classmap-authoritative": true
   },
   "require": {
-    "aws/aws-sdk-php": "^3.218"
+    "aws/aws-sdk-php": "^3.278"
   }
 }

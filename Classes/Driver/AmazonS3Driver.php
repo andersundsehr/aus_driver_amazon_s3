@@ -855,7 +855,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                         $filenameFilterCallbacks,
                         $fileName,
                         $fileCandidate['Key'],
-                        $folderIdentifier
+                        dirname($fileCandidate['Key'])
                     )
                 ) {
                     continue;
@@ -919,7 +919,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     if (substr($key, -1) !== '/') {
                         continue;
                     }
-                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
+                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, dirname($folderName))) {
                         continue;
                     }
                     if ($folderName === $this->getProcessingFolder()) {
@@ -1659,20 +1659,24 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param string $itemName
      * @param string $itemIdentifier
      * @param string $parentIdentifier
-     * @throws \RuntimeException
      * @return bool
+     *@throws \RuntimeException
      */
-    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier)
+    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier): bool
     {
         foreach ($filterMethods as $filter) {
-            if (is_array($filter)) {
-                $result = call_user_func($filter, $itemName, $itemIdentifier, $parentIdentifier, [], $this);
-                // We have to use -1 as the „don't include“ return value, as call_user_func() will return FALSE
-                // If calling the method succeeded and thus we can't use that as a return value.
+            if (is_callable($filter)) {
+                $result = $filter($itemName, $itemIdentifier, $parentIdentifier, [], $this);
+                // We use -1 as the "don't include“ return value, for historic reasons,
+                // as call_user_func() used to return FALSE if calling the method failed.
                 if ($result === -1) {
                     return false;
-                } elseif ($result === false) {
-                    throw new \RuntimeException('Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1]);
+                }
+                if ($result === false) {
+                    throw new \RuntimeException(
+                        'Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1],
+                        1476046425
+                    );
                 }
             }
         }

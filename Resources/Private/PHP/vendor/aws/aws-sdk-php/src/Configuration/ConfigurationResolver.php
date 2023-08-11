@@ -31,18 +31,18 @@ class ConfigurationResolver
         $defaultValue,
         $expectedType,
         $config = []
-    )
-    {
+    ) {
         $envValue = self::env($key, $expectedType);
         if (!is_null($envValue)) {
             return $envValue;
         }
 
-        if (!isset($config['use_aws_shared_config_files'])
+        if (
+            !isset($config['use_aws_shared_config_files'])
             || $config['use_aws_shared_config_files'] != false
         ) {
             $iniValue = self::ini($key, $expectedType);
-            if(!is_null($iniValue)) {
+            if (!is_null($iniValue)) {
                 return $iniValue;
             }
         }
@@ -100,7 +100,8 @@ class ConfigurationResolver
         // Use INI_SCANNER_NORMAL instead of INI_SCANNER_TYPED for PHP 5.5 compatibility
         //TODO change after deprecation
         $data = @\Aws\parse_ini_file($filename, true, INI_SCANNER_NORMAL);
-        if ($data === false
+        if (
+            $data === false
             || !isset($data[$profile])
             || !isset($data[$profile][$key])
         ) {
@@ -164,13 +165,15 @@ class ConfigurationResolver
      */
     private static function convertType($value, $type)
     {
-        if ($type === 'bool'
+        if (
+            $type === 'bool'
             && !is_null($convertedValue = \Aws\boolean_value($value))
         ) {
             return $convertedValue;
         }
 
-        if ($type === 'int'
+        if (
+            $type === 'int'
             && filter_var($value, FILTER_VALIDATE_INT)
         ) {
             $value = intVal($value);

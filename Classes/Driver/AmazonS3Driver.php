@@ -106,9 +106,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      *
      * @var array[][]
      */
-    protected $requestCache = [
-        'listObjectsV2' => [],
-    ];
+    protected array $requestCache = [];
 
     /**
      * Object permissions are cached here in subarrays like:
@@ -221,6 +219,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->initializeBaseUrl()
             ->initializeSettings()
             ->initializeClient();
+        $this->resetRequestCache();
         // Test connection if we are in the edit view of this storage
         if (
             $this->compatibilityService->isBackend()
@@ -1279,6 +1278,18 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     }
 
     /**
+     * Initializes or flushes the request cache
+     *
+     * @return void
+     */
+    protected function resetRequestCache()
+    {
+        $this->requestCache = [
+            'listObjectsV2' => [],
+        ];
+    }
+
+    /**
      * @param string $identifier
      * @return mixed
      */
@@ -1338,10 +1349,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param string $identifier
      * @return bool
      */
-    protected function deleteObject($identifier)
+    protected function deleteObject(string $identifier): bool
     {
         $this->s3Client->deleteObject(['Bucket' => $this->configuration['bucket'], 'Key' => $identifier]);
         $this->flushMetaInfoCache($identifier);
+        $this->resetRequestCache();
         return !$this->s3Client->doesObjectExist($this->configuration['bucket'], $identifier);
     }
 

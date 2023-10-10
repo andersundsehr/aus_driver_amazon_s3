@@ -100,7 +100,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      *
      * @var FrontendInterface
      */
-    protected $metaInfoCache;
+    protected FrontendInterface $metaInfoCache;
 
     /**
      * Generic request -> response cache
@@ -108,7 +108,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      *
      * @var FrontendInterface
      */
-    protected array $requestCache = [];
+    protected FrontendInterface $requestCache;
 
     /**
      * Object permissions are cached here in subarrays like:
@@ -1291,9 +1291,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected function resetRequestCache()
     {
-        $this->requestCache = [
-            'listObjectsV2' => [],
-        ];
+        $this->requestCache->flush();
     }
 
     /**

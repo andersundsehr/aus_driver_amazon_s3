@@ -1240,7 +1240,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     'Key' => $identifier
                 ])->toArray();
                 $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-                $this->metaInfoCache->set($cacheIdentifier, $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata));
+                $metaInfo = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
+                $this->metaInfoCache->set($cacheIdentifier, $metaInfo);
+                return $metaInfo;
             } catch (\Exception $exc) {
                 // Ignore file not found errors
                 if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
@@ -1249,6 +1251,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     $logger->log(LogLevel::WARNING, $exc->getMessage(), $exc->getTrace());
                 }
                 $this->metaInfoCache->remove($cacheIdentifier);
+                return null;
             }
         }
         return $this->metaInfoCache->get($cacheIdentifier);
@@ -1281,7 +1284,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function flushMetaInfoCache($identifier)
     {
         $this->normalizeIdentifier($identifier);
-        $this->metaInfoCache->flush();
+        $cacheIdentifier = md5($identifier);
+        if ($this->metaInfoCache->has($cacheIdentifier)) {
+            $this->metaInfoCache->flush($cacheIdentifier);
+        }
     }
 
     /**

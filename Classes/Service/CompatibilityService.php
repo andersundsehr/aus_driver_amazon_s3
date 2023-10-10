@@ -33,10 +33,10 @@ class CompatibilityService implements SingletonInterface
     public function isBackend(): bool
     {
         if (Environment::isCli()) {
-            return true;
+            return false;
         }
-        return !isset($GLOBALS['TYPO3_REQUEST'])
-            || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
+        return isset($GLOBALS['TYPO3_REQUEST'])
+            && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**

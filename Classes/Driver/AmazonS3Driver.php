@@ -7,22 +7,23 @@
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- * (c) 2022 Markus Hölzle <typo3@markus-hoelzle.de>
+ * (c) 2023 Markus Hölzle <typo3@markus-hoelzle.de>
  *
  ***/
 
 namespace AUS\AusDriverAmazonS3\Driver;
 
+use AUS\AusDriverAmazonS3\Event\GetFileForLocalProcessingEvent;
 use AUS\AusDriverAmazonS3\S3Adapter\MetaInfoDownloadAdapter;
 use AUS\AusDriverAmazonS3\S3Adapter\MultipartUploaderAdapter;
 use AUS\AusDriverAmazonS3\Service\CompatibilityService;
 use AUS\AusDriverAmazonS3\Service\FileNameService;
 use Aws\S3\S3Client;
 use Aws\S3\StreamWrapper;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\Response;
@@ -41,8 +42,6 @@ use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -109,7 +108,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      *
      * @var FrontendInterface
      */
-    protected $requestCache;
+    protected array $requestCache = [];
 
     /**
      * Object permissions are cached here in subarrays like:
@@ -153,10 +152,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected $temporaryPaths = [];
 
-    /**
-     * @var Dispatcher
-     */
-    protected $signalSlotDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     /**
      * @var CompatibilityService
@@ -167,9 +163,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param array $configuration
      * @param S3Client $s3Client
      */
-    public function __construct(array $configuration = [], $s3Client = null)
+    public function __construct(array $configuration = [], $s3Client = null, EventDispatcherInterface $eventDispatcher = null)
     {
         parent::__construct($configuration);
+        $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $this->compatibilityService = GeneralUtility::makeInstance(CompatibilityService::class);
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
         $this->capabilities =
@@ -224,6 +221,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->initializeBaseUrl()
             ->initializeSettings()
             ->initializeClient();
+        $this->resetRequestCache();
         // Test connection if we are in the edit view of this storage
         if (
             $this->compatibilityService->isBackend()
@@ -496,7 +494,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     if ($this->isDir($object['Key'])) {
                         $subFolder = $this->getFolder($object['Key']);
                         if ($subFolder) {
-                            $this->deleteFolder($subFolder, $deleteRecursively);
+                            $this->deleteFolder($subFolder->getIdentifier(), $deleteRecursively);
                         }
                     } else {
                         unlink($this->getStreamWrapperPath($object['Key']));
@@ -533,27 +531,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if (!is_file($temporaryPath)) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
         }
-        $this->emitGetFileForLocalProcessingSignal($fileIdentifier, $temporaryPath, $writable);
+        /** @var GetFileForLocalProcessingEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new GetFileForLocalProcessingEvent($fileIdentifier, $temporaryPath, $writable)
+        );
+        $temporaryPath = $event->getTemporaryPath();
         if (!isset($this->temporaryPaths[$temporaryPath])) {
             $this->temporaryPaths[$temporaryPath] = $temporaryPath;
         }
         return $temporaryPath;
-    }
-
-    /**
-     * @param string $fileIdentifier
-     * @param string $temporaryPath
-     * @param bool $writable
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     */
-    protected function emitGetFileForLocalProcessingSignal(&$fileIdentifier, &$temporaryPath, &$writable)
-    {
-        [$fileIdentifier, $temporaryPath, $writable] = $this->getSignalSlotDispatcher()->dispatch(
-            self::class,
-            'getFileForLocalProcessing',
-            [$fileIdentifier, $temporaryPath, $writable]
-        );
     }
 
     /**
@@ -870,7 +856,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                         $filenameFilterCallbacks,
                         $fileName,
                         $fileCandidate['Key'],
-                        $folderIdentifier
+                        dirname($fileCandidate['Key'])
                     )
                 ) {
                     continue;
@@ -934,7 +920,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     if (substr($key, -1) !== '/') {
                         continue;
                     }
-                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, $folderIdentifier)) {
+                    if (!$this->applyFilterMethodsToDirectoryItem($folderNameFilterCallbacks, $folderName, $key, dirname($folderName))) {
                         continue;
                     }
                     if ($folderName === $this->getProcessingFolder()) {
@@ -1299,6 +1285,18 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     }
 
     /**
+     * Initializes or flushes the request cache
+     *
+     * @return void
+     */
+    protected function resetRequestCache()
+    {
+        $this->requestCache = [
+            'listObjectsV2' => [],
+        ];
+    }
+
+    /**
      * @param string $identifier
      * @return mixed
      */
@@ -1358,10 +1356,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param string $identifier
      * @return bool
      */
-    protected function deleteObject($identifier)
+    protected function deleteObject(string $identifier): bool
     {
         $this->s3Client->deleteObject(['Bucket' => $this->configuration['bucket'], 'Key' => $identifier]);
         $this->flushMetaInfoCache($identifier);
+        $this->resetRequestCache();
         return !$this->s3Client->doesObjectExist($this->configuration['bucket'], $identifier);
     }
 
@@ -1395,6 +1394,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         ];
         $this->s3Client->putObject(array_merge_recursive($args, $overrideArgs));
         $this->flushMetaInfoCache($identifier);
+        $this->resetRequestCache();
     }
 
     /**
@@ -1410,6 +1410,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->identifierMap[$identifier] = $newIdentifier;
         $this->flushMetaInfoCache($identifier);
         $this->flushMetaInfoCache($newIdentifier);
+        $this->resetRequestCache();
     }
 
     /**
@@ -1681,37 +1682,28 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param string $itemName
      * @param string $itemIdentifier
      * @param string $parentIdentifier
-     * @throws \RuntimeException
      * @return bool
+     *@throws \RuntimeException
      */
-    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier)
+    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier): bool
     {
         foreach ($filterMethods as $filter) {
-            if (is_array($filter)) {
-                $result = call_user_func($filter, $itemName, $itemIdentifier, $parentIdentifier, [], $this);
-                // We have to use -1 as the „don't include“ return value, as call_user_func() will return FALSE
-                // If calling the method succeeded and thus we can't use that as a return value.
+            if (is_callable($filter)) {
+                $result = $filter($itemName, $itemIdentifier, $parentIdentifier, [], $this);
+                // We use -1 as the "don't include“ return value, for historic reasons,
+                // as call_user_func() used to return FALSE if calling the method failed.
                 if ($result === -1) {
                     return false;
-                } elseif ($result === false) {
-                    throw new \RuntimeException('Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1]);
+                }
+                if ($result === false) {
+                    throw new \RuntimeException(
+                        'Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1],
+                        1476046425
+                    );
                 }
             }
         }
         return true;
-    }
-
-    /**
-     * Get the SignalSlot dispatcher
-     *
-     * @return Dispatcher
-     */
-    protected function getSignalSlotDispatcher()
-    {
-        if (!isset($this->signalSlotDispatcher)) {
-            $this->signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        }
-        return $this->signalSlotDispatcher;
     }
 
     protected function mergeResultArray(array $initialArray, array $additions, string $arrayKey): array

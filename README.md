@@ -1,8 +1,8 @@
 [![Packagist Release](https://img.shields.io/packagist/v/andersundsehr/aus-driver-amazon-s3.svg?style=flat-square)](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/andersundsehr/aus-driver-amazon-s3.svg?style=flat-square)](https://packagist.org/packages/andersundsehr/aus-driver-amazon-s3)
 [![GitHub License](https://img.shields.io/github/license/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://github.com/andersundsehr/aus_driver_amazon_s3/blob/master/LICENSE.txt)
-[![Travis](https://img.shields.io/travis/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://travis-ci.org/andersundsehr/aus_driver_amazon_s3)
 [![Code Climate](https://img.shields.io/codeclimate/tech-debt/andersundsehr/aus_driver_amazon_s3.svg?style=flat-square)](https://codeclimate.com/github/andersundsehr/aus_driver_amazon_s3)
+[![Contributors](https://img.shields.io/github/contributors/andersundsehr/aus_driver_amazon_s3?style=flat-square)](https://github.com/andersundsehr/aus_driver_amazon_s3/graphs/contributors)
 
 # TYPO3 Extension: Amazon AWS S3 FAL driver (CDN)
 
@@ -10,7 +10,7 @@ This is a driver for the file abstraction layer (FAL) to support Amazon AWS S3.
 
 You can create a file storage which allows you to upload/download and link the files to an AWS S3 bucket. It also supports the TYPO3 CMS image rendering.
 
-Requires TYPO3 10.4 - 11.5
+Requires TYPO3 11.5 - 12.4
 
 German blog post: [TYPO3 CDN with Amazon S3](https://www.andersundsehr.com/blog/typo3-performance-optimierung-durch-content-delivery-network-cdn/)
 

@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        php: ['8.0', '8.1']
+        php: ['8.0', '8.1', '8.2']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,4 +30,4 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
 
       - name: Unit tests
-        run: mkdir -p .Build/Web/typo3conf/ && ln -sfn ../../../../ .Build/Web/typo3conf/ext && Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
+        run: mkdir -p .Build/Web/typo3conf/ && rm -rf .Build/Web/typo3conf/ext && ln -sfn ../../../../ .Build/Web/typo3conf/ext && Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit

@@ -1506,7 +1506,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param array $overrideArgs
      * @return array
      */
-    protected function getListObjects($identifier, $overrideArgs = [], $inRecursion = false)
+    protected function getListObjects($identifier, $overrideArgs = [])
     {
         $args = [
             'Bucket' => $this->configuration['bucket'] ?? '',
@@ -1517,7 +1517,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
 
         // with many files we come to the recursion which lessens the home of a cache hit, so we do not create the cache here
-        if (!$inRecursion && isset($result['Contents']) && is_array($result['Contents'])) {
+        if (isset($result['Contents']) && is_array($result['Contents'])) {
             foreach ($result['Contents'] as $content) {
                 $fileIdentifier = $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
@@ -1535,7 +1535,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         // Amazon S3 lists max 1000 files, so we have to get all recursive
         if ($result['IsTruncated']) {
             $overrideArgs['ContinuationToken'] = $result['NextContinuationToken'];
-            $moreResults = $this->getListObjects($identifier, $overrideArgs, true);
+            $moreResults = $this->getListObjects($identifier, $overrideArgs);
             if (isset($moreResults['Contents'])) {
                 $result = $this->mergeResultArray($result, $moreResults, 'Contents');
             }

@@ -786,7 +786,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         return [
             'identifier' => $folderIdentifier,
             'name' => basename(rtrim($folderIdentifier, '/')),
-            'storage' => $this->storageUid
+            'storage' => $this->storageUid,
+            'mtime' => null,
         ];
     }
 

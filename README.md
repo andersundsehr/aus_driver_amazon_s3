@@ -73,6 +73,17 @@ Edit in “Extension Manager” the following extension settings:
 -   **doNotLoadAmazonLib** Don’t load Amazon AWS PHP SDK: If enabled, you have to include the SDK by yourself! (<http://aws.amazon.com/de/sdk-for-php/>)
 -   **enablePermissionsCheck** Check S3 permissions for each file and folder. This is disabled by default because it is very slow (TYPO3 has to make an AWS request for each file)
 
+### Cache Configuration
+
+# Customizing TYPO3 Cache Backends
+
+- `ausdriveramazons3_metainfocache` retains metadata from AWS S3 on a per-object basis. 
+- `ausdriveramazons3_requestcache` stores the complete response of a specific request, facilitating efficient data access and performance enhancement.
+
+By default, these caches are transient. However, if you choose to configure a persistent cache backend, it's crucial to remember that such a cache will not automatically recognize changes from the data source. In this case, it becomes your responsibility to implement the necessary updates manually.
+
+Detailed instructions on how to customize these cache backends can be found in the [TYPO3 CachingFramework Configuration Guide](https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/CachingFramework/Configuration/Index.html). Remember, thorough testing is essential when modifying cache backends.
+
 ## Extend Extension
 
 ### Initialize S3 Client

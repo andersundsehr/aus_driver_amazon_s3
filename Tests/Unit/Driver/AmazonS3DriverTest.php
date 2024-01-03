@@ -21,10 +21,12 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class AmazonS3DriverTest
@@ -83,7 +85,17 @@ class AmazonS3DriverTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getAttribute('applicationType')->willReturn(SystemEnvironmentBuilder::REQUESTTYPE_FE);
         $GLOBALS['TYPO3_REQUEST'] = $request->reveal();
-
+        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+        $cacheManager->setCacheConfigurations([
+            'ausdriveramazons3_metainfocache' => [
+                'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+            ],
+            'ausdriveramazons3_requestcache' => [
+                'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
+                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+            ]
+        ]);
         $this->s3Client = $this->prophesize(S3Client::class);
         $eventDispatcher = $this->prophesize(EventDispatcher::class);
         $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal(), $eventDispatcher->reveal());

@@ -221,7 +221,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->initializeBaseUrl()
             ->initializeSettings()
             ->initializeClient();
-        $this->resetRequestCache();
         // Test connection if we are in the edit view of this storage
         if (
             $this->compatibilityService->isBackend()
@@ -1229,32 +1228,34 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param string $identifier
      * @return array|null Returns an array with the meta info or "null"
      */
-    protected function getMetaInfo($identifier)
+    protected function getMetaInfo($identifier): ?array
     {
         $this->normalizeIdentifier($identifier);
         $cacheIdentifier = md5($identifier);
-        if (!$this->metaInfoCache->has($cacheIdentifier)) {
-            try {
-                $metadata = $this->s3Client->headObject([
-                    'Bucket' => $this->configuration['bucket'],
-                    'Key' => $identifier
-                ])->toArray();
-                $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-                $metaInfo = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
-                $this->metaInfoCache->set($cacheIdentifier, $metaInfo);
-                return $metaInfo;
-            } catch (\Exception $exc) {
-                // Ignore file not found errors
-                if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
-                    /** @var \TYPO3\CMS\Core\Log\Logger $logger */
-                    $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
-                    $logger->log(LogLevel::WARNING, $exc->getMessage(), $exc->getTrace());
-                }
-                $this->metaInfoCache->remove($cacheIdentifier);
-                return null;
-            }
+        $metaInfo = $this->metaInfoCache->has($cacheIdentifier) ? $this->metaInfoCache->get($cacheIdentifier) : false;
+        if ($metaInfo) {
+            return $metaInfo;
         }
-        return $this->metaInfoCache->get($cacheIdentifier);
+
+        try {
+            $metadata = $this->s3Client->headObject([
+                'Bucket' => $this->configuration['bucket'],
+                'Key' => $identifier
+            ])->toArray();
+            $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
+            $metaInfo = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
+            $this->metaInfoCache->set($cacheIdentifier, $metaInfo);
+            return $metaInfo;
+        } catch (\Exception $exc) {
+            // Ignore file not found errors
+            if (!$exc->getPrevious() || $exc->getPrevious()->getCode() !== 404) {
+                /** @var \TYPO3\CMS\Core\Log\Logger $logger */
+                $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+                $logger->log(LogLevel::WARNING, $exc->getMessage(), $exc->getTrace());
+            }
+            $this->metaInfoCache->remove($cacheIdentifier);
+            return null;
+        }
     }
 
     /**
@@ -1267,7 +1268,10 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $cacheIdentifier = md5($function) . '-' . md5(serialize($parameter));
 
         if ($this->requestCache->has($cacheIdentifier)) {
-            return $this->requestCache->get($cacheIdentifier);
+            $response = $this->requestCache->get($cacheIdentifier);
+            if (false !== $response) {
+                return $response;
+            }
         }
 
         $result = $this->s3Client->$function($parameter)->toArray();
@@ -1528,7 +1532,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 $fileIdentifier = $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
                 $cacheIdentifier = md5($fileIdentifier);
-                if (!$this->metaInfoCache->has($cacheIdentifier)) {
+                if (!$this->metaInfoCache->has($cacheIdentifier) || !$this->metaInfoCache->get($cacheIdentifier)) {
                     $this->metaInfoCache->set($cacheIdentifier, $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content));
                 }
             }

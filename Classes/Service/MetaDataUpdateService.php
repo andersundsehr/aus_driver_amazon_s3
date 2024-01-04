@@ -42,12 +42,15 @@ class MetaDataUpdateService implements SingletonInterface
             $file = $storage->getFile($fileProperties['identifier']);
             $imageDimensions = $this->getExtractor()->getImageDimensionsOfRemoteFile($file);
 
-            if ($imageDimensions !== null) {
-                $metaDataRepository = $this->getMetaDataRepository();
-                $metaData = $metaDataRepository->findByFileUid($fileProperties['uid']);
+            $metaDataRepository = $this->getMetaDataRepository();
+            $metaData = $metaDataRepository->findByFileUid($fileProperties['uid']);
 
-                $metaData['width'] = $imageDimensions[0];
-                $metaData['height'] = $imageDimensions[1];
+            $create = count($metaData) === 0;
+            $metaData['width'] = $imageDimensions[0];
+            $metaData['height'] = $imageDimensions[1];
+            if ($create) {
+                $metaDataRepository->createMetaDataRecord($fileProperties['uid'], $metaData);
+            } else {
                 $metaDataRepository->update($fileProperties['uid'], $metaData);
             }
         }

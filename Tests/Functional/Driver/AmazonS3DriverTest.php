@@ -61,6 +61,10 @@ class AmazonS3DriverTest extends FunctionalTestCase
                 'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
             ]
         ]);
+
+        $rc = new \ReflectionClass(AmazonS3Driver::class);
+        $rc->setStaticPropertyValue('settings', null);
+
         $this->driver = new AmazonS3Driver(
             $this->testConfiguration,
             null,
@@ -275,5 +279,52 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->assertEquals(5, $this->driver->setFileContents('write.txt', 'write'));
         $this->assertEquals('write', $this->driver->getFileContents('write.txt'));
         $this->assertTrue($this->driver->deleteFile('write.txt'));
+    }
+
+    public function testEnvStorageConfigurationGeneric()
+    {
+        $rc = new \ReflectionClass(AmazonS3Driver::class);
+        $rc->setStaticPropertyValue('settings', null);
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage'] = [
+            //define invalid host
+            'customHost' => 'http://minio:9001',
+        ];
+        $this->driver = new AmazonS3Driver(
+            $this->testConfiguration,
+            null,
+            GeneralUtility::makeInstance(NoopEventDispatcher::class)
+        );
+        $this->driver->setStorageUid(42);
+        $this->driver->initialize();
+
+        $this->expectException(\Aws\S3\Exception\S3Exception::class);
+        $this->expectExceptionMessageMatches('/.*Failed to connect to minio port 9001.*/');
+        $this->driver->getFileContents('23.txt');
+    }
+
+    public function testEnvStorageConfigurationUid()
+    {
+        $rc = new \ReflectionClass(AmazonS3Driver::class);
+        $rc->setStaticPropertyValue('settings', null);
+
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage'] = [
+            //define invalid host
+            'customHost' => 'http://minio:9001',
+        ];
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage_42'] = [
+            //define valid host specific for storage ID 42 that overrides the broken generic one
+            'customHost' => 'http://minio:9000',
+        ];
+
+        $this->driver = new AmazonS3Driver(
+            $this->testConfiguration,
+            null,
+            GeneralUtility::makeInstance(NoopEventDispatcher::class)
+        );
+        $this->driver->setStorageUid(42);
+        $this->driver->initialize();
+
+        $this->driver->getFileContents('23.txt');
     }
 }

@@ -1286,13 +1286,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param $identifier
      * @return void
      */
-    protected function flushMetaInfoCache($identifier)
+    protected function flushMetaInfoCache($identifier): void
     {
         $this->normalizeIdentifier($identifier);
         $cacheIdentifier = md5($identifier);
         if ($this->metaInfoCache->has($cacheIdentifier)) {
-            $this->metaInfoCache->flush($cacheIdentifier);
+            $this->metaInfoCache->remove($cacheIdentifier);
         }
+        $this->requestCache->flush();
     }
 
     /**

@@ -786,7 +786,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->normalizeIdentifier($folderIdentifier);
 
         return [
-            'identifier' => $folderIdentifier,
+            'identifier' => rtrim($folderIdentifier, '/') . '/',
             'name' => basename(rtrim($folderIdentifier, '/')),
             'storage' => $this->storageUid,
             'mtime' => null,
@@ -1381,7 +1381,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             return $this->getRootLevelFolder();
         }
         $this->normalizeIdentifier($identifier);
-        return new Folder($this->getStorage(), $identifier, basename(rtrim($identifier, '/')));
+        return new Folder($this->getStorage(), rtrim($identifier, '/') . '/', basename(rtrim($identifier, '/')));
     }
 
     /**

@@ -426,7 +426,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function moveFileWithinStorage($fileIdentifier, $targetFolderIdentifier, $newFileName)
     {
-        $targetIdentifier = $targetFolderIdentifier . $newFileName;
+        $targetIdentifier = $targetFolderIdentifier . '/' . $newFileName;
         $this->renameObject($fileIdentifier, $targetIdentifier);
         return $targetIdentifier;
     }
@@ -443,7 +443,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function copyFileWithinStorage($fileIdentifier, $targetFolderIdentifier, $fileName)
     {
-        $targetIdentifier = $targetFolderIdentifier . $fileName;
+        $targetIdentifier = $targetFolderIdentifier . '/' . $fileName;
         $this->copyObject($fileIdentifier, $targetIdentifier);
         return $targetIdentifier;
     }

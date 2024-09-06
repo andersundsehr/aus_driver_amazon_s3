@@ -139,13 +139,13 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "
@@ -182,13 +182,13 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
         fi
       "
@@ -222,13 +222,13 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
         fi
       "
@@ -253,13 +253,13 @@ services:
         fi
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
         fi
       "
@@ -297,13 +297,13 @@ services:
         fi
         php -v | grep '^PHP'
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "

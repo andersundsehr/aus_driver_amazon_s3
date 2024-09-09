@@ -22,6 +22,13 @@ services:
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid
 
+  minio:
+    image: minio/minio
+    user: ${HOST_UID}
+    command: server /minio-data
+    volumes:
+      - ../../.Build/minio-data:/minio-data
+
   composer_install:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
@@ -139,13 +146,13 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "
@@ -182,13 +189,13 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-mssql ${TEST_FILE};
         fi
       "
@@ -222,13 +229,13 @@ services:
         echo Database is up;
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-postgres ${TEST_FILE};
         fi
       "
@@ -236,6 +243,8 @@ services:
   functional_sqlite:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
+    links:
+      - minio
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
       - ${HOST_HOME}:${HOST_HOME}
@@ -253,13 +262,13 @@ services:
         fi
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/FunctionalTests.xml ${EXTRA_TEST_OPTIONS} --exclude-group not-sqlite ${TEST_FILE};
         fi
       "
@@ -297,13 +306,13 @@ services:
         fi
         php -v | grep '^PHP'
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          XDEBUG_MODE=\"off\" \
+          export XDEBUG_MODE=\"off\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         else
-          DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
-          XDEBUG_MODE=\"debug,develop\" \
-          XDEBUG_TRIGGER=\"foo\" \
-          XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\" \
+          export DOCKER_HOST=`route -n | awk '/^0.0.0.0/ { print $$2 }'`
+          export XDEBUG_MODE=\"debug,develop\"
+          export XDEBUG_TRIGGER=\"foo\"
+          export XDEBUG_CONFIG=\"client_port=${PHP_XDEBUG_PORT} client_host=$${DOCKER_HOST}\"
           bin/phpunit -c Web/typo3conf/ext/aus_driver_amazon_s3/Build/UnitTests.xml ${EXTRA_TEST_OPTIONS} ${TEST_FILE};
         fi
       "

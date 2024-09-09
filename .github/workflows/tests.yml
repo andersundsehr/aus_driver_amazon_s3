@@ -9,10 +9,10 @@ on:
 jobs:
   testsuite:
     name: all tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php: ['8.0', '8.1', '8.2']
+        php: ['8.1', '8.2']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -31,3 +31,6 @@ jobs:
 
       - name: Unit tests
         run: mkdir -p .Build/Web/typo3conf/ && rm -rf .Build/Web/typo3conf/ext && ln -sfn ../../../../ .Build/Web/typo3conf/ext && Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
+
+      - name: Functional tests
+        run: mkdir -p .Build/Web/typo3conf/ && rm -rf .Build/Web/typo3conf/ext && ln -sfn ../../../../ .Build/Web/typo3conf/ext && Build/Scripts/runTests.sh -p ${{ matrix.php }} -d sqlite -s functional

@@ -285,7 +285,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = [])
     {
-        if (in_array('mimetype', $propertiesToExtract)) {
+        if (count($propertiesToExtract) === 0 || in_array('mimetype', $propertiesToExtract)) {
             // force to reload the infos from S3 if the mime type was requested
             $this->flushMetaInfoCache($fileIdentifier);
         }
@@ -788,7 +788,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         return [
             'identifier' => $folderIdentifier,
             'name' => basename(rtrim($folderIdentifier, '/')),
-            'storage' => $this->storageUid
+            'storage' => $this->storageUid,
+            'mtime' => null,
         ];
     }
 
@@ -1486,7 +1487,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function getSubObjects($identifier, $recursive = true, $filter = self::FILTER_ALL)
     {
         $result = $this->getListObjects($identifier);
-        if (!is_array($result['Contents'])) {
+        if (!is_array($result['Contents'] ?? null)) {
             return [];
         }
         return array_filter($result['Contents'], function (&$object) use ($identifier, $recursive, $filter) {

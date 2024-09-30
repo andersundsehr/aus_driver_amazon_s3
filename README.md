@@ -84,6 +84,30 @@ By default, these caches are transient. However, if you choose to configure a pe
 
 Detailed instructions on how to customize these cache backends can be found in the [TYPO3 CachingFramework Configuration Guide](https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/CachingFramework/Configuration/Index.html). Remember, thorough testing is essential when modifying cache backends.
 
+Example with simple file backend; all changes through TYPO3
+```php
+[
+    'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+    'backend' => \TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend::class,
+    'groups' => [
+        'pages'
+    ],
+];
+```
+Example with redis
+```php
+[
+    'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+    'backend' => \TYPO3\CMS\Core\Cache\Backend\RedisBackend::class,
+    'options' => [
+        'defaultLifetime' => 0, // infinite
+        'database' => 0,
+        'hostname' => 'redis',
+        'port' => 6379,
+    ],
+];
+```
+
 ## Extend Extension
 
 ### Initialize S3 Client

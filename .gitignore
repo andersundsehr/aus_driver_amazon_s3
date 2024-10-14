@@ -4,3 +4,5 @@
 /Build/testing-docker/.env
 /Build/testing-docker/local/.env
 /var
+ 
+Build/testing-docker/minio-data/.minio.sys

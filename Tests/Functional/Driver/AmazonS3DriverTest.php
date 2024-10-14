@@ -61,6 +61,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
                 'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
             ]
         ]);
+        $this->testConfiguration['customHost'] = 'http://' . getenv('minioHost') . ':9000';
         $this->driver = new AmazonS3Driver(
             $this->testConfiguration,
             null,

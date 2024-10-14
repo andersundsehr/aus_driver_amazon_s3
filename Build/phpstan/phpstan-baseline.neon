@@ -1,0 +1,6 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Unable to resolve the template type T in call to method TYPO3\\\\CMS\\\\Extbase\\\\Persistence\\\\PersistenceManagerInterface\\:\\:createQueryForType\\(\\)$#"
+			count: 1
+			path: ../../Classes/Property/TypeConverters/HiddenCommentConverter.php

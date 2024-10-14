@@ -304,6 +304,8 @@ services:
         if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
           set -x
         fi
+        pwd
+        ls -la ${ROOT_DIR}/.Build/Web
         php -v | grep '^PHP'
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
           export XDEBUG_MODE=\"off\"

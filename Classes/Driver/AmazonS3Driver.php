@@ -111,6 +111,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected FrontendInterface $requestCache;
 
     /**
+     * To differentiate between multiple drivers
+     */
+    protected string $cachePrefix = '';
+
+    /**
      * Object permissions are cached here in subarrays like:
      * $identifier => ['r' => bool, 'w' => bool]
      *
@@ -1151,6 +1156,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $this->s3Client = new S3Client($configuration);
             StreamWrapper::register($this->s3Client, $this->streamWrapperProtocol);
         }
+
+        $this->cachePrefix = md5(
+            $configuration['endpoint']
+                ?? ($configuration['region'] . '-' . $this->configuration['bucket'])
+        ) . '-';
         return $this;
     }
 
@@ -1232,7 +1242,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function getMetaInfo($identifier): ?array
     {
         $this->normalizeIdentifier($identifier);
-        $cacheIdentifier = md5($identifier);
+        $cacheIdentifier = $this->cachePrefix . md5($identifier);
         $metaInfo = $this->metaInfoCache->has($cacheIdentifier) ? $this->metaInfoCache->get($cacheIdentifier) : false;
         if ($metaInfo) {
             return $metaInfo;
@@ -1266,7 +1276,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected function getCachedResponse($function, $parameter)
     {
-        $cacheIdentifier = md5($function) . '-' . md5(serialize($parameter));
+        $cacheIdentifier = $this->cachePrefix . md5($function) . '-' . md5(serialize($parameter));
 
         if ($this->requestCache->has($cacheIdentifier)) {
             $response = $this->requestCache->get($cacheIdentifier);
@@ -1289,7 +1299,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected function flushMetaInfoCache($identifier): void
     {
         $this->normalizeIdentifier($identifier);
-        $cacheIdentifier = md5($identifier);
+        $cacheIdentifier = $this->cachePrefix . md5($identifier);
         if ($this->metaInfoCache->has($cacheIdentifier)) {
             $this->metaInfoCache->remove($cacheIdentifier);
         }
@@ -1533,7 +1543,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             foreach ($result['Contents'] as $content) {
                 $fileIdentifier = $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
-                $cacheIdentifier = md5($fileIdentifier);
+                $cacheIdentifier = $this->cachePrefix . md5($fileIdentifier);
                 if (!$this->metaInfoCache->has($cacheIdentifier) || !$this->metaInfoCache->get($cacheIdentifier)) {
                     $this->metaInfoCache->set($cacheIdentifier, $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content));
                 }

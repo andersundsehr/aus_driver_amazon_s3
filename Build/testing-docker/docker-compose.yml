@@ -54,7 +54,7 @@ services:
       - /etc/group:/etc/group:ro
     working_dir: ${ROOT_DIR}
     command: >
-      /bin/sh -c "
+      /bin/sh -c '
         if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
           set -x
         fi
@@ -70,7 +70,7 @@ services:
         composer config --unset platform.php;
         composer update --no-progress --no-interaction;
         composer dumpautoload;
-      "
+      '
 
   composer_install_min:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
@@ -82,7 +82,7 @@ services:
       - /etc/group:/etc/group:ro
     working_dir: ${ROOT_DIR}
     command: >
-      /bin/sh -c "
+      /bin/sh -c '
         if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
           set -x
         fi
@@ -98,7 +98,7 @@ services:
         composer config platform.php ${PHP_VERSION}.0;
         composer update --prefer-lowest --no-progress --no-interaction;
         composer dumpautoload;
-      "
+      '
 
   composer_validate:
     image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest

@@ -100,8 +100,6 @@ class AmazonS3DriverTest extends FunctionalTestCase
 
         $this->assertTrue($this->driver->deleteFolder('tmp-dir/'));
         $this->assertFalse($this->driver->folderExists('tmp-dir'));
-
-        $this->markTestSkipped('deleteFolder("tmp-dir/") fails currently');
     }
 
     public function testFileExists()
@@ -126,7 +124,8 @@ class AmazonS3DriverTest extends FunctionalTestCase
 
     public function testFolderExistsInFolder()
     {
-        $this->markTestSkipped('Currently broken: leading slash must be removed');
+        $this->assertTrue($this->driver->folderExistsInFolder('subfolder11', 'folder1'));
+
         $this->assertTrue(
             $this->driver->folderExistsInFolder(
                 'images',
@@ -198,14 +197,12 @@ class AmazonS3DriverTest extends FunctionalTestCase
 
     public function testIsFolderEmptySlash()
     {
-        $this->markTestSkipped('Currently broken');
         $this->assertCount(1, $this->driver->getFilesInFolder('images/'));
         $this->assertFalse($this->driver->isFolderEmpty('images/'));
     }
 
     public function testIsFolderEmptyNoSlash()
     {
-        $this->markTestSkipped('Slash is not added automatically');
         $this->assertCount(1, $this->driver->getFilesInFolder('images'));
         $this->assertFalse($this->driver->isFolderEmpty('images'));
     }
@@ -258,8 +255,6 @@ class AmazonS3DriverTest extends FunctionalTestCase
 
     public function testMoveFileWithinStorageSubfolderNoSlash()
     {
-        $this->markTestSkipped('moving to "images" folder with slash fails currently');
-
         $this->assertTrue($this->driver->fileExists('23.txt'));
         $this->assertFalse($this->driver->fileExists('images/movetarget.txt'));
         $this->assertEquals(

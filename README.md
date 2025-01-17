@@ -77,7 +77,7 @@ Edit in “Extension Manager” the following extension settings:
 
 # Customizing TYPO3 Cache Backends
 
-- `ausdriveramazons3_metainfocache` retains metadata from AWS S3 on a per-object basis. 
+- `ausdriveramazons3_metainfocache` retains metadata from AWS S3 on a per-object basis.
 - `ausdriveramazons3_requestcache` stores the complete response of a specific request, facilitating efficient data access and performance enhancement.
 
 By default, these caches are transient. However, if you choose to configure a persistent cache backend, it's crucial to remember that such a cache will not automatically recognize changes from the data source. In this case, it becomes your responsibility to implement the necessary updates manually.
@@ -170,3 +170,10 @@ You can modify the parameter "cacheControl" as you wish. Please Notice: AWS S3 s
 ### More
 
 If you wish other hooks - don’t be shy: [GitHub issue tracking: Amazon S3 FAL Driver](https://github.com/andersundsehr/aus_driver_amazon_s3/issues)
+
+
+# Development
+
+## Running tests
+
+Run `make tests` to run both unit and functional tests.

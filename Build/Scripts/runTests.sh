@@ -243,7 +243,9 @@ case ${TEST_SUITE} in
                 # root if docker creates it. Thank you, docker. We create the path beforehand
                 # to avoid permission issues.
                 mkdir -p ${ROOT_DIR}/.Build/Web/typo3temp/var/tests/functional-sqlite-dbs/
-                docker compose run functional_sqlite
+                rm -rf ${ROOT_DIR}/.Build/minio-data || true
+                cp -a ${ROOT_DIR}/Build/testing-docker/minio-data ${ROOT_DIR}/.Build/minio-data
+                docker compose run --rm functional_sqlite
                 SUITE_EXIT_CODE=$?
                 ;;
             *)

@@ -70,7 +70,7 @@ class StreamRequestPayloadMiddleware
                     if (is_null($size)) {
                         throw new IncalculablePayloadException('Payload'
                             . ' content length is required and can not be'
-                            . ' calculated.');
+                            . ' calculated.', 7431266226);
                     }
                     $request = $request->withHeader(
                         'content-length',

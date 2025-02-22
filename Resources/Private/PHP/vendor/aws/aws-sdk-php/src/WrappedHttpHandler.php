@@ -82,7 +82,7 @@ class WrappedHttpHandler
             };
         } elseif (isset($options['http_stats_receiver'])) {
             throw new \InvalidArgumentException('Providing a custom HTTP stats'
-                . ' receiver to Aws\WrappedHttpHandler is not supported.');
+                . ' receiver to Aws\WrappedHttpHandler is not supported.', 1981803755);
         }
 
         return Promise\Create::promiseFor($fn($request, $options))
@@ -163,7 +163,7 @@ class WrappedHttpHandler
         array $stats
     ) {
         if (!isset($err['exception'])) {
-            throw new \RuntimeException('The HTTP handler was rejected without an "exception" key value pair.');
+            throw new \RuntimeException('The HTTP handler was rejected without an "exception" key value pair.', 4410474200);
         }
 
         $serviceError = "AWS HTTP error: " . $err['exception']->getMessage();

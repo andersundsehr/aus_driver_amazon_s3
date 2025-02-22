@@ -94,7 +94,7 @@ trait S3ClientTrait
     /**
      * @see S3ClientInterface::registerStreamWrapper()
      */
-    public function registerStreamWrapper()
+    public function registerStreamWrapper(): void
     {
         StreamWrapper::register($this);
     }
@@ -102,7 +102,7 @@ trait S3ClientTrait
     /**
      * @see S3ClientInterface::registerStreamWrapperV2()
      */
-    public function registerStreamWrapperV2()
+    public function registerStreamWrapperV2(): void
     {
         StreamWrapper::register(
             $this,
@@ -120,7 +120,7 @@ trait S3ClientTrait
         $prefix = '',
         $regex = '',
         array $options = []
-    ) {
+    ): void {
         $this->deleteMatchingObjectsAsync($bucket, $prefix, $regex, $options)
             ->wait();
     }
@@ -161,7 +161,7 @@ trait S3ClientTrait
         $bucket,
         $keyPrefix = null,
         array $options = []
-    ) {
+    ): void {
         $this->uploadDirectoryAsync($directory, $bucket, $keyPrefix, $options)
             ->wait();
     }
@@ -187,7 +187,7 @@ trait S3ClientTrait
         $bucket,
         $keyPrefix = '',
         array $options = []
-    ) {
+    ): void {
         $this->downloadBucketAsync($directory, $bucket, $keyPrefix, $options)
             ->wait();
     }

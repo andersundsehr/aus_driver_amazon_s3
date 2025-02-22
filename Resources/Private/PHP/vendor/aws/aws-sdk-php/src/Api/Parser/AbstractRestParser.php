@@ -71,7 +71,7 @@ abstract class AbstractRestParser extends AbstractParser
         StructureShape $output,
         ResponseInterface $response,
         array &$result
-    ) {
+    ): void {
         $member = $output->getMember($payload);
 
         if (!empty($member['eventstream'])) {
@@ -98,7 +98,7 @@ abstract class AbstractRestParser extends AbstractParser
         Shape $shape,
         ResponseInterface $response,
         &$result
-    ) {
+    ): void {
         $value = $response->getHeaderLine($shape['locationName'] ?: $name);
 
         switch ($shape->getType()) {
@@ -156,7 +156,7 @@ abstract class AbstractRestParser extends AbstractParser
         Shape $shape,
         ResponseInterface $response,
         &$result
-    ) {
+    ): void {
         // Check if the headers are prefixed by a location name
         $result[$name] = [];
         $prefix = $shape['locationName'];
@@ -178,7 +178,7 @@ abstract class AbstractRestParser extends AbstractParser
         $name,
         ResponseInterface $response,
         array &$result
-    ) {
+    ): void {
         $result[$name] = (int) $response->getStatusCode();
     }
 }

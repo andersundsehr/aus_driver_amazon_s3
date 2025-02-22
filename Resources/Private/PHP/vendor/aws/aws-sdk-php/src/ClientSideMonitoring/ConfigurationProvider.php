@@ -231,6 +231,6 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         }
 
         throw new \InvalidArgumentException('Not a valid CSM configuration '
-            . 'argument.');
+            . 'argument.', 4337575747);
     }
 }

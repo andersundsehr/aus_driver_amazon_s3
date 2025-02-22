@@ -97,7 +97,7 @@ class Marshaler
         $data = json_decode($json);
         if (!($data instanceof \stdClass)) {
             throw new \InvalidArgumentException(
-                'The JSON document must be valid and be an object at its root.'
+                'The JSON document must be valid and be an object at its root.', 8141307247
             );
         }
 
@@ -295,7 +295,7 @@ class Marshaler
                 return new SetValue($value);
         }
 
-        throw new \UnexpectedValueException("Unexpected type: {$type}.");
+        throw new \UnexpectedValueException("Unexpected type: {$type}.", 5367673966);
     }
 
     /**
@@ -315,6 +315,6 @@ class Marshaler
             return ['NULL' => true];
         }
 
-        throw new \UnexpectedValueException("Marshaling error: {$message}.");
+        throw new \UnexpectedValueException("Marshaling error: {$message}.", 3349777528);
     }
 }

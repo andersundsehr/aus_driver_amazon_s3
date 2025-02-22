@@ -38,7 +38,7 @@ class TreeHash implements HashInterface
         // Error if hash is already calculated.
         if ($this->hash) {
             throw new \LogicException('You may not add more data to a '
-                . 'complete tree hash.');
+                . 'complete tree hash.', 8111537573);
         }
 
         // Buffer incoming data.
@@ -68,7 +68,7 @@ class TreeHash implements HashInterface
         // Error if hash is already calculated
         if ($this->hash) {
             throw new \LogicException('You may not add more checksums to a '
-                . 'complete tree hash.');
+                . 'complete tree hash.', 3448343554);
         }
 
         // Convert the checksum to binary form if necessary
@@ -109,7 +109,7 @@ class TreeHash implements HashInterface
         return $this->hash;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->hash = null;
         $this->checksums = [];

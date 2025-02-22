@@ -105,7 +105,7 @@ trait DecryptionTraitV2
         $cipherTextSize = $cipherText->getSize();
         if ($cipherTextSize == null || $cipherTextSize <= 0) {
             throw new \RuntimeException('Cannot decrypt a stream of unknown'
-                . ' size.');
+                . ' size.', 2683863871);
         }
         return (string) new LimitStream(
             $cipherText,
@@ -121,7 +121,7 @@ trait DecryptionTraitV2
         $cipherTextSize = $cipherText->getSize();
         if ($cipherTextSize == null || $cipherTextSize <= 0) {
             throw new \RuntimeException('Cannot decrypt a stream of unknown'
-                . ' size.');
+                . ' size.', 4539484719);
         }
         return new LimitStream(
             $cipherText,
@@ -130,7 +130,7 @@ trait DecryptionTraitV2
         );
     }
 
-    private function validateOptionsAndEnvelope($options, $envelope)
+    private function validateOptionsAndEnvelope($options, $envelope): void
     {
         $allowedCiphers = AbstractCryptoClientV2::$supportedCiphers;
         $allowedKeywraps = AbstractCryptoClientV2::$supportedKeyWraps;
@@ -158,7 +158,7 @@ trait DecryptionTraitV2
                 . " the cipher '{$options['@CipherOptions']['Cipher']}', which is not"
                 . " supported for decryption with the selected security profile."
                 . " This profile allows decryption with: "
-                . implode(", ", $allowedCiphers));
+                . implode(", ", $allowedCiphers), 3976969064);
         }
         if (!in_array(
             $envelope[MetadataEnvelope::KEY_WRAP_ALGORITHM_HEADER],
@@ -173,7 +173,7 @@ trait DecryptionTraitV2
             throw new CryptoException("The requested object is encrypted with"
                 . " the keywrap schema '{$envelope[MetadataEnvelope::KEY_WRAP_ALGORITHM_HEADER]}',"
                 . " which is not supported for decryption with the current security"
-                . " profile.");
+                . " profile.", 6196588311);
         }
 
         $matdesc = json_decode(
@@ -187,7 +187,7 @@ trait DecryptionTraitV2
             throw new CryptoException("There is a mismatch in specified content"
                 . " encryption algrithm between the materials description value"
                 . " and the metadata envelope value: {$matdesc['aws:x-amz-cek-alg']}"
-                . " vs. {$envelope[MetadataEnvelope::CONTENT_CRYPTO_SCHEME_HEADER]}.");
+                . " vs. {$envelope[MetadataEnvelope::CONTENT_CRYPTO_SCHEME_HEADER]}.", 7829126608);
         }
     }
 

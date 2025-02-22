@@ -94,7 +94,7 @@ class AesGcmDecryptingStream implements AesStreamInterface
             );
             if ($result === false) {
                 throw new CryptoException('The requested object could not be'
-                    . ' decrypted due to an invalid authentication tag.');
+                    . ' decrypted due to an invalid authentication tag.', 9271500829);
             }
             return Psr7\Utils::streamFor($result);
         }

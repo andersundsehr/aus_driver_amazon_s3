@@ -30,7 +30,7 @@ class TimestampShape extends Shape
             $value = strtotime($value);
         } elseif (!is_int($value)) {
             throw new \InvalidArgumentException('Unable to handle the provided'
-                . ' timestamp type: ' . gettype($value));
+                . ' timestamp type: ' . gettype($value), 6344279467);
         }
 
         switch ($format) {
@@ -42,7 +42,7 @@ class TimestampShape extends Shape
                 return $value;
             default:
                 throw new \UnexpectedValueException('Unknown timestamp format: '
-                    . $format);
+                    . $format, 4681255418);
         }
     }
 }

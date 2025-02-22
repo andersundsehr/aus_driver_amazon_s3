@@ -89,21 +89,21 @@ class Transfer implements PromisorInterface
         } elseif ($source instanceof Iterator) {
             if (empty($options['base_dir'])) {
                 throw new \InvalidArgumentException('You must provide the source'
-                    . ' argument as a string or provide the "base_dir" option.');
+                    . ' argument as a string or provide the "base_dir" option.', 8504359720);
             }
 
             $this->sourceMetadata = $this->prepareTarget($options['base_dir']);
             $this->source = $source;
         } else {
             throw new \InvalidArgumentException('source must be the path to a '
-                . 'directory or an iterator that yields file names.');
+                . 'directory or an iterator that yields file names.', 9690081559);
         }
 
         // Validate schemes.
         if ($this->sourceMetadata['scheme'] === $this->destination['scheme']) {
             throw new \InvalidArgumentException("You cannot copy from"
                 . " {$this->sourceMetadata['scheme']} to"
-                . " {$this->destination['scheme']}."
+                . " {$this->destination['scheme']}.", 9722269955
             );
         }
 
@@ -115,14 +115,14 @@ class Transfer implements PromisorInterface
             ? $options['mup_threshold']
             : 16777216;
         if ($this->mupThreshold < MultipartUploader::PART_MIN_SIZE) {
-            throw new \InvalidArgumentException('mup_threshold must be >= 5MB');
+            throw new \InvalidArgumentException('mup_threshold must be >= 5MB', 9438596909);
         }
 
         // Handle "before" callback option.
         if (isset($options['before'])) {
             $this->before = $options['before'];
             if (!is_callable($this->before)) {
-                throw new \InvalidArgumentException('before must be a callable.');
+                throw new \InvalidArgumentException('before must be a callable.', 6063841806);
             }
         }
 
@@ -162,7 +162,7 @@ class Transfer implements PromisorInterface
     /**
      * Transfers the files synchronously.
      */
-    public function transfer()
+    public function transfer(): void
     {
         $this->promise()->wait();
     }
@@ -175,7 +175,7 @@ class Transfer implements PromisorInterface
         ];
 
         if ($target['scheme'] !== 's3' && $target['scheme'] !== 'file') {
-            throw new \InvalidArgumentException('Scheme must be "s3" or "file".');
+            throw new \InvalidArgumentException('Scheme must be "s3" or "file".', 8763569645);
         }
 
         return $target;
@@ -274,7 +274,7 @@ class Transfer implements PromisorInterface
             // Create the directory if needed.
             $dir = dirname($sink);
             if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
-                throw new \RuntimeException("Could not create dir: {$dir}");
+                throw new \RuntimeException("Could not create dir: {$dir}", 9603465118);
             }
 
             // Create the command.
@@ -386,7 +386,7 @@ class Transfer implements PromisorInterface
         return $relative_file_path;
     }
 
-    private function addDebugToBefore($debug)
+    private function addDebugToBefore($debug): void
     {
         $before = $this->before;
         $sourcePath = $this->sourceMetadata['path'];
@@ -421,7 +421,7 @@ class Transfer implements PromisorInterface
                     break;
                 default:
                     throw new \UnexpectedValueException(
-                        "Transfer encountered an unexpected operation: {$operation}."
+                        "Transfer encountered an unexpected operation: {$operation}.", 5593026955
                     );
             }
 

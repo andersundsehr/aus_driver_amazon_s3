@@ -18,7 +18,7 @@ class RuleCreator
             default:
                 throw new UnresolvedEndpointException(
                     'Unknown rule type ' . $type .
-                    ' must be of type `endpoint`, `tree` or `error`'
+                    ' must be of type `endpoint`, `tree` or `error`', 5534015601
                 );
         }
     }

@@ -134,7 +134,7 @@ abstract class AbstractUploader extends AbstractUploadManager
         // Create a source stream.
         $stream = Psr7\Utils::streamFor($source);
         if (!$stream->isReadable()) {
-            throw new IAE('Source stream must be readable.');
+            throw new IAE('Source stream must be readable.', 8942433291);
         }
 
         return $stream;

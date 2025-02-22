@@ -63,7 +63,7 @@ class Utils
         }
 
         throw new \InvalidArgumentException(
-            'Unable to determine JMESPath type from ' . get_class($arg)
+            'Unable to determine JMESPath type from ' . get_class($arg), 4406266055
         );
     }
 
@@ -193,7 +193,7 @@ class Utils
     public static function slice($value, $start = null, $stop = null, $step = 1)
     {
         if (!is_array($value) && !is_string($value)) {
-            throw new \InvalidArgumentException('Expects string or array');
+            throw new \InvalidArgumentException('Expects string or array', 4346366594);
         }
 
         return self::sliceIndices($value, $start, $stop, $step);
@@ -218,7 +218,7 @@ class Utils
         if ($step === null) {
             $step = 1;
         } elseif ($step === 0) {
-            throw new \RuntimeException('step cannot be 0');
+            throw new \RuntimeException('step cannot be 0', 4803833676);
         }
 
         if ($start === null) {

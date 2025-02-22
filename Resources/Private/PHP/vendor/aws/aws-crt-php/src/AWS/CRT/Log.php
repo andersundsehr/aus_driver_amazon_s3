@@ -15,33 +15,33 @@ final class Log {
     const DEBUG = 5;
     const TRACE = 6;
 
-    public static function toStdout() {
+    public static function toStdout(): void {
         CRT::log_to_stdout();
     }
 
-    public static function toStderr() {
+    public static function toStderr(): void {
         CRT::log_to_stderr();
     }
 
-    public static function toFile($filename) {
+    public static function toFile($filename): void {
         CRT::log_to_file($filename);
     }
 
-    public static function toStream($stream) {
+    public static function toStream($stream): void {
         assert(get_resource_type($stream) == "stream");
         CRT::log_to_stream($stream);
     }
 
-    public static function stop() {
+    public static function stop(): void {
         CRT::log_stop();
     }
 
-    public static function setLogLevel($level) {
+    public static function setLogLevel($level): void {
         assert($level >= self::NONE && $level <= self::TRACE);
         CRT::log_set_level($level);
     }
 
-    public static function log($level, $message) {
+    public static function log($level, $message): void {
         CRT::log_message($level, $message);
     }
 }

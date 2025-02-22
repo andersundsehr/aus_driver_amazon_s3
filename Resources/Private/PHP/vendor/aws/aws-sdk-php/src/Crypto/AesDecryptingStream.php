@@ -109,7 +109,7 @@ class AesDecryptingStream implements AesStreamInterface
             $this->stream->seek(0, SEEK_SET);
         } else {
             throw new LogicException('AES encryption streams only support being'
-                . ' rewound, not arbitrary seeking.');
+                . ' rewound, not arbitrary seeking.', 9125839574);
         }
     }
 

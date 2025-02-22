@@ -64,7 +64,7 @@ class Arn implements ArnInterface
             $this->data = static::parse($data);
         } else {
             throw new InvalidArnException('Constructor accepts a string or an'
-                . ' array as an argument.');
+                . ' array as an argument.', 1620237408);
         }
 
         static::validate($this->data);
@@ -131,24 +131,24 @@ class Arn implements ArnInterface
     {
         if ($data['arn'] !== 'arn') {
             throw new InvalidArnException("The 1st component of an ARN must be"
-                . " 'arn'.");
+                . " 'arn'.", 8682202401);
         }
 
         if (empty($data['partition'])) {
             throw new InvalidArnException("The 2nd component of an ARN"
-                . " represents the partition and must not be empty.");
+                . " represents the partition and must not be empty.", 8754527808);
         }
 
         if (empty($data['service'])) {
             throw new InvalidArnException("The 3rd component of an ARN"
-                . " represents the service and must not be empty.");
+                . " represents the service and must not be empty.", 8508898672);
         }
 
         if (empty($data['resource'])) {
             throw new InvalidArnException("The 6th component of an ARN"
                 . " represents the resource information and must not be empty."
                 . " Individual service ARNs may include additional delimiters"
-                . " to further qualify resources.");
+                . " to further qualify resources.", 3901305207);
         }
     }
 
@@ -157,7 +157,7 @@ class Arn implements ArnInterface
         if (!self::isValidHostLabel($data['account_id'])) {
             throw new InvalidArnException("The 5th component of a {$arnName}"
                 . " is required, represents the account ID, and"
-                . " must be a valid host label.");
+                . " must be a valid host label.", 6410595774);
         }
     }
 
@@ -165,7 +165,7 @@ class Arn implements ArnInterface
     {
         if (empty($data['region'])) {
             throw new InvalidArnException("The 4th component of a {$arnName}"
-                . " represents the region and must not be empty.");
+                . " represents the region and must not be empty.", 7007147803);
         }
     }
 

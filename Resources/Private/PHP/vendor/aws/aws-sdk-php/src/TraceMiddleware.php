@@ -122,7 +122,7 @@ class TraceMiddleware
         };
     }
 
-    private function stepInput($entry)
+    private function stepInput($entry): void
     {
         static $keys = ['command', 'request'];
         $this->compareStep($this->prevInput, $entry, '-> Entering', $keys);
@@ -130,7 +130,7 @@ class TraceMiddleware
         $this->prevInput = $entry;
     }
 
-    private function stepOutput($start, $entry)
+    private function stepOutput($start, $entry): void
     {
         static $keys = ['result', 'error'];
         $this->compareStep($this->prevOutput, $entry, '<- Leaving', $keys);
@@ -139,7 +139,7 @@ class TraceMiddleware
         $this->prevOutput = $entry;
     }
 
-    private function compareStep(array $a, array $b, $title, array $keys)
+    private function compareStep(array $a, array $b, $title, array $keys): void
     {
         $changes = [];
         foreach ($keys as $key) {
@@ -227,7 +227,7 @@ class TraceMiddleware
         return $result;
     }
 
-    private function compareArray($a, $b, $path, array &$diff)
+    private function compareArray($a, $b, $path, array &$diff): void
     {
         if ($a === $b) {
             return;
@@ -276,14 +276,14 @@ class TraceMiddleware
             : 'stream(size=' . $body->getSize() . ')';
     }
 
-    private function createHttpDebug(CommandInterface $command)
+    private function createHttpDebug(CommandInterface $command): void
     {
         if ($this->config['http'] && !isset($command['@http']['debug'])) {
             $command['@http']['debug'] = fopen('php://temp', 'w+');
         }
     }
 
-    private function flushHttpDebug(CommandInterface $command)
+    private function flushHttpDebug(CommandInterface $command): void
     {
         if ($res = $command['@http']['debug']) {
             if (is_resource($res)) {
@@ -295,7 +295,7 @@ class TraceMiddleware
         }
     }
 
-    private function write($value)
+    private function write($value): void
     {
         if ($this->config['scrub_auth']) {
             foreach ($this->config['auth_strings'] as $pattern => $replacement) {

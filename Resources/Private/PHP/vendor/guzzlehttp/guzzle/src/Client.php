@@ -59,7 +59,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         if (!isset($config['handler'])) {
             $config['handler'] = HandlerStack::create();
         } elseif (!\is_callable($config['handler'])) {
-            throw new InvalidArgumentException('handler must be a callable');
+            throw new InvalidArgumentException('handler must be a callable', 1857644377);
         }
 
         // Convert the base_uri to a UriInterface
@@ -81,7 +81,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
     public function __call($method, $args)
     {
         if (\count($args) < 1) {
-            throw new InvalidArgumentException('Magic request methods require a URI and optional options array');
+            throw new InvalidArgumentException('Magic request methods require a URI and optional options array', 4670674487);
         }
 
         $uri = $args[0];
@@ -298,7 +298,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
                 $defaults['_conditional'] = [];
                 unset($options['headers']);
             } elseif (!\is_array($options['headers'])) {
-                throw new InvalidArgumentException('headers must be an array');
+                throw new InvalidArgumentException('headers must be an array', 1553415978);
             }
         }
 
@@ -347,7 +347,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
 
         if (isset($options['headers'])) {
             if (array_keys($options['headers']) === range(0, count($options['headers']) - 1)) {
-                throw new InvalidArgumentException('The headers array must have header name as keys.');
+                throw new InvalidArgumentException('The headers array must have header name as keys.', 8902591830);
             }
             $modify['set_headers'] = $options['headers'];
             unset($options['headers']);
@@ -359,7 +359,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
                     .'form_params and multipart at the same time. Use the '
                     .'form_params option if you want to send application/'
                     .'x-www-form-urlencoded requests, and the multipart '
-                    .'option to send multipart/form-data requests.');
+                    .'option to send multipart/form-data requests.', 1456947923);
             }
             $options['body'] = \http_build_query($options['form_params'], '', '&');
             unset($options['form_params']);
@@ -425,7 +425,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
                 $value = \http_build_query($value, '', '&', \PHP_QUERY_RFC3986);
             }
             if (!\is_string($value)) {
-                throw new InvalidArgumentException('query must be a string or array');
+                throw new InvalidArgumentException('query must be a string or array', 9600602694);
             }
             $modify['query'] = $value;
             unset($options['query']);
@@ -435,7 +435,7 @@ class Client implements ClientInterface, \Psr\Http\Client\ClientInterface
         if (isset($options['sink'])) {
             // TODO: Add more sink validation?
             if (\is_bool($options['sink'])) {
-                throw new InvalidArgumentException('sink must not be a boolean');
+                throw new InvalidArgumentException('sink must not be a boolean', 2268042622);
             }
         }
 

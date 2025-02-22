@@ -171,7 +171,7 @@ class S3ControlClient extends AwsClient
         ];
     }
 
-    public static function _apply_use_arn_region($value, array &$args, HandlerList $list)
+    public static function _apply_use_arn_region($value, array &$args, HandlerList $list): void
     {
         if ($value instanceof CacheInterface) {
             $value = UseArnRegionConfigurationProvider::defaultProvider($args);
@@ -240,7 +240,7 @@ class S3ControlClient extends AwsClient
      *
      * @internal
      */
-    private function processEndpointV2Model()
+    private function processEndpointV2Model(): void
     {
         $definition = $this->getApi()->getDefinition();
         $this->removeHostPrefix($definition);
@@ -248,7 +248,7 @@ class S3ControlClient extends AwsClient
         $this->getApi()->setDefinition($definition);
     }
 
-    private function removeHostPrefix(&$definition)
+    private function removeHostPrefix(&$definition): void
     {
         foreach($definition['operations'] as &$operation) {
             if (isset($operation['endpoint']['hostPrefix'])
@@ -263,7 +263,7 @@ class S3ControlClient extends AwsClient
         }
     }
 
-    private function removeRequiredMember(&$definition)
+    private function removeRequiredMember(&$definition): void
     {
         foreach($definition['shapes'] as &$shape) {
             if (isset($shape['required'])

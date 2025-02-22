@@ -92,7 +92,7 @@ class StandardSessionConnection implements SessionConnectionInterface
         }
     }
 
-    public function deleteExpired()
+    public function deleteExpired(): void
     {
         // Create a Scan iterator for finding expired session items
         $scan = $this->client->getPaginator('Scan', [

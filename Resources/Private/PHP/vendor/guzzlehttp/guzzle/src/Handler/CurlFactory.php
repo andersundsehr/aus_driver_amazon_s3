@@ -362,7 +362,7 @@ class CurlFactory implements CurlFactoryInterface
                 if (\is_string($options['verify'])) {
                     // Throw an error if the file/folder/link path is not valid or doesn't exist.
                     if (!\file_exists($options['verify'])) {
-                        throw new \InvalidArgumentException("SSL CA bundle not found: {$options['verify']}");
+                        throw new \InvalidArgumentException("SSL CA bundle not found: {$options['verify']}", 6709908389);
                     }
                     // If it's a directory or a link to a directory use CURLOPT_CAPATH.
                     // If not, it's probably a file, or a link to a file, so use CURLOPT_CAINFO.
@@ -405,7 +405,7 @@ class CurlFactory implements CurlFactoryInterface
             $sink = \GuzzleHttp\Psr7\Utils::streamFor($sink);
         } elseif (!\is_dir(\dirname($sink))) {
             // Ensure that the directory exists before failing in curl.
-            throw new \RuntimeException(\sprintf('Directory %s does not exist for sink value of %s', \dirname($sink), $sink));
+            throw new \RuntimeException(\sprintf('Directory %s does not exist for sink value of %s', \dirname($sink), $sink), 7645363582);
         } else {
             $sink = new LazyOpenStream($sink, 'w+');
         }
@@ -457,26 +457,26 @@ class CurlFactory implements CurlFactoryInterface
         if (isset($options['crypto_method'])) {
             if (\STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT === $options['crypto_method']) {
                 if (!defined('CURL_SSLVERSION_TLSv1_0')) {
-                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.0 not supported by your version of cURL');
+                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.0 not supported by your version of cURL', 8568524626);
                 }
                 $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_0;
             } elseif (\STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT === $options['crypto_method']) {
                 if (!defined('CURL_SSLVERSION_TLSv1_1')) {
-                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.1 not supported by your version of cURL');
+                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.1 not supported by your version of cURL', 3434736774);
                 }
                 $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_1;
             } elseif (\STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT === $options['crypto_method']) {
                 if (!defined('CURL_SSLVERSION_TLSv1_2')) {
-                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.2 not supported by your version of cURL');
+                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.2 not supported by your version of cURL', 3334721861);
                 }
                 $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_2;
             } elseif (defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && \STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT === $options['crypto_method']) {
                 if (!defined('CURL_SSLVERSION_TLSv1_3')) {
-                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.3 not supported by your version of cURL');
+                    throw new \InvalidArgumentException('Invalid crypto_method request option: TLS 1.3 not supported by your version of cURL', 4567190012);
                 }
                 $conf[\CURLOPT_SSLVERSION] = \CURL_SSLVERSION_TLSv1_3;
             } else {
-                throw new \InvalidArgumentException('Invalid crypto_method request option: unknown version provided');
+                throw new \InvalidArgumentException('Invalid crypto_method request option: unknown version provided', 5010526785);
             }
         }
 
@@ -487,7 +487,7 @@ class CurlFactory implements CurlFactoryInterface
                 $cert = $cert[0];
             }
             if (!\file_exists($cert)) {
-                throw new \InvalidArgumentException("SSL certificate not found: {$cert}");
+                throw new \InvalidArgumentException("SSL certificate not found: {$cert}", 8892332562);
             }
             // OpenSSL (versions 0.9.3 and later) also support "P12" for PKCS#12-encoded files.
             // see https://curl.se/libcurl/c/CURLOPT_SSLCERTTYPE.html
@@ -510,7 +510,7 @@ class CurlFactory implements CurlFactoryInterface
             $sslKey = $sslKey ?? $options['ssl_key'];
 
             if (!\file_exists($sslKey)) {
-                throw new \InvalidArgumentException("SSL private key not found: {$sslKey}");
+                throw new \InvalidArgumentException("SSL private key not found: {$sslKey}", 3457237589);
             }
             $conf[\CURLOPT_SSLKEY] = $sslKey;
         }
@@ -518,7 +518,7 @@ class CurlFactory implements CurlFactoryInterface
         if (isset($options['progress'])) {
             $progress = $options['progress'];
             if (!\is_callable($progress)) {
-                throw new \InvalidArgumentException('progress client option must be callable');
+                throw new \InvalidArgumentException('progress client option must be callable', 6581826132);
             }
             $conf[\CURLOPT_NOPROGRESS] = false;
             $conf[\CURLOPT_PROGRESSFUNCTION] = static function ($resource, int $downloadSize, int $downloaded, int $uploadSize, int $uploaded) use ($progress) {
@@ -585,7 +585,7 @@ class CurlFactory implements CurlFactoryInterface
             $onHeaders = $easy->options['on_headers'];
 
             if (!\is_callable($onHeaders)) {
-                throw new \InvalidArgumentException('on_headers must be callable');
+                throw new \InvalidArgumentException('on_headers must be callable', 9070344485);
             }
         } else {
             $onHeaders = null;

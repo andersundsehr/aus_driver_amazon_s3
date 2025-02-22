@@ -437,14 +437,14 @@ class ClientResolver
      * @param mixed  $provided The provided value.
      * @throws \InvalidArgumentException
      */
-    private function invalidType($name, $provided)
+    private function invalidType($name, $provided): void
     {
         $expected = implode('|', $this->argDefinitions[$name]['valid']);
         $msg = "Invalid configuration value "
             . "provided for \"{$name}\". Expected {$expected}, but got "
             . describe_type($provided) . "\n\n"
             . $this->getArgMessage($name);
-        throw new IAE($msg);
+        throw new IAE($msg, 3297504835);
     }
 
     /**
@@ -453,7 +453,7 @@ class ClientResolver
      * @param array $args Passed in arguments.
      * @throws \InvalidArgumentException
      */
-    private function throwRequired(array $args)
+    private function throwRequired(array $args): void
     {
         $missing = [];
         foreach ($this->argDefinitions as $k => $a) {
@@ -467,10 +467,10 @@ class ClientResolver
         }
         $msg = "Missing required client configuration options: \n\n";
         $msg .= implode("\n\n", $missing);
-        throw new IAE($msg);
+        throw new IAE($msg, 6073898485);
     }
 
-    public static function _apply_retries($value, array &$args, HandlerList $list)
+    public static function _apply_retries($value, array &$args, HandlerList $list): void
     {
         // A value of 0 for the config option disables retries
         if ($value) {
@@ -497,7 +497,7 @@ class ClientResolver
         }
     }
 
-    public static function _apply_defaults($value, array &$args, HandlerList $list)
+    public static function _apply_defaults($value, array &$args, HandlerList $list): void
     {
         $config = ConfigModeProvider::unwrap($value);
         if ($config->getMode() !== 'legacy') {
@@ -535,14 +535,14 @@ class ClientResolver
         }
     }
 
-    public static function _apply_disable_request_compression($value, array &$args) {
+    public static function _apply_disable_request_compression($value, array &$args): void {
         if (is_callable($value)) {
             $value = $value();
         }
         if (!is_bool($value)) {
            throw new IAE(
               "Invalid configuration value provided for 'disable_request_compression'."
-              . " value must be a bool."
+              . " value must be a bool.", 4898227313
            );
         }
         $args['config']['disable_request_compression'] = $value;
@@ -557,7 +557,7 @@ class ClientResolver
         );
     }
 
-    public static function _apply_min_compression_size($value, array &$args) {
+    public static function _apply_min_compression_size($value, array &$args): void {
         if (is_callable($value)) {
             $value = $value();
         }
@@ -566,7 +566,7 @@ class ClientResolver
             && ($value < 0 || $value > 10485760))
         ) {
             throw new IAE(" Invalid configuration value provided for 'min_compression_size_bytes'."
-            . " value must be an integer between 0 and 10485760, inclusive.");
+            . " value must be an integer between 0 and 10485760, inclusive.", 2922164189);
         }
         $args['config']['request_min_compression_size_bytes'] = $value;
     }
@@ -580,7 +580,7 @@ class ClientResolver
         );
     }
 
-    public static function _apply_credentials($value, array &$args)
+    public static function _apply_credentials($value, array &$args): void
     {
         if (is_callable($value)) {
             return;
@@ -611,7 +611,7 @@ class ClientResolver
             throw new IAE('Credentials must be an instance of '
                 . "'" . CredentialsInterface::class . ', an associative '
                 . 'array that contains "key", "secret", and an optional "token" '
-                . 'key-value pairs, a credentials provider function, or false.');
+                . 'key-value pairs, a credentials provider function, or false.', 1744128048);
         }
     }
 
@@ -620,7 +620,7 @@ class ClientResolver
         return CredentialProvider::defaultProvider($args);
     }
 
-    public static function _apply_token($value, array &$args)
+    public static function _apply_token($value, array &$args): void
     {
         if (is_callable($value)) {
             return;
@@ -643,7 +643,7 @@ class ClientResolver
             throw new IAE('Token must be an instance of '
                 . TokenInterface::class . ', an associative '
                 . 'array that contains "token" and an optional "expires" '
-                . 'key-value pairs, a token provider function, or false.');
+                . 'key-value pairs, a token provider function, or false.', 6014860442);
         }
     }
 
@@ -652,7 +652,7 @@ class ClientResolver
         return TokenProvider::defaultProvider($args);
     }
 
-    public static function _apply_csm($value, array &$args, HandlerList $list)
+    public static function _apply_csm($value, array &$args, HandlerList $list): void
     {
         if ($value === false) {
             $value = new Configuration(
@@ -685,7 +685,7 @@ class ClientResolver
         );
     }
 
-    public static function _apply_api_provider(callable $value, array &$args)
+    public static function _apply_api_provider(callable $value, array &$args): void
     {
         $api = new Service(
             ApiProvider::resolve(
@@ -709,7 +709,7 @@ class ClientResolver
         $args['error_parser'] = Service::createErrorParser($api->getProtocol(), $api);
     }
 
-    public static function _apply_endpoint_provider($value, array &$args)
+    public static function _apply_endpoint_provider($value, array &$args): void
     {
         if (!isset($args['endpoint'])) {
             if ($value instanceof \Aws\EndpointV2\EndpointProviderV2) {
@@ -726,7 +726,7 @@ class ClientResolver
             // generate an endpoint
             if (!self::isValidRegion($args['region'])) {
                 throw new InvalidRegionException('Region must be a valid RFC'
-                    . ' host label.');
+                    . ' host label.', 8080580063);
             }
             $serviceEndpoints =
                 is_array($value) && isset($value['services'][$args['service']]['endpoints'])
@@ -778,7 +778,7 @@ class ClientResolver
         }
     }
 
-    public static function _apply_endpoint_discovery($value, array &$args) {
+    public static function _apply_endpoint_discovery($value, array &$args): void {
         $args['endpoint_discovery'] = $value;
     }
 
@@ -787,7 +787,7 @@ class ClientResolver
         return ConfigurationProvider::defaultProvider($args);
     }
 
-    public static function _apply_use_fips_endpoint($value, array &$args) {
+    public static function _apply_use_fips_endpoint($value, array &$args): void {
         if ($value instanceof CacheInterface) {
             $value = UseFipsConfigProvider::defaultProvider($args);
         }
@@ -809,7 +809,7 @@ class ClientResolver
         return UseFipsConfigProvider::defaultProvider($args);
     }
 
-    public static function _apply_use_dual_stack_endpoint($value, array &$args) {
+    public static function _apply_use_dual_stack_endpoint($value, array &$args): void {
         if ($value instanceof CacheInterface) {
             $value = UseDualStackConfigProvider::defaultProvider($args);
         }
@@ -832,7 +832,7 @@ class ClientResolver
         return UseDualStackConfigProvider::defaultProvider($args);
     }
 
-    public static function _apply_debug($value, array &$args, HandlerList $list)
+    public static function _apply_debug($value, array &$args, HandlerList $list): void
     {
         if ($value !== false) {
             $list->interpose(
@@ -843,7 +843,7 @@ class ClientResolver
         }
     }
 
-    public static function _apply_stats($value, array &$args, HandlerList $list)
+    public static function _apply_stats($value, array &$args, HandlerList $list): void
     {
         // Create an array of stat collectors that are disabled (set to false)
         // by default. If the user has passed in true, enable all stat
@@ -861,12 +861,12 @@ class ClientResolver
         }
     }
 
-    public static function _apply_profile($_, array &$args)
+    public static function _apply_profile($_, array &$args): void
     {
         $args['credentials'] = CredentialProvider::ini($args['profile']);
     }
 
-    public static function _apply_validate($value, array &$args, HandlerList $list)
+    public static function _apply_validate($value, array &$args, HandlerList $list): void
     {
         if ($value === false) {
             return;
@@ -881,7 +881,7 @@ class ClientResolver
         );
     }
 
-    public static function _apply_handler($value, array &$args, HandlerList $list)
+    public static function _apply_handler($value, array &$args, HandlerList $list): void
     {
         $list->setHandler($value);
     }
@@ -897,7 +897,7 @@ class ClientResolver
         );
     }
 
-    public static function _apply_http_handler($value, array &$args, HandlerList $list)
+    public static function _apply_http_handler($value, array &$args, HandlerList $list): void
     {
         $args['handler'] = new WrappedHttpHandler(
             $value,
@@ -908,7 +908,7 @@ class ClientResolver
         );
     }
 
-    public static function _apply_user_agent($inputUserAgent, array &$args, HandlerList $list)
+    public static function _apply_user_agent($inputUserAgent, array &$args, HandlerList $list): void
     {
         //Add SDK version
         $userAgent = ['aws-sdk-php/' . Sdk::VERSION];
@@ -997,7 +997,7 @@ class ClientResolver
         });
     }
 
-    public static function _apply_endpoint($value, array &$args, HandlerList $list)
+    public static function _apply_endpoint($value, array &$args, HandlerList $list): void
     {
         $args['endpoint'] = $value;
     }
@@ -1006,7 +1006,7 @@ class ClientResolver
         $value,
         array &$args,
         HandlerList $list
-    ) {
+    ): void {
         $enabled = false;
         $generator = null;
 
@@ -1026,7 +1026,7 @@ class ClientResolver
         }
     }
 
-    public static function _apply_suppress_php_deprecation_warning($suppressWarning, array &$args) {
+    public static function _apply_suppress_php_deprecation_warning($suppressWarning, array &$args): void {
         if ($suppressWarning) {
             $args['suppress_php_deprecation_warning'] = true;
         } elseif (!empty($_ENV["AWS_SUPPRESS_PHP_DEPRECATION_WARNING"])) {
@@ -1189,7 +1189,7 @@ EOT;
         return is_valid_hostlabel($region);
     }
 
-    private function _apply_client_context_params(array $args)
+    private function _apply_client_context_params(array $args): void
     {
         if (isset($args['api'])
            && !empty($args['api']->getClientContextParams()))

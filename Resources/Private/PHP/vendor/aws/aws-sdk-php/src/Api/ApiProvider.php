@@ -82,7 +82,7 @@ class ApiProvider
             $msg = "You must specify a service name to retrieve its API data.";
         }
 
-        throw new UnresolvedApiException($msg);
+        throw new UnresolvedApiException($msg, 9428595395);
     }
 
     /**
@@ -211,7 +211,7 @@ class ApiProvider
         $this->modelsDir = rtrim($modelsDir, '/');
         if (!is_dir($this->modelsDir)) {
             throw new \InvalidArgumentException(
-                "The specified models directory, {$modelsDir}, was not found."
+                "The specified models directory, {$modelsDir}, was not found.", 6149136833
             );
         }
     }
@@ -219,7 +219,7 @@ class ApiProvider
     /**
      * Build the versions list for the specified service by globbing the dir.
      */
-    private function buildVersionsList($service)
+    private function buildVersionsList($service): void
     {
         $dir = "{$this->modelsDir}/{$service}/";
 

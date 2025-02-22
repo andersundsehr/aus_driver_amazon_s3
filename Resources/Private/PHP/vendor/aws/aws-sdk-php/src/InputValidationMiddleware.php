@@ -31,7 +31,7 @@ class InputValidationMiddleware
             array_filter($mandatoryAttributeList, 'is_string') !== $mandatoryAttributeList
         ) {
             throw new \InvalidArgumentException(
-                "The mandatory attribute list must be an array of strings"
+                "The mandatory attribute list must be an array of strings", 9326503320
             );
         }
         return function (callable $handler) use ($service, $mandatoryAttributeList) {
@@ -62,7 +62,7 @@ class InputValidationMiddleware
                             if ($argument === '' || $argument === null) {
                                 $commandName = $cmd->getName();
                                 throw new \InvalidArgumentException(
-                                    "The {$commandName} operation requires non-empty parameter: {$member}"
+                                    "The {$commandName} operation requires non-empty parameter: {$member}", 6002580508
                                 );
                             }
                         }

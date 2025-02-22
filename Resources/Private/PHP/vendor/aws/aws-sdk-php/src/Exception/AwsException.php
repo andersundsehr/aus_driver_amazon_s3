@@ -230,7 +230,7 @@ class AwsException extends \RuntimeException implements
      *
      * @param array $info
      */
-    public function setTransferInfo(array $info)
+    public function setTransferInfo(array $info): void
     {
         $this->transferInfo = $info;
     }
@@ -248,7 +248,7 @@ class AwsException extends \RuntimeException implements
     /**
      * Sets the flag for max number of retries exceeded.
      */
-    public function setMaxRetriesExceeded()
+    public function setMaxRetriesExceeded(): void
     {
         $this->maxRetriesExceeded = true;
     }

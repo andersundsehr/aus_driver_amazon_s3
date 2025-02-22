@@ -83,7 +83,7 @@ final class Header
         $result = [];
         foreach ($values as $value) {
             if (!\is_string($value)) {
-                throw new \TypeError('$header must either be a string or an array containing strings.');
+                throw new \TypeError('$header must either be a string or an array containing strings.', 3411745804);
             }
 
             $v = '';

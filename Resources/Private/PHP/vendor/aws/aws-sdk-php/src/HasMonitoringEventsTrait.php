@@ -22,7 +22,7 @@ trait HasMonitoringEventsTrait
      *
      * @param array $event
      */
-    public function prependMonitoringEvent(array $event)
+    public function prependMonitoringEvent(array $event): void
     {
         array_unshift($this->monitoringEvents, $event);
     }
@@ -32,7 +32,7 @@ trait HasMonitoringEventsTrait
      *
      * @param array $event
      */
-    public function appendMonitoringEvent(array $event)
+    public function appendMonitoringEvent(array $event): void
     {
         $this->monitoringEvents []= $event;
     }

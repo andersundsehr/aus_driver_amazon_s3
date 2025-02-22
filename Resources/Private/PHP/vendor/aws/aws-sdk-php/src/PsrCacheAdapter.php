@@ -20,7 +20,7 @@ class PsrCacheAdapter implements CacheInterface
         return $item->isHit() ? $item->get() : null;
     }
 
-    public function set($key, $value, $ttl = 0)
+    public function set($key, $value, $ttl = 0): void
     {
         $item = $this->pool->getItem($key);
         $item->set($value);
@@ -31,7 +31,7 @@ class PsrCacheAdapter implements CacheInterface
         $this->pool->save($item);
     }
 
-    public function remove($key)
+    public function remove($key): void
     {
         $this->pool->deleteItem($key);
     }

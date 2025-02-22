@@ -473,7 +473,7 @@ class Parser
             : $this->tokens[$this->tpos + 1]['type'];
     }
 
-    private function next(array $match = null)
+    private function next(array $match = null): void
     {
         if (!isset($this->tokens[$this->tpos + 1])) {
             $this->token = self::$nullToken;
@@ -486,7 +486,7 @@ class Parser
         }
     }
 
-    private function assertNotToken($type)
+    private function assertNotToken($type): void
     {
         if ($this->token['type'] == $type) {
             throw $this->syntax("Token {$this->tpos} not allowed to be $type");
@@ -514,6 +514,6 @@ class Parser
             throw $this->syntax($message);
         }
 
-        throw new \BadMethodCallException("Call to undefined method $method");
+        throw new \BadMethodCallException("Call to undefined method $method", 5358679501);
     }
 }

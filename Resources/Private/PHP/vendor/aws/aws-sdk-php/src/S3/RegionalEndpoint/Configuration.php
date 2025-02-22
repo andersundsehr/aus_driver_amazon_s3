@@ -12,7 +12,7 @@ class Configuration implements ConfigurationInterface
         $this->isFallback = $isFallback;
         if (!in_array($this->endpointsType, ['legacy', 'regional'])) {
             throw new \InvalidArgumentException(
-                "Configuration parameter must either be 'legacy' or 'regional'."
+                "Configuration parameter must either be 'legacy' or 'regional'.", 2281898820
             );
         }
     }

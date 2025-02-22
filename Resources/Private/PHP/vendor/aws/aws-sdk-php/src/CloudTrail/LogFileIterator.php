@@ -223,7 +223,7 @@ class LogFileIterator extends \IteratorIterator
             $date = $date->format('U');
         } elseif (!is_int($date)) {
             throw new \InvalidArgumentException('Date values must be a '
-                . 'string, an int, or a DateTime object.');
+                . 'string, an int, or a DateTime object.', 5065330527);
         }
 
         return $date;

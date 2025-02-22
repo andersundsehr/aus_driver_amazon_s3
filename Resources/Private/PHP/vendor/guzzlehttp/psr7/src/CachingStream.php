@@ -68,7 +68,7 @@ final class CachingStream implements StreamInterface
             }
             $byte = $size + $offset;
         } else {
-            throw new \InvalidArgumentException('Invalid whence');
+            throw new \InvalidArgumentException('Invalid whence', 4851343474);
         }
 
         $diff = $byte - $this->stream->getSize();

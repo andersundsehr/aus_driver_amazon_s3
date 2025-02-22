@@ -53,7 +53,7 @@ class KmsMaterialsProviderV2 extends MaterialsProviderV2 implements MaterialsPro
                     . ' operation is not opted-in to attempting to use any valid'
                     . ' CMK it discovers. Please specify a CMK ID, or explicitly'
                     . ' enable attempts to use any valid KMS CMK with the'
-                    . ' @KmsAllowDecryptWithAnyCmk option.');
+                    . ' @KmsAllowDecryptWithAnyCmk option.', 3224274851);
             }
             $params['KeyId'] = $this->kmsKeyId;
         }
@@ -70,7 +70,7 @@ class KmsMaterialsProviderV2 extends MaterialsProviderV2 implements MaterialsPro
         if (empty($this->kmsKeyId)) {
             throw new CryptoException('A KMS key id is required for encryption'
                 . ' with KMS keywrap. Use a KmsMaterialsProviderV2 that has been'
-                . ' instantiated with a KMS key id.');
+                . ' instantiated with a KMS key id.', 6295614110);
         }
         $options = array_change_key_case($options);
         if (!isset($options['@kmsencryptioncontext'])
@@ -78,12 +78,12 @@ class KmsMaterialsProviderV2 extends MaterialsProviderV2 implements MaterialsPro
         ) {
             throw new CryptoException("'@KmsEncryptionContext' is a"
                 . " required argument when using KmsMaterialsProviderV2, and"
-                . " must be an associative array (or empty array).");
+                . " must be an associative array (or empty array).", 8782208113);
         }
         if (isset($options['@kmsencryptioncontext']['aws:x-amz-cek-alg'])) {
             throw new CryptoException("Conflict in reserved @KmsEncryptionContext"
                 . " key aws:x-amz-cek-alg. This value is reserved for the S3"
-                . " Encryption Client and cannot be set by the user.");
+                . " Encryption Client and cannot be set by the user.", 8978239059);
         }
         $context = array_merge($options['@kmsencryptioncontext'], $context);
         $result = $this->kmsClient->generateDataKey([

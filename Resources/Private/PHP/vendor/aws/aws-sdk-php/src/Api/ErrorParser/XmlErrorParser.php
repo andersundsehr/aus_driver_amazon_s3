@@ -49,7 +49,7 @@ class XmlErrorParser extends AbstractErrorParser
         return $data;
     }
 
-    private function parseHeaders(ResponseInterface $response, array &$data)
+    private function parseHeaders(ResponseInterface $response, array &$data): void
     {
         if ($response->getStatusCode() == '404') {
             $data['code'] = 'NotFound';
@@ -64,7 +64,7 @@ class XmlErrorParser extends AbstractErrorParser
         }
     }
 
-    private function parseBody(\SimpleXMLElement $body, array &$data)
+    private function parseBody(\SimpleXMLElement $body, array &$data): void
     {
         $data['parsed'] = $body;
         $prefix = $this->registerNamespacePrefix($body);

@@ -38,7 +38,7 @@ class ErrorRule extends AbstractRule
     {
         if ($this->evaluateConditions($inputParameters, $standardLibrary)) {
             $message = $standardLibrary->resolveValue($this->error, $inputParameters);
-            throw new UnresolvedEndpointException($message);
+            throw new UnresolvedEndpointException($message, 9761321073);
         }
         return false;
     }

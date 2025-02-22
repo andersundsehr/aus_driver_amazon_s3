@@ -338,7 +338,7 @@ final class Utils
             return new PumpStream($resource, $options);
         }
 
-        throw new \InvalidArgumentException('Invalid resource type: '.gettype($resource));
+        throw new \InvalidArgumentException('Invalid resource type: '.gettype($resource), 2171052732);
     }
 
     /**
@@ -458,6 +458,6 @@ final class Utils
             return new Uri($uri);
         }
 
-        throw new \InvalidArgumentException('URI must be a string or UriInterface');
+        throw new \InvalidArgumentException('URI must be a string or UriInterface', 5025846794);
     }
 }

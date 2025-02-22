@@ -60,7 +60,7 @@ class CompatibilityService implements SingletonInterface
         if (PHP_MAJOR_VERSION >= 8) {
             return str_starts_with($str, $partStr);
         } else {
-            return GeneralUtility::isFirstPartOfStr($str, $partStr);
+            return \str_starts_with($str, $partStr);
         }
     }
 }

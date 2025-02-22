@@ -60,7 +60,7 @@ class TaskQueue implements TaskQueueInterface
      *
      * Note: This shutdown will occur before any destructors are triggered.
      */
-    public function disableShutdown()
+    public function disableShutdown(): void
     {
         $this->enableShutdown = false;
     }

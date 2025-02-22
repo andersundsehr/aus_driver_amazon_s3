@@ -25,7 +25,7 @@ class Signer
         if (!extension_loaded('openssl')) {
             //@codeCoverageIgnoreStart
             throw new \RuntimeException('The openssl extension is required to '
-                . 'sign CloudFront urls.');
+                . 'sign CloudFront urls.', 9932074426);
             //@codeCoverageIgnoreEnd
         }
 
@@ -33,7 +33,7 @@ class Signer
 
         if (!$this->pkHandle = openssl_pkey_get_private($privateKey, $passphrase)) {
             if (!file_exists($privateKey)) {
-                throw new \InvalidArgumentException("PK file not found: $privateKey");
+                throw new \InvalidArgumentException("PK file not found: $privateKey", 2717883116);
             }
 
             $this->pkHandle = openssl_pkey_get_private("file://$privateKey", $passphrase);
@@ -42,7 +42,7 @@ class Signer
                 while(($newMessage = openssl_error_string()) !== false){
                     $errorMessages[] = $newMessage;
                 }
-                throw new \InvalidArgumentException(implode("\n",$errorMessages));
+                throw new \InvalidArgumentException(implode("\n",$errorMessages), 2948305760);
             }
         }
     }
@@ -87,7 +87,7 @@ class Signer
             $signatureHash['Expires'] = $expires;
         } else {
             throw new \InvalidArgumentException('Either a policy or a resource'
-                . ' and an expiration time must be provided.');
+                . ' and an expiration time must be provided.', 9996370298);
         }
 
         $signatureHash['Signature'] = $this->encode($this->sign($policy));

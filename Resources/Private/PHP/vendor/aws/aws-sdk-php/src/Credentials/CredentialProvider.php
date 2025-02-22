@@ -166,7 +166,7 @@ class CredentialProvider
     {
         $links = func_get_args();
         if (empty($links)) {
-            throw new \InvalidArgumentException('No providers in chain');
+            throw new \InvalidArgumentException('No providers in chain', 2383273484);
         }
 
         return function ($previousCreds = null) use ($links) {
@@ -802,7 +802,7 @@ class CredentialProvider
             default:
                 throw new CredentialsException(
                     "Invalid credential_source found in config file: {$credentialSource}. Valid inputs "
-                    . "include Environment, Ec2InstanceMetadata, and EcsContainer."
+                    . "include Environment, Ec2InstanceMetadata, and EcsContainer.", 1613825307
                 );
         }
 

@@ -293,7 +293,7 @@ class AwsClient implements AwsClientInterface
         if (!isset($this->getApi()['operations'][$name])) {
             $name = ucfirst($name);
             if (!isset($this->getApi()['operations'][$name])) {
-                throw new \InvalidArgumentException("Operation not found: $name");
+                throw new \InvalidArgumentException("Operation not found: $name", 7520071555);
             }
         }
 
@@ -336,7 +336,7 @@ class AwsClient implements AwsClientInterface
     public function __sleep()
     {
         throw new \RuntimeException('Instances of ' . static::class
-            . ' cannot be serialized');
+            . ' cannot be serialized', 1367726661);
     }
 
     /**
@@ -371,7 +371,7 @@ class AwsClient implements AwsClientInterface
         ];
     }
 
-    private function addEndpointParameterMiddleware($args)
+    private function addEndpointParameterMiddleware($args): void
     {
         if (empty($args['disable_host_prefix_injection'])) {
             $list = $this->getHandlerList();
@@ -384,7 +384,7 @@ class AwsClient implements AwsClientInterface
         }
     }
 
-    private function addEndpointDiscoveryMiddleware($config, $args)
+    private function addEndpointDiscoveryMiddleware($config, $args): void
     {
         $list = $this->getHandlerList();
 
@@ -400,7 +400,7 @@ class AwsClient implements AwsClientInterface
         }
     }
 
-    private function addSignatureMiddleware()
+    private function addSignatureMiddleware(): void
     {
         $api = $this->getApi();
         $provider = $this->signatureProvider;
@@ -450,7 +450,7 @@ class AwsClient implements AwsClientInterface
         );
     }
 
-    private function addRequestCompressionMiddleware($config)
+    private function addRequestCompressionMiddleware($config): void
     {
         if (empty($config['disable_request_compression'])) {
             $list = $this->getHandlerList();
@@ -461,13 +461,13 @@ class AwsClient implements AwsClientInterface
         }
     }
 
-    private function addInvocationId()
+    private function addInvocationId(): void
     {
         // Add invocation id to each request
         $this->handlerList->prependSign(Middleware::invocationId(), 'invocation-id');
     }
 
-    private function loadAliases($file = null)
+    private function loadAliases($file = null): void
     {
         if (!isset($this->aliases)) {
             if (is_null($file)) {
@@ -482,7 +482,7 @@ class AwsClient implements AwsClientInterface
         }
     }
 
-    private function addStreamRequestPayload()
+    private function addStreamRequestPayload(): void
     {
         $streamRequestPayloadMiddleware = StreamRequestPayloadMiddleware::wrap(
             $this->api
@@ -494,7 +494,7 @@ class AwsClient implements AwsClientInterface
         );
     }
 
-    private function addRecursionDetection()
+    private function addRecursionDetection(): void
     {
         // Add recursion detection header to requests
         // originating in supported Lambda runtimes
@@ -507,7 +507,7 @@ class AwsClient implements AwsClientInterface
      * Adds the `builder` middleware such that a client's endpoint
      * provider and endpoint resolution arguments can be passed.
      */
-    private function addRequestBuilder()
+    private function addRequestBuilder(): void
     {
         $handlerList = $this->getHandlerList();
         $serializer = $this->serializer;
@@ -548,7 +548,7 @@ class AwsClient implements AwsClientInterface
     /**
      * Retrieves and sets default values used for endpoint resolution.
      */
-    private function setClientBuiltIns($args)
+    private function setClientBuiltIns($args): void
     {
         $builtIns = [];
         $config = $this->getConfig();
@@ -605,7 +605,7 @@ class AwsClient implements AwsClientInterface
         return $this->endpointProvider instanceof EndpointProviderV2;
     }
 
-    public static function emitDeprecationWarning() {
+    public static function emitDeprecationWarning(): void {
         $phpVersion = PHP_VERSION_ID;
         if ($phpVersion <  70205) {
             $phpVersionString = phpversion();

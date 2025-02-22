@@ -7,7 +7,7 @@ use Psr\Http\Message\RequestInterface;
 
 trait UserAgentTrait
 {
-    private function appendUserAgent(AwsClientInterface $client, $agentString)
+    private function appendUserAgent(AwsClientInterface $client, $agentString): void
     {
         $list = $client->getHandlerList();
         $list->appendBuild(Middleware::mapRequest(

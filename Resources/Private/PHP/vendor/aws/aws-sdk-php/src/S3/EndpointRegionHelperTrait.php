@@ -65,7 +65,7 @@ trait EndpointRegionHelperTrait
         return false;
     }
 
-    private function validateFipsConfigurations(ArnInterface $arn)
+    private function validateFipsConfigurations(ArnInterface $arn): void
     {
         $useFipsEndpoint = !empty($this->config['use_fips_endpoint']);
         if ($arn instanceof OutpostsArnInterface) {
@@ -80,12 +80,12 @@ trait EndpointRegionHelperTrait
                 throw new InvalidRegionException(
                     'Fips is currently not supported with S3 Outposts access'
                     . ' points. Please provide a non-fips region or do not supply an'
-                    . ' access point ARN.');
+                    . ' access point ARN.', 1299054308);
             }
         }
     }
 
-    private function validateMatchingRegion(ArnInterface $arn)
+    private function validateMatchingRegion(ArnInterface $arn): void
     {
         if (!($this->isMatchingSigningRegion(
             $arn->getRegion(),
@@ -99,7 +99,7 @@ trait EndpointRegionHelperTrait
                 throw new InvalidRegionException('The region'
                     . " specified in the ARN (" . $arn->getRegion()
                     . ") does not match the client region ("
-                    . "{$this->region}).");
+                    . "{$this->region}).", 7900029215);
             }
         }
     }

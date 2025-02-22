@@ -47,7 +47,7 @@ class Cbc implements CipherMethod
         $this->keySize = $keySize;
 
         if (strlen($iv) !== openssl_cipher_iv_length($this->getOpenSslName())) {
-            throw new InvalidArgumentException('Invalid initialization vector');
+            throw new InvalidArgumentException('Invalid initialization vector', 5346076285);
         }
     }
 
@@ -71,17 +71,17 @@ class Cbc implements CipherMethod
         return true;
     }
 
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         if ($offset === 0 && $whence === SEEK_SET) {
             $this->iv = $this->baseIv;
         } else {
             throw new LogicException('CBC initialization only support being'
-                . ' rewound, not arbitrary seeking.');
+                . ' rewound, not arbitrary seeking.', 2452345584);
         }
     }
 
-    public function update($cipherTextBlock)
+    public function update($cipherTextBlock): void
     {
         $this->iv = substr($cipherTextBlock, self::BLOCK_SIZE * -1);
     }

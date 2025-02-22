@@ -39,7 +39,7 @@ class Shape extends AbstractModel
 
         if (!isset($map[$definition['type']])) {
             throw new \RuntimeException('Invalid type: '
-                . print_r($definition, true));
+                . print_r($definition, true), 1415418246);
         }
 
         $type = $map[$definition['type']];

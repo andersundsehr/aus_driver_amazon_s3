@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
         if (!in_array($mode, $this->validModes)) {
             throw new \InvalidArgumentException("'{$mode}' is not a valid mode."
                 . " The mode has to be 'legacy', 'standard', 'cross-region', 'in-region',"
-                . " 'mobile', or 'auto'.");
+                . " 'mobile', or 'auto'.", 5688940162);
         }
 
         $this->mode = $mode;

@@ -112,7 +112,7 @@ class StreamWrapper
         $protocol = 's3',
         CacheInterface $cache = null,
         $v2Existence = false
-    ) {
+    ): void {
         self::$useV2Existence = $v2Existence;
         if (in_array($protocol, stream_get_wrappers())) {
             stream_wrapper_unregister($protocol);
@@ -133,7 +133,7 @@ class StreamWrapper
         stream_context_set_default($default);
     }
 
-    public function stream_close()
+    public function stream_close(): void
     {
         if (!$this->isFlushed
             && empty($this->body->getSize())
@@ -281,7 +281,7 @@ class StreamWrapper
      *
      * @param $path
      */
-    private function initProtocol($path)
+    private function initProtocol($path): void
     {
         $parts = explode('://', $path, 2);
         $this->protocol = $parts[0] ?: 's3';
@@ -318,7 +318,7 @@ class StreamWrapper
                     'MaxKeys' => 1
                 ]);
                 if (!$result['Contents'] && !$result['CommonPrefixes']) {
-                    throw new \Exception("File or directory not found: $path");
+                    throw new \Exception("File or directory not found: $path", 2080712678);
                 }
                 return $this->formatUrlStat($path);
             }
@@ -670,7 +670,7 @@ class StreamWrapper
     private function getClient()
     {
         if (!$client = $this->getOption('client')) {
-            throw new \RuntimeException('No client in stream context');
+            throw new \RuntimeException('No client in stream context', 3144660371);
         }
 
         return $client;
@@ -961,7 +961,7 @@ class StreamWrapper
      *
      * @param string $key S3 path (s3://bucket/key).
      */
-    private function clearCacheKey($key)
+    private function clearCacheKey($key): void
     {
         clearstatcache(true, $key);
         $this->getCacheStorage()->remove($key);

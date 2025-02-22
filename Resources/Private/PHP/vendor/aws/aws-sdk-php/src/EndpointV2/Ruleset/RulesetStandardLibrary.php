@@ -89,7 +89,7 @@ class RulesetStandardLibrary
     {
         if (!is_string($input)) {
             throw new UnresolvedEndpointException(
-                'Input passed to `substring` must be `string`.'
+                'Input passed to `substring` must be `string`.', 1128336015
             );
         }
 
@@ -117,7 +117,7 @@ class RulesetStandardLibrary
     {
         if (!is_string($string1) || !is_string($string2)) {
             throw new UnresolvedEndpointException(
-                'Values passed to StringEquals must be `string`.'
+                'Values passed to StringEquals must be `string`.', 1521692959
             );
         }
         return $string1 === $string2;
@@ -258,7 +258,7 @@ class RulesetStandardLibrary
     {
         if (!is_string($region)) {
             throw new UnresolvedEndpointException(
-                'Value passed to `partition` must be `string`.'
+                'Value passed to `partition` must be `string`.', 6770087142
             );
         }
 
@@ -324,7 +324,7 @@ class RulesetStandardLibrary
             if (isset($inputParameters[$assign])){
                 throw new UnresolvedEndpointException(
                     "Assignment `{$assign}` already exists in input parameters" .
-                    " or has already been assigned by an endpoint rule and cannot be overwritten."
+                    " or has already been assigned by an endpoint rule and cannot be overwritten.", 2054183580
                 );
             }
             $inputParameters[$assign] = $result;
@@ -378,14 +378,14 @@ class RulesetStandardLibrary
                     $resolvedValue = $inputParameters;
                     foreach($parts as $part) {
                         if (!isset($resolvedValue[$part])) {
-                            throw new UnresolvedEndpointException($notFoundMessage);
+                            throw new UnresolvedEndpointException($notFoundMessage, 2645948837);
                         }
                         $resolvedValue = $resolvedValue[$part];
                     }
                     return $resolvedValue;
                 } else {
                     if (!isset($inputParameters[$parts[0]])) {
-                        throw new UnresolvedEndpointException($notFoundMessage);
+                        throw new UnresolvedEndpointException($notFoundMessage, 1386725193);
                     }
                     return $inputParameters[$parts[0]];
                 }

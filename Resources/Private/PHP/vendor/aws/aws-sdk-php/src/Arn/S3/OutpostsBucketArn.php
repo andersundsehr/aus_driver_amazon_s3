@@ -62,13 +62,13 @@ class OutpostsBucketArn extends Arn implements
      *
      * @param array $data
      */
-    public static function validate(array $data)
+    public static function validate(array $data): void
     {
         Arn::validate($data);
 
         if (($data['service'] !== 's3-outposts')) {
             throw new InvalidArnException("The 3rd component of an S3 Outposts"
-                . " bucket ARN represents the service and must be 's3-outposts'.");
+                . " bucket ARN represents the service and must be 's3-outposts'.", 1100781510);
         }
 
         self::validateRegion($data, 'S3 Outposts bucket ARN');
@@ -77,23 +77,23 @@ class OutpostsBucketArn extends Arn implements
         if (($data['resource_type'] !== 'outpost')) {
             throw new InvalidArnException("The 6th component of an S3 Outposts"
                 . " bucket ARN represents the resource type and must be"
-                . " 'outpost'.");
+                . " 'outpost'.", 7324850036);
         }
 
         if (!self::isValidHostLabel($data['outpost_id'])) {
             throw new InvalidArnException("The 7th component of an S3 Outposts"
                 . " bucket ARN is required, represents the outpost ID, and"
-                . " must be a valid host label.");
+                . " must be a valid host label.", 7884855431);
         }
 
         if ($data['bucket_label'] !== 'bucket') {
             throw new InvalidArnException("The 8th component of an S3 Outposts"
-                . " bucket ARN must be 'bucket'");
+                . " bucket ARN must be 'bucket'", 3140057393);
         }
 
         if (empty($data['bucket_name'])) {
             throw new InvalidArnException("The 9th component of an S3 Outposts"
-                . " bucket ARN represents the bucket name and must not be empty.");
+                . " bucket ARN represents the bucket name and must not be empty.", 3699622157);
         }
     }
 }

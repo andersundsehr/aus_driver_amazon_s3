@@ -80,7 +80,7 @@ class MockHandler implements \Countable
     public function __invoke(RequestInterface $request, array $options): PromiseInterface
     {
         if (!$this->queue) {
-            throw new \OutOfBoundsException('Mock queue is empty');
+            throw new \OutOfBoundsException('Mock queue is empty', 9198648675);
         }
 
         if (isset($options['delay']) && \is_numeric($options['delay'])) {
@@ -93,7 +93,7 @@ class MockHandler implements \Countable
 
         if (isset($options['on_headers'])) {
             if (!\is_callable($options['on_headers'])) {
-                throw new \InvalidArgumentException('on_headers must be callable');
+                throw new \InvalidArgumentException('on_headers must be callable', 2193883166);
             }
             try {
                 $options['on_headers']($response);
@@ -160,7 +160,7 @@ class MockHandler implements \Countable
             ) {
                 $this->queue[] = $value;
             } else {
-                throw new \TypeError('Expected a Response, Promise, Throwable or callable. Found '.Utils::describeType($value));
+                throw new \TypeError('Expected a Response, Promise, Throwable or callable. Found '.Utils::describeType($value), 8296002561);
             }
         }
     }

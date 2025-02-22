@@ -79,7 +79,7 @@ class MultiRegionClient implements AwsClientInterface
                         throw new \InvalidArgumentException('No valid partition'
                             . ' was provided. Provide a concrete partition or'
                             . ' the name of a partition (e.g., "aws," "aws-cn,"'
-                            . ' or "aws-us-gov").'
+                            . ' or "aws-us-gov").', 1954843890
                         );
                     }
                     $ruleset = EndpointDefinitionProvider::getEndpointRuleset(
@@ -203,7 +203,7 @@ class MultiRegionClient implements AwsClientInterface
         return $this->getClientFromPool()->getEndpoint();
     }
 
-    public function useCustomHandler(callable $handler)
+    public function useCustomHandler(callable $handler): void
     {
         $this->customHandler = $handler;
     }

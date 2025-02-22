@@ -40,7 +40,7 @@ final class Headers {
         return isset($this->headers[$header]) ? $this->headers[$header] : null;
     }
 
-    public function set($header, $value) {
+    public function set($header, $value): void {
         $this->headers[$header] = $value;
     }
 

@@ -30,7 +30,7 @@ trait EndpointV2SerializerTrait
         $commandArgs,
         $clientArgs,
         &$headers
-    )
+    ): void
     {
         $providerArgs = $this->resolveProviderArgs(
             $endpointProvider,
@@ -151,7 +151,7 @@ trait EndpointV2SerializerTrait
         return $filteredArgs;
     }
 
-    private function applyHeaders($endpoint, &$headers)
+    private function applyHeaders($endpoint, &$headers): void
     {
         if (!is_null($endpoint->getHeaders())) {
            $headers = array_merge(
@@ -161,7 +161,7 @@ trait EndpointV2SerializerTrait
         }
     }
 
-    private function applyAuthSchemeToCommand($endpoint, $command)
+    private function applyAuthSchemeToCommand($endpoint, $command): void
     {
         if (isset($endpoint->getProperties()['authSchemes'])) {
             $authScheme = $this->selectAuthScheme(
@@ -188,7 +188,7 @@ trait EndpointV2SerializerTrait
         $validAuthSchemesString = '`' . implode('`, `', $validAuthSchemes) . '`';
         throw new \InvalidArgumentException(
             "This operation requests {$invalidAuthSchemesString}"
-            . " auth schemes, but the client only supports {$validAuthSchemesString}."
+            . " auth schemes, but the client only supports {$validAuthSchemesString}.", 6269893617
         );
     }
 
@@ -225,7 +225,7 @@ trait EndpointV2SerializerTrait
         return $normalizedAuthScheme;
     }
 
-    private function applyScheme(&$resolvedUrl)
+    private function applyScheme(&$resolvedUrl): void
     {
         $resolvedEndpointScheme = parse_url($resolvedUrl, PHP_URL_SCHEME);
         $scheme = $this->endpoint instanceof Uri

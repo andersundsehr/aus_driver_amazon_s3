@@ -13,7 +13,7 @@ class Configuration implements ConfigurationInterface
         $this->useFipsEndpoint = Aws\boolean_value($useFipsEndpoint);
         if (is_null($this->useFipsEndpoint)) {
             throw new ConfigurationException("'use_fips_endpoint' config option"
-                . " must be a boolean value.");
+                . " must be a boolean value.", 8284303269);
         }
     }
 

@@ -190,6 +190,6 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         }
 
         throw new \InvalidArgumentException('Not a valid S3 regional endpoint '
-            . 'configuration argument.');
+            . 'configuration argument.', 5358850094);
     }
 }

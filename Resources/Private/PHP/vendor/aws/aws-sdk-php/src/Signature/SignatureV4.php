@@ -222,7 +222,7 @@ class SignatureV4 implements SignatureInterface
     {
         if ($request->getMethod() !== 'POST') {
             throw new \InvalidArgumentException('Expected a POST request but '
-                . 'received a ' . $request->getMethod() . ' request.');
+                . 'received a ' . $request->getMethod() . ' request.', 4760853198);
         }
 
         $sr = $request->withMethod('GET')
@@ -251,7 +251,7 @@ class SignatureV4 implements SignatureInterface
         }
 
         if (!$request->getBody()->isSeekable()) {
-            throw new CouldNotCreateChecksumException('sha256');
+            throw new CouldNotCreateChecksumException('sha256', 7549188662);
         }
 
         try {
@@ -383,7 +383,7 @@ class SignatureV4 implements SignatureInterface
         if ($duration > 604800) {
             throw new \InvalidArgumentException('The expiration date of a '
                 . 'signature version 4 presigned URL must be less than one '
-                . 'week');
+                . 'week', 2714765156);
         }
 
         return $duration;
@@ -446,13 +446,13 @@ class SignatureV4 implements SignatureInterface
         );
     }
 
-    private function verifyCRTLoaded()
+    private function verifyCRTLoaded(): void
     {
         if (!extension_loaded('awscrt')) {
             throw new CommonRuntimeException(
                 "AWS Common Runtime for PHP is required to use Signature V4A"
                 . ".  Please install it using the instructions found at"
-                . " https://github.com/aws/aws-sdk-php/blob/master/CRT_INSTRUCTIONS.md"
+                . " https://github.com/aws/aws-sdk-php/blob/master/CRT_INSTRUCTIONS.md", 1701288306
             );
         }
     }

@@ -67,15 +67,15 @@ class WriteRequestBatch
 
         // Ensure the batch size is valid
         if ($config['batch_size'] > 25 || $config['batch_size'] < 2) {
-            throw new \InvalidArgumentException('"batch_size" must be between 2 and 25.');
+            throw new \InvalidArgumentException('"batch_size" must be between 2 and 25.', 2064258281);
         }
 
         // Ensure the callbacks are valid
         if ($config['before'] && !is_callable($config['before'])) {
-            throw new \InvalidArgumentException('"before" must be callable.');
+            throw new \InvalidArgumentException('"before" must be callable.', 8526496380);
         }
         if ($config['error'] && !is_callable($config['error'])) {
-            throw new \InvalidArgumentException('"error" must be callable.');
+            throw new \InvalidArgumentException('"error" must be callable.', 6573089798);
         }
 
         // If autoflush is enabled, set the threshold
@@ -220,7 +220,7 @@ class WriteRequestBatch
      *
      * @param array $unprocessed Unprocessed items from a result.
      */
-    private function retryUnprocessed(array $unprocessed)
+    private function retryUnprocessed(array $unprocessed): void
     {
         foreach ($unprocessed as $table => $requests) {
             foreach ($requests as $request) {
@@ -235,7 +235,7 @@ class WriteRequestBatch
     /**
      * If autoflush is enabled and the threshold is met, flush the batch
      */
-    private function autoFlush()
+    private function autoFlush(): void
     {
         if ($this->config['autoflush']
             && count($this->queue) >= $this->config['threshold']
@@ -258,7 +258,7 @@ class WriteRequestBatch
     {
         $table = $table ?: $this->config['table'];
         if (!$table) {
-            throw new \RuntimeException('There was no table specified.');
+            throw new \RuntimeException('There was no table specified.', 3593375366);
         }
 
         return $table;

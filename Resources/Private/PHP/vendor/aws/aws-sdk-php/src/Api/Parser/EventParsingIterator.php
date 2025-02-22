@@ -46,13 +46,13 @@ class EventParsingIterator implements Iterator
     }
 
     #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->decodingIterator->next();
     }
 
     #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->decodingIterator->rewind();
     }
@@ -70,12 +70,12 @@ class EventParsingIterator implements Iterator
                 return $this->parseError($event);
             }
             if ($event['headers'][':message-type'] !== 'event') {
-                throw new ParserException('Failed to parse unknown message type.');
+                throw new ParserException('Failed to parse unknown message type.', 8219744355);
             }
         }
 
         if (empty($event['headers'][':event-type'])) {
-            throw new ParserException('Failed to parse without event type.');
+            throw new ParserException('Failed to parse without event type.', 1531971293);
         }
         $eventShape = $this->shape->getMember($event['headers'][':event-type']);
 

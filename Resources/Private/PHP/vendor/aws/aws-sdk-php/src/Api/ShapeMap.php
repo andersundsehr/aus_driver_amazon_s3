@@ -43,7 +43,7 @@ class ShapeMap
         $shape = $shapeRef['shape'];
 
         if (!isset($this->definitions[$shape])) {
-            throw new \InvalidArgumentException('Shape not found: ' . $shape);
+            throw new \InvalidArgumentException('Shape not found: ' . $shape, 8872070806);
         }
 
         $isSimple = count($shapeRef) == 1;

@@ -92,13 +92,13 @@ class CurlMultiHandler
     public function __get($name)
     {
         if ($name !== '_mh') {
-            throw new \BadMethodCallException("Can not get other property as '_mh'.");
+            throw new \BadMethodCallException("Can not get other property as '_mh'.", 5138697567);
         }
 
         $multiHandle = \curl_multi_init();
 
         if (false === $multiHandle) {
-            throw new \RuntimeException('Can not initialize curl multi handle.');
+            throw new \RuntimeException('Can not initialize curl multi handle.', 7247900768);
         }
 
         $this->_mh = $multiHandle;

@@ -46,7 +46,7 @@ class MockHandler implements \Countable
      * Adds one or more variadic ResultInterface or AwsException objects to the
      * queue.
      */
-    public function append()
+    public function append(): void
     {
         foreach (func_get_args() as $value) {
             if ($value instanceof ResultInterface
@@ -55,7 +55,7 @@ class MockHandler implements \Countable
             ) {
                 $this->queue[] = $value;
             } else {
-                throw new \InvalidArgumentException('Expected an Aws\ResultInterface or Exception.');
+                throw new \InvalidArgumentException('Expected an Aws\ResultInterface or Exception.', 7896821972);
             }
         }
     }
@@ -63,13 +63,13 @@ class MockHandler implements \Countable
     /**
      * Adds one or more \Exception or \Throwable to the queue
      */
-    public function appendException()
+    public function appendException(): void
     {
         foreach (func_get_args() as $value) {
             if ($value instanceof \Exception || $value instanceof \Throwable) {
                 $this->queue[] = $value;
             } else {
-                throw new \InvalidArgumentException('Expected an \Exception or \Throwable.');
+                throw new \InvalidArgumentException('Expected an \Exception or \Throwable.', 5050493223);
             }
         }
     }
@@ -83,7 +83,7 @@ class MockHandler implements \Countable
                 ? ' The last command sent was ' . $this->lastCommand->getName() . '.'
                 : '';
             throw new \RuntimeException('Mock queue is empty. Trying to send a '
-                . $command->getName() . ' command failed.' . $last);
+                . $command->getName() . ' command failed.' . $last, 1956294661);
         }
 
         $this->lastCommand = $command;

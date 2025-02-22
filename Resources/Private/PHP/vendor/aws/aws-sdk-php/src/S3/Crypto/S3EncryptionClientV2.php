@@ -332,7 +332,7 @@ class S3EncryptionClientV2 extends AbstractCryptoClientV2
             || !in_array($args['@SecurityProfile'], self::$supportedSecurityProfiles)
         ) {
             throw new CryptoException("@SecurityProfile is required and must be"
-                . " set to 'V2' or 'V2_AND_LEGACY'");
+                . " set to 'V2' or 'V2_AND_LEGACY'", 9691765962);
         }
 
         // Only throw this legacy warning once per client

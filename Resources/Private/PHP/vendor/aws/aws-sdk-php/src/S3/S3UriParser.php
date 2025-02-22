@@ -60,7 +60,7 @@ class S3UriParser
 
         if (!$url->getHost()) {
             throw new \InvalidArgumentException('No hostname found in URI: '
-                . $uri);
+                . $uri, 8999536654);
         }
 
         if (!preg_match($this->pattern, $url->getHost(), $matches)) {

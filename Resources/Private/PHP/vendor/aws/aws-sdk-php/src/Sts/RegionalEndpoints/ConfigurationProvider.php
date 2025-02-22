@@ -197,6 +197,6 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         }
 
         throw new \InvalidArgumentException('Not a valid STS regional endpoints '
-            . 'configuration argument.');
+            . 'configuration argument.', 1663860117);
     }
 }

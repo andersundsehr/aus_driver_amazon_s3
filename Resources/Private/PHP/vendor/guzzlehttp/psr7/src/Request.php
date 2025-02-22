@@ -79,7 +79,7 @@ class Request implements RequestInterface
     {
         if (preg_match('#\s#', $requestTarget)) {
             throw new InvalidArgumentException(
-                'Invalid request target provided; cannot contain whitespace'
+                'Invalid request target provided; cannot contain whitespace', 2720424695
             );
         }
 
@@ -153,7 +153,7 @@ class Request implements RequestInterface
     private function assertMethod($method): void
     {
         if (!is_string($method) || $method === '') {
-            throw new InvalidArgumentException('Method must be a non-empty string.');
+            throw new InvalidArgumentException('Method must be a non-empty string.', 1702448526);
         }
     }
 }

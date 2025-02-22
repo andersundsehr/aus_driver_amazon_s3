@@ -35,7 +35,7 @@ class MetaDataUpdateServiceTest extends TestCase
     /**
      * @test
      */
-    public function testRecordUpdatedOrCreatedDoNotHandleUnknownFileType()
+    public function testRecordUpdatedOrCreatedDoNotHandleUnknownFileType(): void
     {
         $file = $this->prophesize(File::class)->reveal();
 
@@ -43,7 +43,7 @@ class MetaDataUpdateServiceTest extends TestCase
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
         $mock->updateMetadata([
-            'type' => File::FILETYPE_UNKNOWN,
+            'type' => \TYPO3\CMS\Core\Resource\FileType::UNKNOWN,
             'storage' => 42,
             'identifier' => 'foo/bar.file',
         ]);
@@ -52,7 +52,7 @@ class MetaDataUpdateServiceTest extends TestCase
     /**
      * @test
      */
-    public function testRecordUpdatedOrCreatedDoNotHandleApplicationFileType()
+    public function testRecordUpdatedOrCreatedDoNotHandleApplicationFileType(): void
     {
         $file = $this->prophesize(File::class)->reveal();
 
@@ -60,7 +60,7 @@ class MetaDataUpdateServiceTest extends TestCase
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
         $mock->updateMetadata([
-            'type' => File::FILETYPE_APPLICATION,
+            'type' => \TYPO3\CMS\Core\Resource\FileType::APPLICATION,
             'storage' => 42,
             'identifier' => 'foo/bar.file',
         ]);

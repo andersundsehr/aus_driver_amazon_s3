@@ -72,7 +72,7 @@ class StsClient extends AwsClient
     public function createCredentials(Result $result)
     {
         if (!$result->hasKey('Credentials')) {
-            throw new \InvalidArgumentException('Result contains no credentials');
+            throw new \InvalidArgumentException('Result contains no credentials', 9190994197);
         }
 
         $c = $result['Credentials'];
@@ -92,7 +92,7 @@ class StsClient extends AwsClient
      *
      * @return void
      */
-    private function addBuiltIns($args)
+    private function addBuiltIns($args): void
     {
         $key = 'AWS::STS::UseGlobalEndpoint';
         $result = $args['sts_regional_endpoints'] instanceof \Closure ?

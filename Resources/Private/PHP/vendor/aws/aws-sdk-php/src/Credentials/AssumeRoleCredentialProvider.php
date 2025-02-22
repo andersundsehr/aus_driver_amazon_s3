@@ -31,11 +31,11 @@ class AssumeRoleCredentialProvider
     public function __construct(array $config = [])
     {
         if (!isset($config['assume_role_params'])) {
-            throw new \InvalidArgumentException(self::ERROR_MSG . "'assume_role_params'.");
+            throw new \InvalidArgumentException(self::ERROR_MSG . "'assume_role_params'.", 5258988791);
         }
 
         if (!isset($config['client'])) {
-            throw new \InvalidArgumentException(self::ERROR_MSG . "'client'.");
+            throw new \InvalidArgumentException(self::ERROR_MSG . "'client'.", 7783332409);
         }
 
         $this->client = $config['client'];

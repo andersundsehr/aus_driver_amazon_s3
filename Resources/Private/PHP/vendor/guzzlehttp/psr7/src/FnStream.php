@@ -45,7 +45,7 @@ final class FnStream implements StreamInterface
     public function __get(string $name): void
     {
         throw new \BadMethodCallException(str_replace('_fn_', '', $name)
-            .'() is not implemented in the FnStream');
+            .'() is not implemented in the FnStream', 6749838702);
     }
 
     /**
@@ -65,7 +65,7 @@ final class FnStream implements StreamInterface
      */
     public function __wakeup(): void
     {
-        throw new \LogicException('FnStream should never be unserialized');
+        throw new \LogicException('FnStream should never be unserialized', 5617437116);
     }
 
     /**

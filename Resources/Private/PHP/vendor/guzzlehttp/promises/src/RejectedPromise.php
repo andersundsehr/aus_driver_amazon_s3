@@ -16,7 +16,7 @@ class RejectedPromise implements PromiseInterface
     {
         if (is_object($reason) && method_exists($reason, 'then')) {
             throw new \InvalidArgumentException(
-                'You cannot create a RejectedPromise with a promise.'
+                'You cannot create a RejectedPromise with a promise.', 1836147301
             );
         }
 
@@ -74,13 +74,13 @@ class RejectedPromise implements PromiseInterface
 
     public function resolve($value)
     {
-        throw new \LogicException("Cannot resolve a rejected promise");
+        throw new \LogicException("Cannot resolve a rejected promise", 7671519426);
     }
 
     public function reject($reason)
     {
         if ($reason !== $this->reason) {
-            throw new \LogicException("Cannot reject a rejected promise");
+            throw new \LogicException("Cannot reject a rejected promise", 2646615109);
         }
     }
 

@@ -56,7 +56,7 @@ class CommandPool implements PromisorInterface
             foreach ($commands as $key => $command) {
                 if (!($command instanceof CommandInterface)) {
                     throw new \InvalidArgumentException('Each value yielded by '
-                        . 'the iterator must be an Aws\CommandInterface.');
+                        . 'the iterator must be an Aws\CommandInterface.', 2826087296);
                 }
                 if ($before) {
                     $before($command, $key);
@@ -122,7 +122,7 @@ class CommandPool implements PromisorInterface
             return $config['before'];
         }
 
-        throw new \InvalidArgumentException('before must be callable');
+        throw new \InvalidArgumentException('before must be callable', 3020173586);
     }
 
     /**
@@ -134,7 +134,7 @@ class CommandPool implements PromisorInterface
      * @param       $name
      * @param array $results
      */
-    private static function cmpCallback(array &$config, $name, array &$results)
+    private static function cmpCallback(array &$config, $name, array &$results): void
     {
         if (!isset($config[$name])) {
             $config[$name] = function ($v, $k) use (&$results) {

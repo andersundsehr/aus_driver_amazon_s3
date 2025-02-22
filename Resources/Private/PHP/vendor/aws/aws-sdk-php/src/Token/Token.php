@@ -84,7 +84,7 @@ class Token implements TokenInterface, \Serializable
     /**
      * Sets the state of the object from serialized json data
      */
-    public function unserialize($serialized)
+    public function unserialize($serialized): void
     {
         $data = json_decode($serialized, true);
 

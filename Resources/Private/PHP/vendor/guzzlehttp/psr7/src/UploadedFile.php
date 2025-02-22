@@ -94,7 +94,7 @@ class UploadedFile implements UploadedFileInterface
             $this->stream = $streamOrFile;
         } else {
             throw new InvalidArgumentException(
-                'Invalid stream or file provided for UploadedFile'
+                'Invalid stream or file provided for UploadedFile', 8443942348
             );
         }
     }
@@ -106,7 +106,7 @@ class UploadedFile implements UploadedFileInterface
     {
         if (false === in_array($error, UploadedFile::ERRORS, true)) {
             throw new InvalidArgumentException(
-                'Invalid error status for UploadedFile'
+                'Invalid error status for UploadedFile', 8286731275
             );
         }
 
@@ -137,11 +137,11 @@ class UploadedFile implements UploadedFileInterface
     private function validateActive(): void
     {
         if (false === $this->isOk()) {
-            throw new RuntimeException('Cannot retrieve stream due to upload error');
+            throw new RuntimeException('Cannot retrieve stream due to upload error', 8561937559);
         }
 
         if ($this->isMoved()) {
-            throw new RuntimeException('Cannot retrieve stream after it has already been moved');
+            throw new RuntimeException('Cannot retrieve stream after it has already been moved', 6250108099);
         }
     }
 
@@ -165,7 +165,7 @@ class UploadedFile implements UploadedFileInterface
 
         if (false === $this->isStringNotEmpty($targetPath)) {
             throw new InvalidArgumentException(
-                'Invalid path provided for move operation; must be a non-empty string'
+                'Invalid path provided for move operation; must be a non-empty string', 8729825718
             );
         }
 
@@ -184,7 +184,7 @@ class UploadedFile implements UploadedFileInterface
 
         if (false === $this->moved) {
             throw new RuntimeException(
-                sprintf('Uploaded file could not be moved to %s', $targetPath)
+                sprintf('Uploaded file could not be moved to %s', $targetPath), 7394152189
             );
         }
     }

@@ -43,7 +43,7 @@ trait PayloadParserTrait
             libxml_clear_errors();
             $xmlPayload = new \SimpleXMLElement($xml);
             if ($error = libxml_get_last_error()) {
-                throw new \RuntimeException($error->message);
+                throw new \RuntimeException($error->message, 1401323025);
             }
         } catch (\Exception $e) {
             throw new ParserException(

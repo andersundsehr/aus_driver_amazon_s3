@@ -72,7 +72,7 @@ final class MultipartStream implements StreamInterface
 
         foreach ($elements as $element) {
             if (!is_array($element)) {
-                throw new \UnexpectedValueException('An array is expected');
+                throw new \UnexpectedValueException('An array is expected', 2866187362);
             }
             $this->addElement($stream, $element);
         }
@@ -87,7 +87,7 @@ final class MultipartStream implements StreamInterface
     {
         foreach (['contents', 'name'] as $key) {
             if (!array_key_exists($key, $element)) {
-                throw new \InvalidArgumentException("A '{$key}' key is required");
+                throw new \InvalidArgumentException("A '{$key}' key is required", 7288803086);
             }
         }
 

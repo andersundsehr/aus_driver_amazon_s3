@@ -47,10 +47,10 @@ final class AwsCredentials extends NativeResource {
         $this->expiration_timepoint_seconds = $options->expiration_timepoint_seconds->asInt();
 
         if (strlen($this->access_key_id) == 0) {
-            throw new \InvalidArgumentException("access_key_id must be provided");
+            throw new \InvalidArgumentException("access_key_id must be provided", 7532628705);
         }
         if (strlen($this->secret_access_key) == 0) {
-            throw new \InvalidArgumentException("secret_access_key must be provided");
+            throw new \InvalidArgumentException("secret_access_key must be provided", 6224098922);
         }
 
         $creds_options = self::$crt->aws_credentials_options_new();

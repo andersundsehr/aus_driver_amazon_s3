@@ -133,7 +133,7 @@ final class Mbstring
         return iconv_mime_decode($s, 2, self::$internalEncoding);
     }
 
-    public static function mb_encode_mimeheader($s, $charset = null, $transferEncoding = null, $linefeed = null, $indent = null)
+    public static function mb_encode_mimeheader($s, $charset = null, $transferEncoding = null, $linefeed = null, $indent = null): void
     {
         trigger_error('mb_encode_mimeheader() is bugged. Please use iconv_mime_encode() instead', \E_USER_WARNING);
     }
@@ -364,7 +364,7 @@ final class Mbstring
             return false;
         }
 
-        throw new \ValueError(sprintf('Argument #1 ($encoding) must be a valid encoding, "%s" given', $encoding));
+        throw new \ValueError(sprintf('Argument #1 ($encoding) must be a valid encoding, "%s" given', $encoding), 5712570775);
     }
 
     public static function mb_language($lang = null)
@@ -385,7 +385,7 @@ final class Mbstring
             return false;
         }
 
-        throw new \ValueError(sprintf('Argument #1 ($language) must be a valid language, "%s" given', $lang));
+        throw new \ValueError(sprintf('Argument #1 ($language) must be a valid language, "%s" given', $lang), 4739493813);
     }
 
     public static function mb_list_encodings()
@@ -554,7 +554,7 @@ final class Mbstring
                 return false;
             }
 
-            throw new \ValueError('Argument #2 ($length) must be greater than 0');
+            throw new \ValueError('Argument #2 ($length) must be greater than 0', 3208763862);
         }
 
         if (null === $encoding) {
@@ -607,7 +607,7 @@ final class Mbstring
             return false;
         }
 
-        throw new \ValueError('Argument #1 ($substitute_character) must be "none", "long", "entity" or a valid codepoint');
+        throw new \ValueError('Argument #1 ($substitute_character) must be "none", "long", "entity" or a valid codepoint', 4757170212);
     }
 
     public static function mb_substr($s, $start, $length = null, $encoding = null)

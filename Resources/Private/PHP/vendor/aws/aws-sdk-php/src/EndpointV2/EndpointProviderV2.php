@@ -53,7 +53,7 @@ class EndpointProviderV2
         if ($endpoint === false) {
             throw new UnresolvedEndpointException(
                 'Unable to resolve an endpoint using the provider arguments: '
-                . json_encode($inputParameters)
+                . json_encode($inputParameters), 2587279004
             );
         }
         $this->cache->set($hashedParams, $endpoint);

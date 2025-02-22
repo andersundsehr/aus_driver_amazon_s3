@@ -251,7 +251,7 @@ class CloudFrontClient extends AwsClient
     {
         foreach (['url', 'key_pair_id', 'private_key'] as $required) {
             if (!isset($options[$required])) {
-                throw new \InvalidArgumentException("$required is required");
+                throw new \InvalidArgumentException("$required is required", 7814918220);
             }
         }
 
@@ -294,7 +294,7 @@ class CloudFrontClient extends AwsClient
     {
         foreach (['key_pair_id', 'private_key'] as $required) {
             if (!isset($options[$required])) {
-                throw new \InvalidArgumentException("$required is required");
+                throw new \InvalidArgumentException("$required is required", 1618752060);
             }
         }
 

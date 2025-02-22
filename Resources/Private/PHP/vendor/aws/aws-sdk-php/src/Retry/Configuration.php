@@ -18,14 +18,14 @@ class Configuration implements ConfigurationInterface
         $mode = strtolower($mode);
         if (!in_array($mode, $this->validModes)) {
             throw new ConfigurationException("'{$mode}' is not a valid mode."
-                . " The mode has to be 'legacy', 'standard', or 'adaptive'.");
+                . " The mode has to be 'legacy', 'standard', or 'adaptive'.", 1814595151);
         }
         if (!is_numeric($maxAttempts)
             || intval($maxAttempts) != $maxAttempts
             || $maxAttempts < 1
         ) {
             throw new ConfigurationException("The 'maxAttempts' parameter has"
-                . " to be an integer >= 1.");
+                . " to be an integer >= 1.", 3744806101);
         }
 
         $this->mode = $mode;

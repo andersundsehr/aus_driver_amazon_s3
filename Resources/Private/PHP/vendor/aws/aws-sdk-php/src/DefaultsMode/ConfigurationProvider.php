@@ -196,6 +196,6 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         }
 
         throw new \InvalidArgumentException('Not a valid defaults mode configuration'
-            . ' argument.');
+            . ' argument.', 5538628135);
     }
 }

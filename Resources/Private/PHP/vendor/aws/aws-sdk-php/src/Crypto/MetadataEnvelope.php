@@ -42,12 +42,12 @@ class MetadataEnvelope implements ArrayAccess, IteratorAggregate, JsonSerializab
      * @return void
      */
     #[\ReturnTypeWillChange]
-    public function offsetSet($name, $value)
+    public function offsetSet($name, $value): void
     {
         $constants = self::getConstantValues();
         if (is_null($name) || !in_array($name, $constants)) {
             throw new InvalidArgumentException('MetadataEnvelope fields must'
-                . ' must match a predefined offset; use the header constants.');
+                . ' must match a predefined offset; use the header constants.', 4061628993);
         }
 
         $this->data[$name] = $value;

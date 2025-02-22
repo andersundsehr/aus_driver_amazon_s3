@@ -66,7 +66,7 @@ class EndpointProvider
             'Unable to resolve an endpoint using the provider arguments: '
             . json_encode($args) . '. Note: you can provide an "endpoint" '
             . 'option to a client constructor to bypass invoking an endpoint '
-            . 'provider.');
+            . 'provider.', 8104881350);
     }
 
     /**

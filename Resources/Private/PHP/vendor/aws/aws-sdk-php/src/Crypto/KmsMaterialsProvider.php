@@ -37,7 +37,7 @@ class KmsMaterialsProvider extends MaterialsProvider implements MaterialsProvide
     public function fromDecryptionEnvelope(MetadataEnvelope $envelope)
     {
         if (empty($envelope[MetadataEnvelope::MATERIALS_DESCRIPTION_HEADER])) {
-            throw new \RuntimeException('Not able to detect the materials description.');
+            throw new \RuntimeException('Not able to detect the materials description.', 9354120209);
         }
 
         $materialsDescription = json_decode(
@@ -49,7 +49,7 @@ class KmsMaterialsProvider extends MaterialsProvider implements MaterialsProvide
             && empty($materialsDescription['aws:x-amz-cek-alg'])) {
             throw new \RuntimeException('Not able to detect kms_cmk_id (legacy'
                 . ' implementation) or aws:x-amz-cek-alg (current implementation)'
-                . ' from kms materials description.');
+                . ' from kms materials description.', 7839828833);
         }
 
         return new self(

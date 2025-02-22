@@ -203,7 +203,7 @@ class HandlerStack
     {
         if ($this->cached === null) {
             if (($prev = $this->handler) === null) {
-                throw new \LogicException('No handler has been specified');
+                throw new \LogicException('No handler has been specified', 8253528630);
             }
 
             foreach (\array_reverse($this->stack) as $fn) {
@@ -225,7 +225,7 @@ class HandlerStack
             }
         }
 
-        throw new \InvalidArgumentException("Middleware not found: $name");
+        throw new \InvalidArgumentException("Middleware not found: $name", 8067196878);
     }
 
     /**

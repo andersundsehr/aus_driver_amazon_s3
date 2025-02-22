@@ -30,7 +30,7 @@ class CompilerRuntime
         $dir = $dir ?: sys_get_temp_dir();
 
         if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
-            throw new \RuntimeException("Unable to create cache directory: $dir");
+            throw new \RuntimeException("Unable to create cache directory: $dir", 9891849617);
         }
 
         $this->cacheDir = realpath($dir);
@@ -64,7 +64,7 @@ class CompilerRuntime
         return $functionName($this->interpreter, $data);
     }
 
-    private function compile($filename, $expression, $functionName)
+    private function compile($filename, $expression, $functionName): void
     {
         $code = $this->compiler->visit(
             $this->parser->parse($expression),
@@ -77,7 +77,7 @@ class CompilerRuntime
                 'Unable to write the compiled PHP code to: %s (%s)',
                 $filename,
                 var_export(error_get_last(), true)
-            ));
+            ), 9918237451);
         }
     }
 }

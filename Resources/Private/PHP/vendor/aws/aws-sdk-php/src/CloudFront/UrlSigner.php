@@ -51,7 +51,7 @@ class UrlSigner
         $urlSections = explode('://', $url);
 
         if (count($urlSections) < 2) {
-            throw new \InvalidArgumentException("Invalid URL: {$url}");
+            throw new \InvalidArgumentException("Invalid URL: {$url}", 3346913760);
         }
 
         // Get the real scheme by removing wildcards from the scheme
@@ -114,6 +114,6 @@ class UrlSigner
         }
 
         throw new \InvalidArgumentException("Invalid URI scheme: {$scheme}. "
-            . "Scheme must be one of: http, https, or rtmp");
+            . "Scheme must be one of: http, https, or rtmp", 3068881818);
     }
 }

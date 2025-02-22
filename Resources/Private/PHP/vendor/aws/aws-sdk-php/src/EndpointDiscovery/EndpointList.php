@@ -55,7 +55,7 @@ class EndpointList
      *
      * @param string $key
      */
-    public function remove($key)
+    public function remove($key): void
     {
         unset($this->active[$key]);
         unset($this->expired[$key]);
@@ -76,7 +76,7 @@ class EndpointList
         return $expired;
     }
 
-    private function increment(&$array)
+    private function increment(&$array): void
     {
         if (next($array) === false) {
             reset($array);

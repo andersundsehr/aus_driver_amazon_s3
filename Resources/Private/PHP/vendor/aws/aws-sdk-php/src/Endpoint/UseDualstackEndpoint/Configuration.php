@@ -13,12 +13,12 @@ class Configuration implements ConfigurationInterface
         $this->useDualstackEndpoint = Aws\boolean_value($useDualstackEndpoint);
         if (is_null($this->useDualstackEndpoint)) {
             throw new ConfigurationException("'use_dual_stack_endpoint' config option"
-                . " must be a boolean value.");
+                . " must be a boolean value.", 2690484425);
         }
         if ($this->useDualstackEndpoint == true
             && (strpos($region, "iso-") !== false || strpos($region, "-iso") !== false)
         ) {
-            throw new ConfigurationException("Dual-stack is not supported in ISO regions");        }
+            throw new ConfigurationException("Dual-stack is not supported in ISO regions", 9732279507);        }
     }
 
     /**

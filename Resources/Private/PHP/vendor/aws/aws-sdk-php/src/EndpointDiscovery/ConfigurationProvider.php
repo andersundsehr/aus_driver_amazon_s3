@@ -235,6 +235,6 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         }
 
         throw new \InvalidArgumentException('Not a valid endpoint_discovery '
-            . 'configuration argument.');
+            . 'configuration argument.', 1290420799);
     }
 }

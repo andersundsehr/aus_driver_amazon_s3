@@ -12,7 +12,7 @@ trait RetryHelperTrait
     }
 
 
-    private function updateStats($retries, $delay, array &$stats)
+    private function updateStats($retries, $delay, array &$stats): void
     {
         if (!isset($stats['total_retry_delay'])) {
             $stats['total_retry_delay'] = 0;
@@ -22,7 +22,7 @@ trait RetryHelperTrait
         $stats['retries_attempted'] = $retries;
     }
 
-    private function updateHttpStats($value, array &$stats)
+    private function updateHttpStats($value, array &$stats): void
     {
         if (empty($stats['http'])) {
             $stats['http'] = [];

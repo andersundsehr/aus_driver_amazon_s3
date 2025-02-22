@@ -79,7 +79,7 @@ Class Ruleset
      *
      * @return void
      */
-    private function validateInputParameters(array &$inputParameters)
+    private function validateInputParameters(array &$inputParameters): void
     {
         foreach($this->parameters as $paramName => $param) {
             $inputParam = isset($inputParameters[$paramName]) ? $inputParameters[$paramName] : null;

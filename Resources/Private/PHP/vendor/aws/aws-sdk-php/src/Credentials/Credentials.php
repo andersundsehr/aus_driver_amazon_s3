@@ -79,7 +79,7 @@ class Credentials implements CredentialsInterface, \Serializable
         return json_encode($this->__serialize());
     }
 
-    public function unserialize($serialized)
+    public function unserialize($serialized): void
     {
         $data = json_decode($serialized, true);
 
@@ -105,7 +105,7 @@ class Credentials implements CredentialsInterface, \Serializable
      *
      * @internal
      */
-    public function extendExpiration() {
+    public function extendExpiration(): void {
         $extension = mt_rand(5, 10);
         $this->expires = time() + $extension * 60;
 

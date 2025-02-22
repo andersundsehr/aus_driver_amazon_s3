@@ -85,7 +85,7 @@ class FnDispatcher
     {
         if (!$args) {
             throw new \RuntimeException(
-                "not_null() expects 1 or more arguments, 0 were provided"
+                "not_null() expects 1 or more arguments, 0 were provided", 4307244430
             );
         }
 
@@ -164,7 +164,7 @@ class FnDispatcher
         } elseif (is_string($args[0])) {
             return strrev($args[0]);
         } else {
-            throw new \RuntimeException('Cannot reverse provided argument');
+            throw new \RuntimeException('Cannot reverse provided argument', 2038552796);
         }
     }
 
@@ -256,7 +256,7 @@ class FnDispatcher
     {
         if (!$args) {
             throw new \RuntimeException(
-                "merge() expects 1 or more arguments, 0 were provided"
+                "merge() expects 1 or more arguments, 0 were provided", 9727309585
             );
         }
 
@@ -280,29 +280,29 @@ class FnDispatcher
         return $result;
     }
 
-    private function typeError($from, $msg)
+    private function typeError($from, $msg): void
     {
         if (mb_strpos($from, ':', 0, 'UTF-8')) {
             list($fn, $pos) = explode(':', $from);
             throw new \RuntimeException(
-                sprintf('Argument %d of %s %s', $pos, $fn, $msg)
+                sprintf('Argument %d of %s %s', $pos, $fn, $msg), 1069173417
             );
         } else {
             throw new \RuntimeException(
-                sprintf('Type error: %s %s', $from, $msg)
+                sprintf('Type error: %s %s', $from, $msg), 5814818007
             );
         }
     }
 
-    private function validateArity($from, $given, $expected)
+    private function validateArity($from, $given, $expected): void
     {
         if ($given != $expected) {
             $err = "%s() expects {$expected} arguments, {$given} were provided";
-            throw new \RuntimeException(sprintf($err, $from));
+            throw new \RuntimeException(sprintf($err, $from), 9449395365);
         }
     }
 
-    private function validate($from, $args, $types = [])
+    private function validate($from, $args, $types = []): void
     {
         $this->validateArity($from, count($args), count($types));
         foreach ($args as $index => $value) {
@@ -313,7 +313,7 @@ class FnDispatcher
         }
     }
 
-    private function validateType($from, $value, array $types)
+    private function validateType($from, $value, array $types): void
     {
         if ($types[0] == 'any'
             || in_array(Utils::type($value), $types)
@@ -335,7 +335,7 @@ class FnDispatcher
      * @param mixed    $a      Value A
      * @param mixed    $b      Value B
      */
-    private function validateSeq($from, array $types, $a, $b)
+    private function validateSeq($from, array $types, $a, $b): void
     {
         $ta = Utils::type($a);
         $tb = Utils::type($b);
@@ -402,6 +402,6 @@ class FnDispatcher
     public function __call($name, $args)
     {
         $name = str_replace('fn_', '', $name);
-        throw new \RuntimeException("Call to undefined function {$name}");
+        throw new \RuntimeException("Call to undefined function {$name}", 4963560854);
     }
 }

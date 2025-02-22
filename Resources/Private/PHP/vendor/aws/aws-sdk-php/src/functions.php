@@ -158,7 +158,7 @@ function load_compiled_json($path)
 
     if (!file_exists($path)) {
         throw new \InvalidArgumentException(
-            sprintf("File not found: %s", $path)
+            sprintf("File not found: %s", $path), 8202833646
         );
     }
 
@@ -189,7 +189,7 @@ function dir_iterator($path, $context = null)
 {
     $dh = $context ? opendir($path, $context) : opendir($path);
     if (!$dh) {
-        throw new \InvalidArgumentException('File not found: ' . $path);
+        throw new \InvalidArgumentException('File not found: ' . $path, 1970250200);
     }
     while (($file = readdir($dh)) !== false) {
         yield $file;
@@ -284,7 +284,7 @@ function default_http_handler()
         return new \Aws\Handler\GuzzleV5\GuzzleHandler();
     }
 
-    throw new \RuntimeException('Unknown Guzzle version: ' . $version);
+    throw new \RuntimeException('Unknown Guzzle version: ' . $version, 5679641799);
 }
 
 /**
@@ -305,7 +305,7 @@ function default_user_agent()
         return \GuzzleHttp\Client::getDefaultUserAgent();
     }
 
-    throw new \RuntimeException('Unknown Guzzle version: ' . $version);
+    throw new \RuntimeException('Unknown Guzzle version: ' . $version, 4870730212);
 }
 
 /**
@@ -334,7 +334,7 @@ function guzzle_major_version()
         return $cache = ClientInterface::MAJOR_VERSION;
     }
 
-    throw new \RuntimeException('Unable to determine what Guzzle version is installed.');
+    throw new \RuntimeException('Unable to determine what Guzzle version is installed.', 7991543537);
 }
 
 /**
@@ -363,7 +363,7 @@ function serialize(CommandInterface $command)
     call_user_func($handlerList->resolve(), $command)->wait();
     if (!$request instanceof RequestInterface) {
         throw new \RuntimeException(
-            'Calling handler did not serialize request'
+            'Calling handler did not serialize request', 4767978419
         );
     }
 
@@ -413,7 +413,7 @@ function manifest($service = null)
     }
 
     throw new \InvalidArgumentException(
-        "The service \"{$service}\" is not provided by the AWS SDK for PHP."
+        "The service \"{$service}\" is not provided by the AWS SDK for PHP.", 3572908630
     );
 }
 

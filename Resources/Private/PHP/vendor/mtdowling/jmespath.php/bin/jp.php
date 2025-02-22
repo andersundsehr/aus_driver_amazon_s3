@@ -8,7 +8,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 } elseif (file_exists(__DIR__ . '/../autoload.php')) {
     require __DIR__ . '/../autoload.php';
 } else {
-    throw new RuntimeException('Unable to locate autoload.php file.');
+    throw new RuntimeException('Unable to locate autoload.php file.', 5585602518);
 }
 
 use JmesPath\Env;

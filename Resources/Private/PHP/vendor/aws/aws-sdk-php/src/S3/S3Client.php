@@ -449,7 +449,7 @@ class S3Client extends AwsClient implements S3ClientInterface
             preg_match('/^[a-z0-9]([a-z0-9\-\.]*[a-z0-9])?$/', $bucket);
     }
 
-    public static function _apply_use_arn_region($value, array &$args, HandlerList $list)
+    public static function _apply_use_arn_region($value, array &$args, HandlerList $list): void
     {
         if ($value instanceof CacheInterface) {
             $value = UseArnRegionConfigurationProvider::defaultProvider($args);
@@ -702,7 +702,7 @@ class S3Client extends AwsClient implements S3ClientInterface
      *
      * @internal
      */
-    private function processEndpointV2Model()
+    private function processEndpointV2Model(): void
     {
         $definition = $this->getApi()->getDefinition();
 
@@ -755,7 +755,7 @@ class S3Client extends AwsClient implements S3ClientInterface
     }
 
     /** @internal */
-    public static function _applyRetryConfig($value, $args, HandlerList $list)
+    public static function _applyRetryConfig($value, $args, HandlerList $list): void
     {
         if ($value) {
             $config = \Aws\Retry\ConfigurationProvider::unwrap($value);
@@ -845,7 +845,7 @@ class S3Client extends AwsClient implements S3ClientInterface
     }
 
     /** @internal */
-    public static function _applyApiProvider($value, array &$args, HandlerList $list)
+    public static function _applyApiProvider($value, array &$args, HandlerList $list): void
     {
         ClientResolver::_apply_api_provider($value, $args);
         $args['parser'] = new GetBucketLocationParser(

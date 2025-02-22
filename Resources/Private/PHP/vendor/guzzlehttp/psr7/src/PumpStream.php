@@ -105,7 +105,7 @@ final class PumpStream implements StreamInterface
 
     public function seek($offset, $whence = SEEK_SET): void
     {
-        throw new \RuntimeException('Cannot seek a PumpStream');
+        throw new \RuntimeException('Cannot seek a PumpStream', 1934401861);
     }
 
     public function isWritable(): bool
@@ -115,7 +115,7 @@ final class PumpStream implements StreamInterface
 
     public function write($string): int
     {
-        throw new \RuntimeException('Cannot write to a PumpStream');
+        throw new \RuntimeException('Cannot write to a PumpStream', 1934613785);
     }
 
     public function isReadable(): bool

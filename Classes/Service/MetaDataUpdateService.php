@@ -35,7 +35,7 @@ class MetaDataUpdateService implements SingletonInterface
      */
     public function updateMetadata(array $fileProperties): void
     {
-        if ($fileProperties['type'] !== AbstractFile::FILETYPE_IMAGE) {
+        if ($fileProperties['type'] !== \TYPO3\CMS\Core\Resource\FileType::IMAGE->value) {
             return;
         }
 

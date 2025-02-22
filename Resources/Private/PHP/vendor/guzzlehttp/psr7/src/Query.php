@@ -83,7 +83,7 @@ final class Query
         } elseif ($encoding === PHP_QUERY_RFC1738) {
             $encoder = 'urlencode';
         } else {
-            throw new \InvalidArgumentException('Invalid type');
+            throw new \InvalidArgumentException('Invalid type', 6080528580);
         }
 
         $qs = '';

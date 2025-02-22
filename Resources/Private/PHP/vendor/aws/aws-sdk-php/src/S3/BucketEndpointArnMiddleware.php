@@ -235,19 +235,19 @@ class BucketEndpointArnMiddleware
                 throw new UnresolvedEndpointException(
                     'Dualstack is currently not supported with S3 Outposts access'
                     . ' points. Please disable dualstack or do not supply an'
-                    . ' access point ARN.');
+                    . ' access point ARN.', 9307837186);
             }
             if ($arn instanceof MultiRegionAccessPointArn) {
                 if (!empty($this->config['disable_multiregion_access_points'])) {
                     throw new UnresolvedEndpointException(
                         'Multi-Region Access Point ARNs are disabled, but one was provided.  Please'
-                        . ' enable them or provide a different ARN.'
+                        . ' enable them or provide a different ARN.', 7674795819
                     );
                 }
                 if (!empty($this->config['dual_stack'])) {
                     throw new UnresolvedEndpointException(
                         'Multi-Region Access Point ARNs do not currently support dual stack. Please'
-                        . ' disable dual stack or provide a different ARN.'
+                        . ' disable dual stack or provide a different ARN.', 5013908699
                     );
                 }
             }
@@ -256,7 +256,7 @@ class BucketEndpointArnMiddleware
                 throw new UnresolvedEndpointException(
                     'Accelerate is currently not supported with access points.'
                     . ' Please disable accelerate or do not supply an access'
-                    . ' point ARN.');
+                    . ' point ARN.', 7900803981);
             }
 
             // Path-style is not supported with access points
@@ -264,7 +264,7 @@ class BucketEndpointArnMiddleware
                 throw new UnresolvedEndpointException(
                     'Path-style addressing is currently not supported with'
                     . ' access points. Please disable path-style or do not'
-                    . ' supply an access point ARN.');
+                    . ' supply an access point ARN.', 6684301643);
             }
 
             // Custom endpoint is not supported with access points
@@ -274,7 +274,7 @@ class BucketEndpointArnMiddleware
                 throw new UnresolvedEndpointException(
                     'A custom endpoint has been supplied along with an access'
                     . ' point ARN, and these are not compatible with each other.'
-                    . ' Please only use one or the other.');
+                    . ' Please only use one or the other.', 7361265683);
             }
 
             // Dualstack is not supported with object lambda access points
@@ -284,7 +284,7 @@ class BucketEndpointArnMiddleware
                 throw new UnresolvedEndpointException(
                     'Dualstack is currently not supported with Object Lambda access'
                     . ' points. Please disable dualstack or do not supply an'
-                    . ' access point ARN.');
+                    . ' access point ARN.', 1395845595);
             }
             // Global endpoints do not support cross-region requests
             if ($this->isGlobal($this->region)
@@ -295,7 +295,7 @@ class BucketEndpointArnMiddleware
                 throw new UnresolvedEndpointException(
                     'Global endpoints do not support cross region requests.'
                     . ' Please enable use_arn_region or do not supply a global region'
-                    . ' with a different region in the ARN.');
+                    . ' with a different region in the ARN.', 7990048525);
             }
 
             // Get partitions for ARN and client region
@@ -319,12 +319,12 @@ class BucketEndpointArnMiddleware
                 // Verify that the partition matches for supplied partition and region
                 if ($arn->getPartition() !== $clientPart->getName()) {
                     throw new InvalidRegionException('The supplied ARN partition'
-                        . " does not match the client's partition.");
+                        . " does not match the client's partition.", 9941396035);
                 }
                 if ($clientPart->getName() !== $arnPart->getName()) {
                     throw new InvalidRegionException('The corresponding partition'
                         . ' for the supplied ARN region does not match the'
-                        . " client's partition.");
+                        . " client's partition.", 7124265267);
                 }
 
                 // Ensure ARN region matches client region unless
@@ -339,7 +339,7 @@ class BucketEndpointArnMiddleware
         }
 
         throw new InvalidArnException('Provided ARN was not a valid S3 access'
-            . ' point ARN or S3 Outposts access point ARN.');
+            . ' point ARN or S3 Outposts access point ARN.', 4647243291);
     }
 
     /**

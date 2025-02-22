@@ -68,7 +68,7 @@ class Command implements CommandInterface
      *
      * @internal
      */
-    public function setAuthSchemes(array $authSchemes)
+    public function setAuthSchemes(array $authSchemes): void
     {
         $this->authSchemes = $authSchemes;
     }

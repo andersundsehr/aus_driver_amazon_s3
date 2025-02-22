@@ -14,7 +14,7 @@ trait CryptoParamsTrait
         }
 
         throw new \InvalidArgumentException('An instance of MaterialsProvider'
-            . ' must be passed in the "MaterialsProvider" field.');
+            . ' must be passed in the "MaterialsProvider" field.', 2413261238);
     }
 
     protected function getInstructionFileSuffix(array $args)
@@ -57,11 +57,11 @@ trait CryptoParamsTrait
                     default:
                         throw new \InvalidArgumentException('Could not match the'
                             . ' specified string in "MetadataStrategy" to a'
-                            . ' predefined strategy.');
+                            . ' predefined strategy.', 1798226305);
                 }
             } else {
                 throw new \InvalidArgumentException('The metadata strategy that'
-                    . ' was passed to "MetadataStrategy" was unrecognized.');
+                    . ' was passed to "MetadataStrategy" was unrecognized.', 5269796341);
             }
         } elseif ($instructionFileSuffix) {
             return new InstructionFileMetadataStrategy(

@@ -97,7 +97,7 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $normalized[$key] = self::normalizeFiles($value);
                 continue;
             } else {
-                throw new InvalidArgumentException('Invalid value in files specification');
+                throw new InvalidArgumentException('Invalid value in files specification', 3095356139);
             }
         }
 

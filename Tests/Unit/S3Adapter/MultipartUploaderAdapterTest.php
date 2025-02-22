@@ -20,7 +20,7 @@ class MultipartUploaderAdapterTest extends TestCase
     /**
      * @test
      */
-    public function detectContentTypeTest()
+    public function detectContentTypeTest(): void
     {
         $fixtures = dirname(__FILE__) . '/../Fixtures/MultipartUploaderAdapter/';
 

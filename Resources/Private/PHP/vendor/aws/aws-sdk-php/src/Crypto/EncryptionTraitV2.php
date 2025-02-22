@@ -67,14 +67,14 @@ trait EncryptionTraitV2
 
         if (empty($cipherOptions['Cipher'])) {
             throw new \InvalidArgumentException('An encryption cipher must be'
-                . ' specified in @CipherOptions["Cipher"].');
+                . ' specified in @CipherOptions["Cipher"].', 1622806805);
         }
 
         $cipherOptions['Cipher'] = strtolower($cipherOptions['Cipher']);
 
         if (!self::isSupportedCipher($cipherOptions['Cipher'])) {
             throw new \InvalidArgumentException('The cipher requested is not'
-                . ' supported by the SDK.');
+                . ' supported by the SDK.', 3636445598);
         }
 
         if (empty($cipherOptions['KeySize'])) {
@@ -82,14 +82,14 @@ trait EncryptionTraitV2
         }
         if (!is_int($cipherOptions['KeySize'])) {
             throw new \InvalidArgumentException('The cipher "KeySize" must be'
-                . ' an integer.');
+                . ' an integer.', 4027352676);
         }
 
         if (!MaterialsProviderV2::isSupportedKeySize(
             $cipherOptions['KeySize']
         )) {
             throw new \InvalidArgumentException('The cipher "KeySize" requested'
-                . ' is not supported by AES (128 or 256).');
+                . ' is not supported by AES (128 or 256).', 9875829131);
         }
 
         $cipherOptions['Iv'] = $provider->generateIv(

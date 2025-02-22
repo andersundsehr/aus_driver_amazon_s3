@@ -102,7 +102,7 @@ final class Utils
                 ? Proxy::wrapStreaming($handler, new StreamHandler())
                 : new StreamHandler();
         } elseif (!$handler) {
-            throw new \RuntimeException('GuzzleHttp requires cURL, the allow_url_fopen ini setting, or a custom HTTP handler.');
+            throw new \RuntimeException('GuzzleHttp requires cURL, the allow_url_fopen ini setting, or a custom HTTP handler.', 3490129400);
         }
 
         return $handler;
@@ -184,7 +184,7 @@ you have a CA bundle available on disk, you can set the 'openssl.cafile' PHP
 ini setting to point to the path to the file, allowing you to omit the 'verify'
 request option. See https://curl.haxx.se/docs/sslcerts.html for more
 information.
-EOT
+EOT, 8636858236
         );
     }
 
@@ -224,7 +224,7 @@ EOT
     public static function isHostInNoProxy(string $host, array $noProxyArray): bool
     {
         if (\strlen($host) === 0) {
-            throw new InvalidArgumentException('Empty host provided');
+            throw new InvalidArgumentException('Empty host provided', 9349163288);
         }
 
         // Strip port if present.
@@ -275,7 +275,7 @@ EOT
     {
         $data = \json_decode($json, $assoc, $depth, $options);
         if (\JSON_ERROR_NONE !== \json_last_error()) {
-            throw new InvalidArgumentException('json_decode error: '.\json_last_error_msg());
+            throw new InvalidArgumentException('json_decode error: '.\json_last_error_msg(), 5339331553);
         }
 
         return $data;
@@ -296,7 +296,7 @@ EOT
     {
         $json = \json_encode($value, $options, $depth);
         if (\JSON_ERROR_NONE !== \json_last_error()) {
-            throw new InvalidArgumentException('json_encode error: '.\json_last_error_msg());
+            throw new InvalidArgumentException('json_encode error: '.\json_last_error_msg(), 4388528920);
         }
 
         /** @var string */
@@ -344,7 +344,7 @@ EOT
                     $errorMessage .= ' (errors: '.implode(', ', $errors).')';
                 }
 
-                throw new InvalidArgumentException($errorMessage);
+                throw new InvalidArgumentException($errorMessage, 8993475383);
             }
             if ($uri->getHost() !== $asciiHost) {
                 // Replace URI only if the ASCII version is different
@@ -380,6 +380,6 @@ EOT
             return \idn_to_ascii($domain, $options, \INTL_IDNA_VARIANT_UTS46, $info);
         }
 
-        throw new \Error('ext-idn or symfony/polyfill-intl-idn not loaded or too old');
+        throw new \Error('ext-idn or symfony/polyfill-intl-idn not loaded or too old', 2651310417);
     }
 }

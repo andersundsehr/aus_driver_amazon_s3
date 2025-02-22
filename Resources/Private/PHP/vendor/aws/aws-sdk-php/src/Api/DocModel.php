@@ -19,7 +19,7 @@ class DocModel
     public function __construct(array $docs)
     {
         if (!extension_loaded('tidy')) {
-            throw new \RuntimeException('The "tidy" PHP extension is required.');
+            throw new \RuntimeException('The "tidy" PHP extension is required.', 6540028860);
         }
 
         $this->docs = $docs;

@@ -82,7 +82,7 @@ class ApiCallMonitoringMiddleware extends AbstractMonitoringMiddleware
                 'MaxRetriesExceeded' => self::getMaxRetriesExceeded($klass),
             ];
         } else {
-            throw new \InvalidArgumentException('Parameter must be an instance of ResultInterface or Exception.');
+            throw new \InvalidArgumentException('Parameter must be an instance of ResultInterface or Exception.', 5763020101);
         }
 
         return $data + self::getFinalAttemptData($klass);

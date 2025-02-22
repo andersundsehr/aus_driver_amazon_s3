@@ -75,13 +75,13 @@ class Waiter implements PromisorInterface
         foreach (self::$required as $key) {
             if (!isset($this->config[$key])) {
                 throw new \InvalidArgumentException(
-                    'The provided waiter configuration was incomplete.'
+                    'The provided waiter configuration was incomplete.', 4128610331
                 );
             }
         }
         if ($this->config['before'] && !is_callable($this->config['before'])) {
             throw new \InvalidArgumentException(
-                'The provided "before" callback is not callable.'
+                'The provided "before" callback is not callable.', 8128115183
             );
         }
     }

@@ -36,7 +36,7 @@ class EndpointDefinitionProvider
         $serviceDir = $basePath . "/{$service}";
         if (!is_dir($serviceDir)) {
             throw new \InvalidArgumentException(
-                'Invalid service name.'
+                'Invalid service name.', 9001127128
             );
         }
 
@@ -47,7 +47,7 @@ class EndpointDefinitionProvider
         $rulesetPath = $serviceDir . '/' . $apiVersion;
         if (!is_dir($rulesetPath)) {
             throw new \InvalidArgumentException(
-                'Invalid api version.'
+                'Invalid api version.', 8364721995
             );
         }
         $fileName = $type === 'tests' ? '/endpoint-tests-1' : '/endpoint-rule-set-1';
@@ -58,7 +58,7 @@ class EndpointDefinitionProvider
             return json_decode(file_get_contents($rulesetPath . $fileName . '.json'), true);
         } else {
             throw new \InvalidArgumentException(
-                'Specified ' . $type . ' endpoint file for ' . $service . ' with api version ' . $apiVersion . ' does not exist.'
+                'Specified ' . $type . ' endpoint file for ' . $service . ' with api version ' . $apiVersion . ' does not exist.', 7235005880
             );
         }
     }

@@ -26,13 +26,13 @@ trait NeedsTrait
      * @param $errorMessage
      * @param null $exceptionClass
      */
-    public static function needs($condition, $errorMessage, $exceptionClass = null)
+    public static function needs($condition, $errorMessage, $exceptionClass = null): void
     {
         if (!$condition) {
             if (!$exceptionClass) {
                 $exceptionClass = CryptoPolyfillException::class;
             }
-            throw new $exceptionClass($errorMessage);
+            throw new $exceptionClass($errorMessage, 4773243652);
         }
     }
 }

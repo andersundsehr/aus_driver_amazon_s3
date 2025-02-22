@@ -38,7 +38,7 @@ class RulesetParameter
         } else {
             throw new UnresolvedEndpointException(
                 'Unknown parameter type ' . "`{$type}`" .
-                '. Parameters must be of type `String` or `Boolean`.'
+                '. Parameters must be of type `String` or `Boolean`.', 4758483159
             );
         }
         $this->name = $name;
@@ -114,7 +114,7 @@ class RulesetParameter
      * @return void
      * @throws InvalidArgumentException
      */
-    public function validateInputParam($inputParam)
+    public function validateInputParam($inputParam): void
     {
         $typeMap = [
             'String' => 'is_string',
@@ -123,7 +123,7 @@ class RulesetParameter
 
         if ($typeMap[$this->type]($inputParam) === false) {
             throw new UnresolvedEndpointException(
-                "Input parameter `{$this->name}` is the wrong type. Must be a {$this->type}."
+                "Input parameter `{$this->name}` is the wrong type. Must be a {$this->type}.", 1700823230
             );
         }
 

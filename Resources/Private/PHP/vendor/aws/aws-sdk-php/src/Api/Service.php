@@ -100,7 +100,7 @@ class Service extends AbstractModel
         }
 
         throw new \UnexpectedValueException(
-            'Unknown protocol: ' . $api->getProtocol()
+            'Unknown protocol: ' . $api->getProtocol(), 7422827585
         );
     }
 
@@ -128,7 +128,7 @@ class Service extends AbstractModel
             return new $mapping[$protocol]($api);
         }
 
-        throw new \UnexpectedValueException("Unknown protocol: $protocol");
+        throw new \UnexpectedValueException("Unknown protocol: $protocol", 4259761782);
     }
 
     /**
@@ -157,7 +157,7 @@ class Service extends AbstractModel
         }
 
         throw new \UnexpectedValueException(
-            'Unknown protocol: ' . $api->getProtocol()
+            'Unknown protocol: ' . $api->getProtocol(), 7672683017
         );
     }
 
@@ -278,7 +278,7 @@ class Service extends AbstractModel
     {
         if (!isset($this->operations[$name])) {
             if (!isset($this->definition['operations'][$name])) {
-                throw new \InvalidArgumentException("Unknown operation: $name");
+                throw new \InvalidArgumentException("Unknown operation: $name", 1689406956);
             }
             $this->operations[$name] = new Operation(
                 $this->definition['operations'][$name],
@@ -408,7 +408,7 @@ class Service extends AbstractModel
         }
 
         throw new \UnexpectedValueException("There is no {$name} "
-            . "paginator defined for the {$this->serviceName} service.");
+            . "paginator defined for the {$this->serviceName} service.", 4048677340);
     }
 
     /**
@@ -463,7 +463,7 @@ class Service extends AbstractModel
         }
 
         throw new \UnexpectedValueException("There is no {$name} waiter "
-            . "defined for the {$this->serviceName} service.");
+            . "defined for the {$this->serviceName} service.", 2131757975);
     }
 
     /**
@@ -514,7 +514,7 @@ class Service extends AbstractModel
      *
      * @internal
      */
-    public function setDefinition($definition)
+    public function setDefinition($definition): void
     {
         $this->definition = $definition;
         $this->modifiedModel = true;

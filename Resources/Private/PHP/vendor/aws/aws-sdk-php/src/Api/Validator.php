@@ -47,7 +47,7 @@ class Validator
      *
      * @throws \InvalidArgumentException if the input is invalid.
      */
-    public function validate($name, Shape $shape, array $input)
+    public function validate($name, Shape $shape, array $input): void
     {
         $this->dispatch($shape, $input);
 
@@ -62,11 +62,11 @@ class Validator
             );
             $this->errors = [];
 
-            throw new \InvalidArgumentException($message);
+            throw new \InvalidArgumentException($message, 7907752459);
         }
     }
 
-    private function dispatch(Shape $shape, $value)
+    private function dispatch(Shape $shape, $value): void
     {
         static $methods = [
             'structure' => 'check_structure',
@@ -88,7 +88,7 @@ class Validator
         }
     }
 
-    private function check_structure(StructureShape $shape, $value)
+    private function check_structure(StructureShape $shape, $value): void
     {
         $isDocument = (isset($shape['document']) && $shape['document']);
         $isUnion = (isset($shape['union']) && $shape['union']);
@@ -129,7 +129,7 @@ class Validator
         }
     }
 
-    private function check_list(ListShape $shape, $value)
+    private function check_list(ListShape $shape, $value): void
     {
         if (!is_array($value)) {
             $this->addError('must be an array. Found '
@@ -147,7 +147,7 @@ class Validator
         }
     }
 
-    private function check_map(MapShape $shape, $value)
+    private function check_map(MapShape $shape, $value): void
     {
         if (!$this->checkAssociativeArray($value)) {
             return;
@@ -161,7 +161,7 @@ class Validator
         }
     }
 
-    private function check_blob(Shape $shape, $value)
+    private function check_blob(Shape $shape, $value): void
     {
         static $valid = [
             'string' => true,
@@ -181,7 +181,7 @@ class Validator
         }
     }
 
-    private function check_numeric(Shape $shape, $value)
+    private function check_numeric(Shape $shape, $value): void
     {
         if (!is_numeric($value)) {
             $this->addError('must be numeric. Found '
@@ -192,7 +192,7 @@ class Validator
         $this->validateRange($shape, $value, "numeric value");
     }
 
-    private function check_boolean(Shape $shape, $value)
+    private function check_boolean(Shape $shape, $value): void
     {
         if (!is_bool($value)) {
             $this->addError('must be a boolean. Found '
@@ -200,7 +200,7 @@ class Validator
         }
     }
 
-    private function check_string(Shape $shape, $value)
+    private function check_string(Shape $shape, $value): void
     {
         if ($shape['jsonvalue']) {
             if (!self::canJsonEncode($value)) {
@@ -227,7 +227,7 @@ class Validator
         }
     }
 
-    private function validateRange(Shape $shape, $length, $descriptor)
+    private function validateRange(Shape $shape, $length, $descriptor): void
     {
         if ($this->constraints['min']) {
             $min = $shape['min'];
@@ -331,7 +331,7 @@ class Validator
         return !is_null($value);
     }
 
-    private function addError($message)
+    private function addError($message): void
     {
         $this->errors[] =
             implode('', array_map(function ($s) { return "[{$s}]"; }, $this->path))

@@ -9,7 +9,7 @@ class Composer
     public static function removeUnusedServices(
         Event      $event,
         Filesystem $filesystem = null
-    )
+    ): void
     {
         $composer = $event->getComposer();
         $extra = $composer->getPackage()->getExtra();
@@ -31,7 +31,7 @@ class Composer
             );
         } else {
             throw new \InvalidArgumentException(
-                'There are no services listed. Did you intend to use this script?'
+                'There are no services listed. Did you intend to use this script?', 9095612353
             );
         }
     }
@@ -48,12 +48,12 @@ class Composer
         return $serviceMapping;
     }
 
-    private static function verifyListedServices($serviceMapping, $listedServices)
+    private static function verifyListedServices($serviceMapping, $listedServices): void
     {
         foreach ($listedServices as $serviceToKeep) {
             if (!isset($serviceMapping[$serviceToKeep])) {
                 throw new \InvalidArgumentException(
-                    "'$serviceToKeep' is not a valid AWS service namespace. Please check spelling and casing."
+                    "'$serviceToKeep' is not a valid AWS service namespace. Please check spelling and casing.", 6743959658
                 );
             }
         }
@@ -65,7 +65,7 @@ class Composer
         $serviceMapping,
         $listedServices,
         $vendorPath
-    ) {
+    ): void {
         $unsafeForDeletion = ['Kms', 'S3', 'SSO', 'SSOOIDC', 'Sts'];
         if (in_array('DynamoDbStreams', $listedServices)) {
             $unsafeForDeletion[] = 'DynamoDb';

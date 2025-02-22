@@ -10,12 +10,12 @@
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": ">=7.4",
-    "typo3/cms-core": "^11.5.6 || ^12.4.5",
+    "typo3/cms-core": "^13.4",
     "aws/aws-sdk-php": "^3.288"
   },
   "require-dev": {
     "pluswerk/grumphp-config": "^5.0",
-    "typo3/testing-framework": "^8.0",
+    "typo3/testing-framework": "^7.0",
     "phpspec/prophecy": "dev-master",
     "phpspec/prophecy-phpunit": "dev-master",
     "saschaegerer/phpstan-typo3": "^1.8.9",

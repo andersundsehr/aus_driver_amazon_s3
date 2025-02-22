@@ -45,7 +45,7 @@ class History implements \Countable, \IteratorAggregate
     public function getLastCommand()
     {
         if (!$this->entries) {
-            throw new \LogicException('No commands received');
+            throw new \LogicException('No commands received', 7368014922);
         }
 
         return end($this->entries)['command'];
@@ -60,7 +60,7 @@ class History implements \Countable, \IteratorAggregate
     public function getLastRequest()
     {
         if (!$this->entries) {
-            throw new \LogicException('No requests received');
+            throw new \LogicException('No requests received', 9511903291);
         }
 
         return end($this->entries)['request'];
@@ -75,7 +75,7 @@ class History implements \Countable, \IteratorAggregate
     public function getLastReturn()
     {
         if (!$this->entries) {
-            throw new \LogicException('No entries');
+            throw new \LogicException('No entries', 8176959193);
         }
 
         $last = end($this->entries);
@@ -88,7 +88,7 @@ class History implements \Countable, \IteratorAggregate
             return $last['exception'];
         }
 
-        throw new \LogicException('No return value for last entry.');
+        throw new \LogicException('No return value for last entry.', 5541154680);
     }
 
     /**
@@ -118,16 +118,16 @@ class History implements \Countable, \IteratorAggregate
      * @param string $ticket Ticket returned from the start call.
      * @param mixed  $result The result (an exception or AwsResult).
      */
-    public function finish($ticket, $result)
+    public function finish($ticket, $result): void
     {
         if (!isset($this->entries[$ticket])) {
-            throw new \InvalidArgumentException('Invalid history ticket');
+            throw new \InvalidArgumentException('Invalid history ticket', 5139671390);
         }
 
         if (isset($this->entries[$ticket]['result'])
             || isset($this->entries[$ticket]['exception'])
         ) {
-            throw new \LogicException('History entry is already finished');
+            throw new \LogicException('History entry is already finished', 3638106514);
         }
 
         if ($result instanceof \Exception) {
@@ -144,7 +144,7 @@ class History implements \Countable, \IteratorAggregate
     /**
      * Flush the history
      */
-    public function clear()
+    public function clear(): void
     {
         $this->entries = [];
     }

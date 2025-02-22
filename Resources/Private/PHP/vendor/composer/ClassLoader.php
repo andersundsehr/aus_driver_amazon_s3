@@ -158,7 +158,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function addClassMap(array $classMap)
+    public function addClassMap(array $classMap): void
     {
         if ($this->classMap) {
             $this->classMap = array_merge($this->classMap, $classMap);
@@ -177,7 +177,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function add($prefix, $paths, $prepend = false)
+    public function add($prefix, $paths, $prepend = false): void
     {
         $paths = (array) $paths;
         if (!$prefix) {
@@ -227,7 +227,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function addPsr4($prefix, $paths, $prepend = false)
+    public function addPsr4($prefix, $paths, $prepend = false): void
     {
         $paths = (array) $paths;
         if (!$prefix) {
@@ -247,7 +247,7 @@ class ClassLoader
             // Register directories for a new namespace.
             $length = strlen($prefix);
             if ('\\' !== $prefix[$length - 1]) {
-                throw new \InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
+                throw new \InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.", 1632680741);
             }
             $this->prefixLengthsPsr4[$prefix[0]][$prefix] = $length;
             $this->prefixDirsPsr4[$prefix] = $paths;
@@ -275,7 +275,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function set($prefix, $paths)
+    public function set($prefix, $paths): void
     {
         if (!$prefix) {
             $this->fallbackDirsPsr0 = (array) $paths;
@@ -295,14 +295,14 @@ class ClassLoader
      *
      * @return void
      */
-    public function setPsr4($prefix, $paths)
+    public function setPsr4($prefix, $paths): void
     {
         if (!$prefix) {
             $this->fallbackDirsPsr4 = (array) $paths;
         } else {
             $length = strlen($prefix);
             if ('\\' !== $prefix[$length - 1]) {
-                throw new \InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
+                throw new \InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.", 4078223359);
             }
             $this->prefixLengthsPsr4[$prefix[0]][$prefix] = $length;
             $this->prefixDirsPsr4[$prefix] = (array) $paths;
@@ -316,7 +316,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function setUseIncludePath($useIncludePath)
+    public function setUseIncludePath($useIncludePath): void
     {
         $this->useIncludePath = $useIncludePath;
     }
@@ -340,7 +340,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function setClassMapAuthoritative($classMapAuthoritative)
+    public function setClassMapAuthoritative($classMapAuthoritative): void
     {
         $this->classMapAuthoritative = $classMapAuthoritative;
     }
@@ -362,7 +362,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function setApcuPrefix($apcuPrefix)
+    public function setApcuPrefix($apcuPrefix): void
     {
         $this->apcuPrefix = function_exists('apcu_fetch') && filter_var(ini_get('apc.enabled'), FILTER_VALIDATE_BOOLEAN) ? $apcuPrefix : null;
     }
@@ -384,7 +384,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function register($prepend = false)
+    public function register($prepend = false): void
     {
         spl_autoload_register(array($this, 'loadClass'), true, $prepend);
 
@@ -405,7 +405,7 @@ class ClassLoader
      *
      * @return void
      */
-    public function unregister()
+    public function unregister(): void
     {
         spl_autoload_unregister(array($this, 'loadClass'));
 
@@ -558,7 +558,7 @@ class ClassLoader
     /**
      * @return void
      */
-    private static function initializeIncludeClosure()
+    private static function initializeIncludeClosure(): void
     {
         if (self::$includeFile !== null) {
             return;

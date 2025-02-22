@@ -215,7 +215,7 @@ class InstanceProfileProvider
         $disabled = getenv(self::ENV_DISABLE) ?: false;
         if (strcasecmp($disabled, 'true') === 0) {
             throw new CredentialsException(
-                $this->createErrorMessage('EC2 metadata service access disabled')
+                $this->createErrorMessage('EC2 metadata service access disabled'), 1627954477
             );
         }
 
@@ -241,7 +241,7 @@ class InstanceProfileProvider
                 }
                 $msg = $reason->getMessage();
                 throw new CredentialsException(
-                    $this->createErrorMessage($msg)
+                    $this->createErrorMessage($msg), 3281634004
                 );
             });
     }
@@ -250,7 +250,7 @@ class InstanceProfileProvider
         \Exception $e,
         $retryOptions,
         $message
-    ) {
+    ): void {
         $isRetryable = true;
         if (!empty($status = $this->getExceptionStatusCode($e))
             && isset($retryOptions['blacklist'])
@@ -261,7 +261,7 @@ class InstanceProfileProvider
         if ($isRetryable && $this->attempts < $this->retries) {
             sleep((int) pow(1.2, $this->attempts));
         } else {
-            throw new CredentialsException($message);
+            throw new CredentialsException($message, 8950280431);
         }
     }
 
@@ -291,7 +291,7 @@ class InstanceProfileProvider
 
         if ($result['Code'] !== 'Success') {
             throw new CredentialsException('Unexpected instance profile '
-                .  'response code: ' . $result['Code']);
+                .  'response code: ' . $result['Code'], 6017765103);
         }
 
         return $result;

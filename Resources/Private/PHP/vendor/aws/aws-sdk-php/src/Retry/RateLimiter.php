@@ -62,7 +62,7 @@ class RateLimiter
         return $this->enabled;
     }
 
-    public function getSendToken()
+    public function getSendToken(): void
     {
         $this->acquireToken(1);
     }
@@ -108,7 +108,7 @@ class RateLimiter
         return true;
     }
 
-    private function calculateTimeWindow()
+    private function calculateTimeWindow(): void
     {
         $this->timeWindow = pow(($this->lastMaxRate * (1 - $this->beta) / $this->scaleConstant), 0.333);
     }
@@ -124,12 +124,12 @@ class RateLimiter
         return $rateToUse * $this->beta;
     }
 
-    private function enableTokenBucket()
+    private function enableTokenBucket(): void
     {
         $this->enabled = true;
     }
 
-    private function refillTokenBucket()
+    private function refillTokenBucket(): void
     {
         $timestamp = $this->time();
         if (!isset($this->lastTimestamp)) {
@@ -158,7 +158,7 @@ class RateLimiter
         return microtime(true);
     }
 
-    private function updateMeasuredRate()
+    private function updateMeasuredRate(): void
     {
         $timestamp = $this->time();
         $timeBucket = floor(round($timestamp, 3) * 2) / 2;
@@ -172,7 +172,7 @@ class RateLimiter
         }
     }
 
-    private function updateTokenBucketRate($newRps)
+    private function updateTokenBucketRate($newRps): void
     {
         $this->refillTokenBucket();
         $this->fillRate = max($newRps, $this->minFillRate);

@@ -56,7 +56,7 @@ if (PHP_VERSION_ID < 80000) {
                 return $this->handle;
             }
 
-            public function stream_close()
+            public function stream_close(): void
             {
                 fclose($this->handle);
             }

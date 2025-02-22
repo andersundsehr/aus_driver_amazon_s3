@@ -113,7 +113,7 @@ class PostObjectV4
      * @param string $attribute Form attribute to set.
      * @param string $value     Value to set.
      */
-    public function setFormAttribute($attribute, $value)
+    public function setFormAttribute($attribute, $value): void
     {
         $this->formAttributes[$attribute] = $value;
     }
@@ -134,7 +134,7 @@ class PostObjectV4
      * @param string $field Field name to set
      * @param string $value Value to set.
      */
-    public function setFormInput($field, $value)
+    public function setFormInput($field, $value): void
     {
         $this->formInputs[$field] = $value;
     }

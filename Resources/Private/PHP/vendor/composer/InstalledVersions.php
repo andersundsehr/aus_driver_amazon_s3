@@ -158,7 +158,7 @@ class InstalledVersions
             return implode(' || ', $ranges);
         }
 
-        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed');
+        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed', 7262101492);
     }
 
     /**
@@ -179,7 +179,7 @@ class InstalledVersions
             return $installed['versions'][$packageName]['version'];
         }
 
-        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed');
+        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed', 6431407383);
     }
 
     /**
@@ -200,7 +200,7 @@ class InstalledVersions
             return $installed['versions'][$packageName]['pretty_version'];
         }
 
-        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed');
+        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed', 9260754155);
     }
 
     /**
@@ -221,7 +221,7 @@ class InstalledVersions
             return $installed['versions'][$packageName]['reference'];
         }
 
-        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed');
+        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed', 9922999690);
     }
 
     /**
@@ -238,7 +238,7 @@ class InstalledVersions
             return isset($installed['versions'][$packageName]['install_path']) ? $installed['versions'][$packageName]['install_path'] : null;
         }
 
-        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed');
+        throw new \OutOfBoundsException('Package "' . $packageName . '" is not installed', 9798262980);
     }
 
     /**
@@ -305,7 +305,7 @@ class InstalledVersions
      *
      * @psalm-param array{root: array{name: string, pretty_version: string, version: string, reference: string|null, type: string, install_path: string, aliases: string[], dev: bool}, versions: array<string, array{pretty_version?: string, version?: string, reference?: string|null, type?: string, install_path?: string, aliases?: string[], dev_requirement: bool, replaced?: string[], provided?: string[]}>} $data
      */
-    public static function reload($data)
+    public static function reload($data): void
     {
         self::$installed = $data;
         self::$installedByVendor = array();

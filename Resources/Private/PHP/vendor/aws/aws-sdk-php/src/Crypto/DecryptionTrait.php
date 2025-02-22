@@ -98,7 +98,7 @@ trait DecryptionTrait
         $cipherTextSize = $cipherText->getSize();
         if ($cipherTextSize == null || $cipherTextSize <= 0) {
             throw new \RuntimeException('Cannot decrypt a stream of unknown'
-                . ' size.');
+                . ' size.', 1297357566);
         }
         return (string) new LimitStream(
             $cipherText,
@@ -114,7 +114,7 @@ trait DecryptionTrait
         $cipherTextSize = $cipherText->getSize();
         if ($cipherTextSize == null || $cipherTextSize <= 0) {
             throw new \RuntimeException('Cannot decrypt a stream of unknown'
-                . ' size.');
+                . ' size.', 4187575853);
         }
         return new LimitStream(
             $cipherText,

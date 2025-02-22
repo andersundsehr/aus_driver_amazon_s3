@@ -1,262 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
 <T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<ROOT>
-		<type>array</type>
-		<el>
-			<bucket>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.bucket</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</bucket>
-			<region>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.region</label>
-					<config>
-						<type>select</type>
-						<renderType>selectSingle</renderType>
-						<items type="array">
-							<numIndex index="0" type="array">
-								<numIndex index="0">US East (Ohio) - us-east-2</numIndex>
-								<numIndex index="1">us-east-2</numIndex>
-							</numIndex>
-							<numIndex index="1" type="array">
-								<numIndex index="0">US East (N. Virginia) - us-east-1</numIndex>
-								<numIndex index="1">us-east-1</numIndex>
-							</numIndex>
-							<numIndex index="2" type="array">
-								<numIndex index="0">US West (N. California) - us-west-1</numIndex>
-								<numIndex index="1">us-west-1</numIndex>
-							</numIndex>
-							<numIndex index="3" type="array">
-								<numIndex index="0">US West (Oregon) - us-west-2</numIndex>
-								<numIndex index="1">us-west-2</numIndex>
-							</numIndex>
-							<numIndex index="4" type="array">
-								<numIndex index="0">Africa (Cape Town) - af-south-1</numIndex>
-								<numIndex index="1">af-south-1</numIndex>
-							</numIndex>
-							<numIndex index="5" type="array">
-								<numIndex index="0">Asia Pacific (Hong Kong) - ap-east-1</numIndex>
-								<numIndex index="1">ap-east-1</numIndex>
-							</numIndex>
-							<numIndex index="6" type="array">
-								<numIndex index="0">Asia Pacific (Jakarta) - ap-southeast-3</numIndex>
-								<numIndex index="1">ap-southeast-3</numIndex>
-							</numIndex>
-							<numIndex index="7" type="array">
-								<numIndex index="0">Asia Pacific (Mumbai) - ap-south-1</numIndex>
-								<numIndex index="1">ap-south-1</numIndex>
-							</numIndex>
-							<numIndex index="8" type="array">
-								<numIndex index="0">Asia Pacific (Osaka) - ap-northeast-3</numIndex>
-								<numIndex index="1">ap-northeast-3</numIndex>
-							</numIndex>
-							<numIndex index="9" type="array">
-								<numIndex index="0">Asia Pacific (Seoul) - ap-northeast-2</numIndex>
-								<numIndex index="1">ap-northeast-2</numIndex>
-							</numIndex>
-							<numIndex index="10" type="array">
-								<numIndex index="0">Asia Pacific (Singapore) - ap-southeast-1</numIndex>
-								<numIndex index="1">ap-southeast-1</numIndex>
-							</numIndex>
-							<numIndex index="11" type="array">
-								<numIndex index="0">Asia Pacific (Sydney) - ap-southeast-2</numIndex>
-								<numIndex index="1">ap-southeast-2</numIndex>
-							</numIndex>
-							<numIndex index="12" type="array">
-								<numIndex index="0">Asia Pacific (Tokyo) - ap-northeast-1</numIndex>
-								<numIndex index="1">ap-northeast-1</numIndex>
-							</numIndex>
-							<numIndex index="13" type="array">
-								<numIndex index="0">Canada (Central) - ca-central-1</numIndex>
-								<numIndex index="1">ca-central-1</numIndex>
-							</numIndex>
-							<numIndex index="14" type="array">
-								<numIndex index="0">China (Beijing) - cn-north-1</numIndex>
-								<numIndex index="1">cn-north-1</numIndex>
-							</numIndex>
-							<numIndex index="15" type="array">
-								<numIndex index="0">China (Ningxia) - cn-northwest-1</numIndex>
-								<numIndex index="1">cn-northwest-1</numIndex>
-							</numIndex>
-							<numIndex index="16" type="array">
-								<numIndex index="0">Europe (Frankfurt) - eu-central-1</numIndex>
-								<numIndex index="1">eu-central-1</numIndex>
-							</numIndex>
-							<numIndex index="17" type="array">
-								<numIndex index="0">Europe (Ireland) - eu-west-1</numIndex>
-								<numIndex index="1">eu-west-1</numIndex>
-							</numIndex>
-							<numIndex index="18" type="array">
-								<numIndex index="0">Europe (London) - eu-west-2</numIndex>
-								<numIndex index="1">eu-west-2</numIndex>
-							</numIndex>
-							<numIndex index="19" type="array">
-								<numIndex index="0">Europe (Milan) - eu-south-1</numIndex>
-								<numIndex index="1">eu-south-1</numIndex>
-							</numIndex>
-							<numIndex index="20" type="array">
-								<numIndex index="0">Europe (Paris) - eu-west-3</numIndex>
-								<numIndex index="1">eu-west-3</numIndex>
-							</numIndex>
-							<numIndex index="21" type="array">
-								<numIndex index="0">Europe (Stockholm) - eu-north-1</numIndex>
-								<numIndex index="1">eu-north-1</numIndex>
-							</numIndex>
-							<numIndex index="22" type="array">
-								<numIndex index="0">South America (São Paulo) - sa-east-1</numIndex>
-								<numIndex index="1">sa-east-1</numIndex>
-							</numIndex>
-							<numIndex index="23" type="array">
-								<numIndex index="0">Middle East (Bahrain) - me-south-1</numIndex>
-								<numIndex index="1">me-south-1</numIndex>
-							</numIndex>
-							<numIndex index="24" type="array">
-								<numIndex index="0">Middle East (UAE) - me-central-1</numIndex>
-								<numIndex index="1">me-central-1</numIndex>
-							</numIndex>
-							<numIndex index="25" type="array">
-								<numIndex index="0">AWS GovCloud (US-East) - us-gov-east-1</numIndex>
-								<numIndex index="1">us-gov-east-1</numIndex>
-							</numIndex>
-							<numIndex index="26" type="array">
-								<numIndex index="0">AWS GovCloud (US-West) - us-gov-west-1</numIndex>
-								<numIndex index="1">us-gov-west-1</numIndex>
-							</numIndex>
-						</items>
-						<size>1</size>
-						<minitems>1</minitems>
-						<maxitems>1</maxitems>
-					</config>
-				</TCEforms>
-			</region>
-			<customHost>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost</label>
-					<description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost-description</description>
-					<config>
-						<type>input</type>
-						<renderType>inputLink</renderType>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</customHost>
-			<pathStyleEndpoint>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint</label>
-					<description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint-description</description>
-					<config>
-						<type>check</type>
-						<default>0</default>
-					</config>
-				</TCEforms>
-			</pathStyleEndpoint>
-			<key>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.key</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</key>
-			<secretKey>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.secretKey</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-						<eval>password</eval>
-					</config>
-				</TCEforms>
-			</secretKey>
-			<publicBaseUrl>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl</label>
-					<description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl-description</description>
-					<config>
-						<type>input</type>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</publicBaseUrl>
-			<cacheHeaderDuration>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.cacheHeaderDuration</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-						<eval>int</eval>
-						<range>
-							<lower>0</lower>
-						</range>
-					</config>
-				</TCEforms>
-			</cacheHeaderDuration>
-			<protocol>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol</label>
-					<config>
-						<type>select</type>
-						<renderType>selectSingle</renderType>
-						<size>1</size>
-						<minitems>1</minitems>
-						<maxitems>1</maxitems>
-						<items type="array">
-							<numIndex index="0" type="array">
-								<numIndex index="0">LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol.auto</numIndex>
-								<numIndex index="1">auto</numIndex>
-							</numIndex>
-							<numIndex index="1" type="array">
-								<numIndex index="0">https://</numIndex>
-								<numIndex index="1">https://</numIndex>
-							</numIndex>
-							<numIndex index="2" type="array">
-								<numIndex index="0">http://</numIndex>
-								<numIndex index="1">http://</numIndex>
-							</numIndex>
-						</items>
-					</config>
-				</TCEforms>
-			</protocol>
-			<signature>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature</label>
-					<config>
-						<type>select</type>
-						<renderType>selectSingle</renderType>
-						<size>1</size>
-						<minitems>1</minitems>
-						<maxitems>1</maxitems>
-						<items type="array">
-							<numIndex index="0" type="array">
-								<numIndex index="0">LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature.auto</numIndex>
-								<numIndex index="1">0</numIndex>
-							</numIndex>
-							<numIndex index="1" type="array">
-								<numIndex index="0">v4</numIndex>
-								<numIndex index="1">v4</numIndex>
-							</numIndex>
-						</items>
-					</config>
-				</TCEforms>
-			</signature>
-			<caseSensitive>
-				<TCEforms>
-					<label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.caseSensitive</label>
-					<config>
-						<type>check</type>
-						<default>1</default>
-					</config>
-				</TCEforms>
-			</caseSensitive>
-		</el>
-	</ROOT>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <ROOT>
+        <type>array</type>
+        <el>
+            <bucket>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.bucket
+                </label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+            </bucket>
+            <region>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.region
+                </label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">US East (Ohio) - us-east-2</numIndex>
+                            <numIndex index="1">us-east-2</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">US East (N. Virginia) - us-east-1</numIndex>
+                            <numIndex index="1">us-east-1</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">US West (N. California) - us-west-1</numIndex>
+                            <numIndex index="1">us-west-1</numIndex>
+                        </numIndex>
+                        <numIndex index="3" type="array">
+                            <numIndex index="0">US West (Oregon) - us-west-2</numIndex>
+                            <numIndex index="1">us-west-2</numIndex>
+                        </numIndex>
+                        <numIndex index="4" type="array">
+                            <numIndex index="0">Africa (Cape Town) - af-south-1</numIndex>
+                            <numIndex index="1">af-south-1</numIndex>
+                        </numIndex>
+                        <numIndex index="5" type="array">
+                            <numIndex index="0">Asia Pacific (Hong Kong) - ap-east-1</numIndex>
+                            <numIndex index="1">ap-east-1</numIndex>
+                        </numIndex>
+                        <numIndex index="6" type="array">
+                            <numIndex index="0">Asia Pacific (Jakarta) - ap-southeast-3</numIndex>
+                            <numIndex index="1">ap-southeast-3</numIndex>
+                        </numIndex>
+                        <numIndex index="7" type="array">
+                            <numIndex index="0">Asia Pacific (Mumbai) - ap-south-1</numIndex>
+                            <numIndex index="1">ap-south-1</numIndex>
+                        </numIndex>
+                        <numIndex index="8" type="array">
+                            <numIndex index="0">Asia Pacific (Osaka) - ap-northeast-3</numIndex>
+                            <numIndex index="1">ap-northeast-3</numIndex>
+                        </numIndex>
+                        <numIndex index="9" type="array">
+                            <numIndex index="0">Asia Pacific (Seoul) - ap-northeast-2</numIndex>
+                            <numIndex index="1">ap-northeast-2</numIndex>
+                        </numIndex>
+                        <numIndex index="10" type="array">
+                            <numIndex index="0">Asia Pacific (Singapore) - ap-southeast-1</numIndex>
+                            <numIndex index="1">ap-southeast-1</numIndex>
+                        </numIndex>
+                        <numIndex index="11" type="array">
+                            <numIndex index="0">Asia Pacific (Sydney) - ap-southeast-2</numIndex>
+                            <numIndex index="1">ap-southeast-2</numIndex>
+                        </numIndex>
+                        <numIndex index="12" type="array">
+                            <numIndex index="0">Asia Pacific (Tokyo) - ap-northeast-1</numIndex>
+                            <numIndex index="1">ap-northeast-1</numIndex>
+                        </numIndex>
+                        <numIndex index="13" type="array">
+                            <numIndex index="0">Canada (Central) - ca-central-1</numIndex>
+                            <numIndex index="1">ca-central-1</numIndex>
+                        </numIndex>
+                        <numIndex index="14" type="array">
+                            <numIndex index="0">China (Beijing) - cn-north-1</numIndex>
+                            <numIndex index="1">cn-north-1</numIndex>
+                        </numIndex>
+                        <numIndex index="15" type="array">
+                            <numIndex index="0">China (Ningxia) - cn-northwest-1</numIndex>
+                            <numIndex index="1">cn-northwest-1</numIndex>
+                        </numIndex>
+                        <numIndex index="16" type="array">
+                            <numIndex index="0">Europe (Frankfurt) - eu-central-1</numIndex>
+                            <numIndex index="1">eu-central-1</numIndex>
+                        </numIndex>
+                        <numIndex index="17" type="array">
+                            <numIndex index="0">Europe (Ireland) - eu-west-1</numIndex>
+                            <numIndex index="1">eu-west-1</numIndex>
+                        </numIndex>
+                        <numIndex index="18" type="array">
+                            <numIndex index="0">Europe (London) - eu-west-2</numIndex>
+                            <numIndex index="1">eu-west-2</numIndex>
+                        </numIndex>
+                        <numIndex index="19" type="array">
+                            <numIndex index="0">Europe (Milan) - eu-south-1</numIndex>
+                            <numIndex index="1">eu-south-1</numIndex>
+                        </numIndex>
+                        <numIndex index="20" type="array">
+                            <numIndex index="0">Europe (Paris) - eu-west-3</numIndex>
+                            <numIndex index="1">eu-west-3</numIndex>
+                        </numIndex>
+                        <numIndex index="21" type="array">
+                            <numIndex index="0">Europe (Stockholm) - eu-north-1</numIndex>
+                            <numIndex index="1">eu-north-1</numIndex>
+                        </numIndex>
+                        <numIndex index="22" type="array">
+                            <numIndex index="0">South America (São Paulo) - sa-east-1</numIndex>
+                            <numIndex index="1">sa-east-1</numIndex>
+                        </numIndex>
+                        <numIndex index="23" type="array">
+                            <numIndex index="0">Middle East (Bahrain) - me-south-1</numIndex>
+                            <numIndex index="1">me-south-1</numIndex>
+                        </numIndex>
+                        <numIndex index="24" type="array">
+                            <numIndex index="0">Middle East (UAE) - me-central-1</numIndex>
+                            <numIndex index="1">me-central-1</numIndex>
+                        </numIndex>
+                        <numIndex index="25" type="array">
+                            <numIndex index="0">AWS GovCloud (US-East) - us-gov-east-1</numIndex>
+                            <numIndex index="1">us-gov-east-1</numIndex>
+                        </numIndex>
+                        <numIndex index="26" type="array">
+                            <numIndex index="0">AWS GovCloud (US-West) - us-gov-west-1</numIndex>
+                            <numIndex index="1">us-gov-west-1</numIndex>
+                        </numIndex>
+                    </items>
+                    <size>1</size>
+                    <minitems>1</minitems>
+                    <maxitems>1</maxitems>
+                </config>
+            </region>
+            <customHost>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost
+                </label>
+                <description>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost-description
+                </description>
+                <config>
+                    <type>input</type>
+                    <renderType>inputLink</renderType>
+                    <size>30</size>
+                </config>
+            </customHost>
+            <pathStyleEndpoint>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint
+                </label>
+                <description>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint-description
+                </description>
+                <config>
+                    <type>check</type>
+                    <default>0</default>
+                </config>
+            </pathStyleEndpoint>
+            <key>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.key
+                </label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+            </key>
+            <secretKey>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.secretKey
+                </label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                    <eval>password</eval>
+                </config>
+            </secretKey>
+            <publicBaseUrl>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl
+                </label>
+                <description>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl-description
+                </description>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+            </publicBaseUrl>
+            <cacheHeaderDuration>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.cacheHeaderDuration
+                </label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                    <eval>int</eval>
+                    <range>
+                        <lower>0</lower>
+                    </range>
+                </config>
+            </cacheHeaderDuration>
+            <protocol>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol
+                </label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <size>1</size>
+                    <minitems>1</minitems>
+                    <maxitems>1</maxitems>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol.auto
+                            </numIndex>
+                            <numIndex index="1">auto</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">https://</numIndex>
+                            <numIndex index="1">https://</numIndex>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <numIndex index="0">http://</numIndex>
+                            <numIndex index="1">http://</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </protocol>
+            <signature>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature
+                </label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <size>1</size>
+                    <minitems>1</minitems>
+                    <maxitems>1</maxitems>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature.auto
+                            </numIndex>
+                            <numIndex index="1">0</numIndex>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">v4</numIndex>
+                            <numIndex index="1">v4</numIndex>
+                        </numIndex>
+                    </items>
+                </config>
+            </signature>
+            <caseSensitive>
+                <label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.caseSensitive
+                </label>
+                <config>
+                    <type>check</type>
+                    <default>1</default>
+                </config>
+            </caseSensitive>
+        </el>
+    </ROOT>
 </T3DataStructure>

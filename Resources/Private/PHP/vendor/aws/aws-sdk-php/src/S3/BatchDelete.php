@@ -129,7 +129,7 @@ class BatchDelete implements PromisorInterface
      *
      * @throws DeleteMultipleObjectsException on error.
      */
-    public function delete()
+    public function delete(): void
     {
         $this->promise()->wait();
     }
@@ -154,14 +154,14 @@ class BatchDelete implements PromisorInterface
 
         if (isset($options['before'])) {
             if (!is_callable($options['before'])) {
-                throw new \InvalidArgumentException('before must be callable');
+                throw new \InvalidArgumentException('before must be callable', 2463726967);
             }
             $this->before = $options['before'];
         }
 
         if (isset($options['batch_size'])) {
             if ($options['batch_size'] <= 0) {
-                throw new \InvalidArgumentException('batch_size is not > 0');
+                throw new \InvalidArgumentException('batch_size is not > 0', 9013489918);
             }
             $this->batchSize = min($options['batch_size'], 1000);
         }

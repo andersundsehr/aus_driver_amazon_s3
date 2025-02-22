@@ -61,7 +61,7 @@ final class Partition implements ArrayAccess, PartitionInterface
     {
         foreach (['partition', 'regions', 'services', 'dnsSuffix'] as $key) {
             if (!isset($definition[$key])) {
-                throw new Iae("Partition missing required $key field");
+                throw new Iae("Partition missing required $key field", 3906512367);
             }
         }
 

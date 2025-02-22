@@ -50,17 +50,17 @@ class AssumeRoleWithWebIdentityCredentialProvider
     public function __construct(array $config = [])
     {
         if (!isset($config['RoleArn'])) {
-            throw new \InvalidArgumentException(self::ERROR_MSG . "'RoleArn'.");
+            throw new \InvalidArgumentException(self::ERROR_MSG . "'RoleArn'.", 5688120825);
         }
         $this->arn = $config['RoleArn'];
 
         if (!isset($config['WebIdentityTokenFile'])) {
-            throw new \InvalidArgumentException(self::ERROR_MSG . "'WebIdentityTokenFile'.");
+            throw new \InvalidArgumentException(self::ERROR_MSG . "'WebIdentityTokenFile'.", 7195911503);
         }
         $this->tokenFile = $config['WebIdentityTokenFile'];
 
         if (!preg_match("/^\w\:|^\/|^\\\/", $this->tokenFile)) {
-            throw new \InvalidArgumentException("'WebIdentityTokenFile' must be an absolute path.");
+            throw new \InvalidArgumentException("'WebIdentityTokenFile' must be an absolute path.", 1685518042);
         }
 
         $this->retries = (int) getenv(self::ENV_RETRIES) ?: (isset($config['retries']) ? $config['retries'] : 3);
@@ -105,7 +105,7 @@ class AssumeRoleWithWebIdentityCredentialProvider
                         clearstatcache(true, $this->tokenFile);
                         if (!@is_readable($this->tokenFile)) {
                             throw new CredentialsException(
-                                "Unreadable tokenfile at location {$this->tokenFile}"
+                                "Unreadable tokenfile at location {$this->tokenFile}", 9114258068
                             );
                         }
 
@@ -117,7 +117,7 @@ class AssumeRoleWithWebIdentityCredentialProvider
                             $this->tokenFileReadAttempts++;
                             continue;
                         }
-                        throw new CredentialsException("InvalidIdentityToken from file: {$this->tokenFile}");
+                        throw new CredentialsException("InvalidIdentityToken from file: {$this->tokenFile}", 6465390505);
                     }
                 } catch (\Exception $exception) {
                     throw new CredentialsException(
@@ -141,7 +141,7 @@ class AssumeRoleWithWebIdentityCredentialProvider
                             sleep((int) pow(1.2, $this->authenticationAttempts));
                         } else {
                             throw new CredentialsException(
-                                "InvalidIdentityToken, retries exhausted"
+                                "InvalidIdentityToken, retries exhausted", 9154030878
                             );
                         }
                     } else {
@@ -154,7 +154,7 @@ class AssumeRoleWithWebIdentityCredentialProvider
                 } catch (\Exception $e) {
                     throw new CredentialsException(
                         "Error retrieving web identity credentials: " . $e->getMessage()
-                        . " (" . $e->getCode() . ")"
+                        . " (" . $e->getCode() . ")", 7978779637
                     );
                 }
                 $this->authenticationAttempts++;

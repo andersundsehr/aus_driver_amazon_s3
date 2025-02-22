@@ -117,7 +117,7 @@ final class CRT {
     /**
      * @param object $elg_options Pointer to native event_loop_group_options
      */
-    function event_loop_group_options_release($elg_options) {
+    function event_loop_group_options_release($elg_options): void {
         self::$impl->aws_crt_event_loop_group_options_release($elg_options);
     }
 
@@ -125,7 +125,7 @@ final class CRT {
      * @param object $elg_options Pointer to native event_loop_group_options
      * @param integer $max_threads Maximum number of threads to allow the event loop group to use, default: 0/1 per CPU core
      */
-    function event_loop_group_options_set_max_threads($elg_options, $max_threads) {
+    function event_loop_group_options_set_max_threads($elg_options, $max_threads): void {
         self::$impl->aws_crt_event_loop_group_options_set_max_threads($elg_options, (int)$max_threads);
     }
 
@@ -140,7 +140,7 @@ final class CRT {
     /**
      * @param object $elg Pointer to the event loop group to release
      */
-    function event_loop_group_release($elg) {
+    function event_loop_group_release($elg): void {
         self::$impl->aws_crt_event_loop_group_release($elg);
     }
 
@@ -151,23 +151,23 @@ final class CRT {
         return self::$impl->aws_crt_credentials_options_new();
     }
 
-    function aws_credentials_options_release($options) {
+    function aws_credentials_options_release($options): void {
         self::$impl->aws_crt_credentials_options_release($options);
     }
 
-    function aws_credentials_options_set_access_key_id($options, $access_key_id) {
+    function aws_credentials_options_set_access_key_id($options, $access_key_id): void {
         self::$impl->aws_crt_credentials_options_set_access_key_id($options, $access_key_id);
     }
 
-    function aws_credentials_options_set_secret_access_key($options, $secret_access_key) {
+    function aws_credentials_options_set_secret_access_key($options, $secret_access_key): void {
         self::$impl->aws_crt_credentials_options_set_secret_access_key($options, $secret_access_key);
     }
 
-    function aws_credentials_options_set_session_token($options, $session_token) {
+    function aws_credentials_options_set_session_token($options, $session_token): void {
         self::$impl->aws_crt_credentials_options_set_session_token($options, $session_token);
     }
 
-    function aws_credentials_options_set_expiration_timepoint_seconds($options, $expiration_timepoint_seconds) {
+    function aws_credentials_options_set_expiration_timepoint_seconds($options, $expiration_timepoint_seconds): void {
         self::$impl->aws_crt_credentials_options_set_expiration_timepoint_seconds($options, $expiration_timepoint_seconds);
     }
 
@@ -175,11 +175,11 @@ final class CRT {
         return self::$impl->aws_crt_credentials_new($options);
     }
 
-    function aws_credentials_release($credentials) {
+    function aws_credentials_release($credentials): void {
         self::$impl->aws_crt_credentials_release($credentials);
     }
 
-    function credentials_provider_release($provider) {
+    function credentials_provider_release($provider): void {
         self::$impl->aws_crt_credentials_provider_release($provider);
     }
 
@@ -187,19 +187,19 @@ final class CRT {
         return self::$impl->aws_crt_credentials_provider_static_options_new();
     }
 
-    function credentials_provider_static_options_release($options) {
+    function credentials_provider_static_options_release($options): void {
         self::$impl->aws_crt_credentials_provider_static_options_release($options);
     }
 
-    function credentials_provider_static_options_set_access_key_id($options, $access_key_id) {
+    function credentials_provider_static_options_set_access_key_id($options, $access_key_id): void {
         self::$impl->aws_crt_credentials_provider_static_options_set_access_key_id($options, $access_key_id);
     }
 
-    function credentials_provider_static_options_set_secret_access_key($options, $secret_access_key) {
+    function credentials_provider_static_options_set_secret_access_key($options, $secret_access_key): void {
         self::$impl->aws_crt_credentials_provider_static_options_set_secret_access_key($options, $secret_access_key);
     }
 
-    function credentials_provider_static_options_set_session_token($options, $session_token) {
+    function credentials_provider_static_options_set_session_token($options, $session_token): void {
         self::$impl->aws_crt_credentials_provider_static_options_set_session_token($options, $session_token);
     }
 
@@ -211,11 +211,11 @@ final class CRT {
         return self::$impl->aws_crt_input_stream_options_new();
     }
 
-    function input_stream_options_release($options) {
+    function input_stream_options_release($options): void {
         self::$impl->aws_crt_input_stream_options_release($options);
     }
 
-    function input_stream_options_set_user_data($options, $user_data) {
+    function input_stream_options_set_user_data($options, $user_data): void {
         self::$impl->aws_crt_input_stream_options_set_user_data($options, $user_data);
     }
 
@@ -223,7 +223,7 @@ final class CRT {
         return self::$impl->aws_crt_input_stream_new($options);
     }
 
-    function input_stream_release($stream) {
+    function input_stream_release($stream): void {
         self::$impl->aws_crt_input_stream_release($stream);
     }
 
@@ -251,7 +251,7 @@ final class CRT {
         return self::$impl->aws_crt_http_message_to_blob($message);
     }
 
-    function http_message_release($message) {
+    function http_message_release($message): void {
         self::$impl->aws_crt_http_message_release($message);
     }
 
@@ -263,55 +263,55 @@ final class CRT {
         return self::$impl->aws_crt_signing_config_aws_release($signing_config);
     }
 
-    function signing_config_aws_set_algorithm($signing_config, $algorithm) {
+    function signing_config_aws_set_algorithm($signing_config, $algorithm): void {
         self::$impl->aws_crt_signing_config_aws_set_algorithm($signing_config, (int)$algorithm);
     }
 
-    function signing_config_aws_set_signature_type($signing_config, $signature_type) {
+    function signing_config_aws_set_signature_type($signing_config, $signature_type): void {
         self::$impl->aws_crt_signing_config_aws_set_signature_type($signing_config, (int)$signature_type);
     }
 
-    function signing_config_aws_set_credentials_provider($signing_config, $credentials_provider) {
+    function signing_config_aws_set_credentials_provider($signing_config, $credentials_provider): void {
         self::$impl->aws_crt_signing_config_aws_set_credentials_provider($signing_config, $credentials_provider);
     }
 
-    function signing_config_aws_set_region($signing_config, $region) {
+    function signing_config_aws_set_region($signing_config, $region): void {
         self::$impl->aws_crt_signing_config_aws_set_region($signing_config, $region);
     }
 
-    function signing_config_aws_set_service($signing_config, $service) {
+    function signing_config_aws_set_service($signing_config, $service): void {
         self::$impl->aws_crt_signing_config_aws_set_service($signing_config, $service);
     }
 
-    function signing_config_aws_set_use_double_uri_encode($signing_config, $use_double_uri_encode) {
+    function signing_config_aws_set_use_double_uri_encode($signing_config, $use_double_uri_encode): void {
         self::$impl->aws_crt_signing_config_aws_set_use_double_uri_encode($signing_config, $use_double_uri_encode);
     }
 
-    function signing_config_aws_set_should_normalize_uri_path($signing_config, $should_normalize_uri_path) {
+    function signing_config_aws_set_should_normalize_uri_path($signing_config, $should_normalize_uri_path): void {
         self::$impl->aws_crt_signing_config_aws_set_should_normalize_uri_path($signing_config, $should_normalize_uri_path);
     }
 
-    function signing_config_aws_set_omit_session_token($signing_config, $omit_session_token) {
+    function signing_config_aws_set_omit_session_token($signing_config, $omit_session_token): void {
         self::$impl->aws_crt_signing_config_aws_set_omit_session_token($signing_config, $omit_session_token);
     }
 
-    function signing_config_aws_set_signed_body_value($signing_config, $signed_body_value) {
+    function signing_config_aws_set_signed_body_value($signing_config, $signed_body_value): void {
         self::$impl->aws_crt_signing_config_aws_set_signed_body_value($signing_config, $signed_body_value);
     }
 
-    function signing_config_aws_set_signed_body_header_type($signing_config, $signed_body_header_type) {
+    function signing_config_aws_set_signed_body_header_type($signing_config, $signed_body_header_type): void {
         self::$impl->aws_crt_signing_config_aws_set_signed_body_header_type($signing_config, $signed_body_header_type);
     }
 
-    function signing_config_aws_set_expiration_in_seconds($signing_config, $expiration_in_seconds) {
+    function signing_config_aws_set_expiration_in_seconds($signing_config, $expiration_in_seconds): void {
         self::$impl->aws_crt_signing_config_aws_set_expiration_in_seconds($signing_config, $expiration_in_seconds);
     }
 
-    function signing_config_aws_set_date($signing_config, $timestamp) {
+    function signing_config_aws_set_date($signing_config, $timestamp): void {
         self::$impl->aws_crt_signing_config_aws_set_date($signing_config, $timestamp);
     }
 
-    function signing_config_aws_set_should_sign_header_fn($signing_config, $should_sign_header_fn) {
+    function signing_config_aws_set_should_sign_header_fn($signing_config, $should_sign_header_fn): void {
         self::$impl->aws_crt_signing_config_aws_set_should_sign_header_fn($signing_config, $should_sign_header_fn);
     }
 
@@ -327,11 +327,11 @@ final class CRT {
         return self::$impl->aws_crt_signable_new_from_canonical_request($canonical_request);
     }
 
-    function signable_release($signable) {
+    function signable_release($signable): void {
         self::$impl->aws_crt_signable_release($signable);
     }
 
-    function signing_result_release($signing_result) {
+    function signing_result_release($signing_result): void {
         self::$impl->aws_crt_signing_result_release($signing_result);
     }
 

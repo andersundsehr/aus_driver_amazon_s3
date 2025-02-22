@@ -55,11 +55,11 @@ class CookieSigner
         return $cookieParameters;
     }
 
-    private function validateUrl($url)
+    private function validateUrl($url): void
     {
         $scheme = str_replace('*', '', explode('://', $url)[0]);
         if (empty(self::$schemes[strtolower($scheme)])) {
-            throw new \InvalidArgumentException('Invalid or missing URI scheme');
+            throw new \InvalidArgumentException('Invalid or missing URI scheme', 4981316418);
         }
     }
 }

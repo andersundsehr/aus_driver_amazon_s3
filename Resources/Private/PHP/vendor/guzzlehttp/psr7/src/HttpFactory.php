@@ -70,7 +70,7 @@ final class HttpFactory implements RequestFactoryInterface, ResponseFactoryInter
             if (!empty($serverParams['REQUEST_METHOD'])) {
                 $method = $serverParams['REQUEST_METHOD'];
             } else {
-                throw new \InvalidArgumentException('Cannot determine HTTP method');
+                throw new \InvalidArgumentException('Cannot determine HTTP method', 4037332199);
             }
         }
 

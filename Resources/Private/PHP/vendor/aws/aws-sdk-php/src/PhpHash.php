@@ -31,7 +31,7 @@ class PhpHash implements HashInterface
         $this->options = $options;
     }
 
-    public function update($data)
+    public function update($data): void
     {
         if ($this->hash !== null) {
             $this->reset();
@@ -55,7 +55,7 @@ class PhpHash implements HashInterface
         return $this->hash;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->context = $this->hash = null;
     }

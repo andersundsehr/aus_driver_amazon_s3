@@ -175,7 +175,7 @@ trait MessageTrait
         }
 
         if (count($value) === 0) {
-            throw new \InvalidArgumentException('Header value can not be an empty array.');
+            throw new \InvalidArgumentException('Header value can not be an empty array.', 8787201665);
         }
 
         return $this->trimAndValidateHeaderValues($value);
@@ -202,7 +202,7 @@ trait MessageTrait
                 throw new \InvalidArgumentException(sprintf(
                     'Header value must be scalar or null but %s provided.',
                     is_object($value) ? get_class($value) : gettype($value)
-                ));
+                ), 4102240551);
             }
 
             $trimmed = trim((string) $value, " \t");
@@ -223,12 +223,12 @@ trait MessageTrait
             throw new \InvalidArgumentException(sprintf(
                 'Header name must be a string but %s provided.',
                 is_object($header) ? get_class($header) : gettype($header)
-            ));
+            ), 5883991710);
         }
 
         if (!preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/D', $header)) {
             throw new \InvalidArgumentException(
-                sprintf('"%s" is not valid header name.', $header)
+                sprintf('"%s" is not valid header name.', $header), 3717190896
             );
         }
     }
@@ -258,7 +258,7 @@ trait MessageTrait
         // folding is not likely to break any legitimate use case.
         if (!preg_match('/^[\x20\x09\x21-\x7E\x80-\xFF]*$/D', $value)) {
             throw new \InvalidArgumentException(
-                sprintf('"%s" is not valid header value.', $value)
+                sprintf('"%s" is not valid header value.', $value), 7039733778
             );
         }
     }

@@ -115,7 +115,7 @@ class Promise implements PromiseInterface
         $this->settle(self::REJECTED, $reason);
     }
 
-    private function settle($state, $value)
+    private function settle($state, $value): void
     {
         if ($this->state !== self::PENDING) {
             // Ignore calls with the same resolution.
@@ -128,7 +128,7 @@ class Promise implements PromiseInterface
         }
 
         if ($value === $this) {
-            throw new \LogicException('Cannot fulfill or reject a promise with itself');
+            throw new \LogicException('Cannot fulfill or reject a promise with itself', 5221889896);
         }
 
         // Clear out the state of the promise but stash the handlers.
@@ -180,7 +180,7 @@ class Promise implements PromiseInterface
      * @param mixed $value   Value to pass to the callback.
      * @param array $handler Array of handler data (promise and callbacks).
      */
-    private static function callHandler($index, $value, array $handler)
+    private static function callHandler($index, $value, array $handler): void
     {
         /** @var PromiseInterface $promise */
         $promise = $handler[0];
@@ -216,7 +216,7 @@ class Promise implements PromiseInterface
         }
     }
 
-    private function waitIfPending()
+    private function waitIfPending(): void
     {
         if ($this->state !== self::PENDING) {
             return;
@@ -240,7 +240,7 @@ class Promise implements PromiseInterface
         }
     }
 
-    private function invokeWaitFn()
+    private function invokeWaitFn(): void
     {
         try {
             $wfn = $this->waitFn;
@@ -259,7 +259,7 @@ class Promise implements PromiseInterface
         }
     }
 
-    private function invokeWaitList()
+    private function invokeWaitList(): void
     {
         $waitList = $this->waitList;
         $this->waitList = null;

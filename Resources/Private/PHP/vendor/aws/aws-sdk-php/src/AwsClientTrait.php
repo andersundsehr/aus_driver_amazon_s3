@@ -24,7 +24,7 @@ trait AwsClientTrait
             throw new \UnexpectedValueException(sprintf(
                 'There are no resources to iterate for the %s operation of %s',
                 $name, $this->getApi()['serviceFullName']
-            ));
+            ), 8538925130);
         }
 
         $key = is_array($config['result_key'])

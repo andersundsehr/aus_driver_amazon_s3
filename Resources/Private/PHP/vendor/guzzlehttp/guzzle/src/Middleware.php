@@ -30,7 +30,7 @@ final class Middleware
                 if (empty($options['cookies'])) {
                     return $handler($request, $options);
                 } elseif (!($options['cookies'] instanceof CookieJarInterface)) {
-                    throw new \InvalidArgumentException('cookies must be an instance of GuzzleHttp\Cookie\CookieJarInterface');
+                    throw new \InvalidArgumentException('cookies must be an instance of GuzzleHttp\Cookie\CookieJarInterface', 9891982842);
                 }
                 $cookieJar = $options['cookies'];
                 $request = $cookieJar->withCookieHeader($request);
@@ -88,7 +88,7 @@ final class Middleware
     public static function history(&$container): callable
     {
         if (!\is_array($container) && !$container instanceof \ArrayAccess) {
-            throw new \InvalidArgumentException('history container must be an array or object implementing ArrayAccess');
+            throw new \InvalidArgumentException('history container must be an array or object implementing ArrayAccess', 2153272279);
         }
 
         return static function (callable $handler) use (&$container): callable {
@@ -199,7 +199,7 @@ final class Middleware
     {
         // To be compatible with Guzzle 7.1.x we need to allow users to pass a MessageFormatter
         if (!$formatter instanceof MessageFormatter && !$formatter instanceof MessageFormatterInterface) {
-            throw new \LogicException(sprintf('Argument 2 to %s::log() must be of type %s', self::class, MessageFormatterInterface::class));
+            throw new \LogicException(sprintf('Argument 2 to %s::log() must be of type %s', self::class, MessageFormatterInterface::class), 7928718850);
         }
 
         return static function (callable $handler) use ($logger, $formatter, $logLevel): callable {

@@ -25,7 +25,7 @@ class DateTimeResult extends \DateTime implements \JsonSerializable
     public static function fromEpoch($unixTimestamp)
     {
         if (!is_numeric($unixTimestamp)) {
-            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromEpoch');
+            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromEpoch', 7534800984);
         }
 
         // PHP 5.5 does not support sub-second precision
@@ -42,7 +42,7 @@ class DateTimeResult extends \DateTime implements \JsonSerializable
         );
 
         if (false === $dateTime) {
-            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromEpoch');
+            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromEpoch', 8406846747);
         }
 
         return new self(
@@ -57,7 +57,7 @@ class DateTimeResult extends \DateTime implements \JsonSerializable
     public static function fromISO8601($iso8601Timestamp)
     {
         if (is_numeric($iso8601Timestamp) || !is_string($iso8601Timestamp)) {
-            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromISO8601');
+            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromISO8601', 5770108511);
         }
 
         return new DateTimeResult($iso8601Timestamp);
@@ -76,7 +76,7 @@ class DateTimeResult extends \DateTime implements \JsonSerializable
         }
 
         if (!(is_string($timestamp) || is_numeric($timestamp))) {
-            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromTimestamp');
+            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromTimestamp', 6524497337);
         }
 
         try {
@@ -97,7 +97,7 @@ class DateTimeResult extends \DateTime implements \JsonSerializable
             }
             return self::fromISO8601($timestamp);
         } catch (Exception $exception) {
-            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromTimestamp');
+            throw new ParserException('Invalid timestamp value passed to DateTimeResult::fromTimestamp', 5512190568);
         }
     }
 

@@ -49,7 +49,7 @@ class ByteArray extends \SplFixedArray
             $size = $size->count();
         } elseif (!\is_int($size)) {
             throw new \InvalidArgumentException(
-                'Argument must be an integer, string, or array of integers.'
+                'Argument must be an integer, string, or array of integers.', 5177447111
             );
         }
 
@@ -138,7 +138,7 @@ class ByteArray extends \SplFixedArray
      * @param int $newval
      * @return void
      */
-    public function offsetSet($index, $newval)
+    public function offsetSet($index, $newval): void
     {
         parent::offsetSet($index, $newval & 0xff);
     }
@@ -232,7 +232,7 @@ class ByteArray extends \SplFixedArray
      *
      * @return void
      */
-    public function zeroize()
+    public function zeroize(): void
     {
         for ($i = $this->count() - 1; $i >= 0; --$i) {
             $this->offsetSet($i, 0);

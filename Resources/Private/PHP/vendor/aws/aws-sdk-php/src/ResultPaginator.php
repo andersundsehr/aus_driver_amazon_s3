@@ -114,7 +114,7 @@ class ResultPaginator implements \Iterator
     }
 
     #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->result = null;
     }
@@ -155,7 +155,7 @@ class ResultPaginator implements \Iterator
     }
 
     #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->requestCount = 0;
         $this->nextToken = null;

@@ -148,7 +148,7 @@ class MultipartUploader extends AbstractUploader
         // Ensure that the part size is valid.
         if (!in_array($partSize, self::$validPartSizes)) {
             throw new \InvalidArgumentException('The part_size must be a power '
-                . 'of 2, in megabytes, such that 1 MB <= PART_SIZE <= 4 GB.');
+                . 'of 2, in megabytes, such that 1 MB <= PART_SIZE <= 4 GB.', 5887983479);
         }
 
         return $partSize;

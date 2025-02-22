@@ -78,7 +78,7 @@ final class LimitStream implements StreamInterface
                 'Cannot seek to offset %s with whence %s',
                 $offset,
                 $whence
-            ));
+            ), 7588862095);
         }
 
         $offset += $this->offset;
@@ -116,7 +116,7 @@ final class LimitStream implements StreamInterface
             if ($this->stream->isSeekable()) {
                 $this->stream->seek($offset);
             } elseif ($current > $offset) {
-                throw new \RuntimeException("Could not seek to stream offset $offset");
+                throw new \RuntimeException("Could not seek to stream offset $offset", 7971912837);
             } else {
                 $this->stream->read($offset - $current);
             }

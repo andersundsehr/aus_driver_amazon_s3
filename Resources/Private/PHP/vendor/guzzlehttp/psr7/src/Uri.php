@@ -82,7 +82,7 @@ class Uri implements UriInterface, \JsonSerializable
         if ($uri !== '') {
             $parts = self::parse($uri);
             if ($parts === false) {
-                throw new MalformedUriException("Unable to parse URI: $uri");
+                throw new MalformedUriException("Unable to parse URI: $uri", 1224033855);
             }
             $this->applyParts($parts);
         }
@@ -578,7 +578,7 @@ class Uri implements UriInterface, \JsonSerializable
     private function filterScheme($scheme): string
     {
         if (!is_string($scheme)) {
-            throw new \InvalidArgumentException('Scheme must be a string');
+            throw new \InvalidArgumentException('Scheme must be a string', 6873550602);
         }
 
         return \strtr($scheme, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
@@ -592,7 +592,7 @@ class Uri implements UriInterface, \JsonSerializable
     private function filterUserInfoComponent($component): string
     {
         if (!is_string($component)) {
-            throw new \InvalidArgumentException('User info must be a string');
+            throw new \InvalidArgumentException('User info must be a string', 6887976618);
         }
 
         return preg_replace_callback(
@@ -610,7 +610,7 @@ class Uri implements UriInterface, \JsonSerializable
     private function filterHost($host): string
     {
         if (!is_string($host)) {
-            throw new \InvalidArgumentException('Host must be a string');
+            throw new \InvalidArgumentException('Host must be a string', 8106287169);
         }
 
         return \strtr($host, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz');
@@ -630,7 +630,7 @@ class Uri implements UriInterface, \JsonSerializable
         $port = (int) $port;
         if (0 > $port || 0xFFFF < $port) {
             throw new \InvalidArgumentException(
-                sprintf('Invalid port: %d. Must be between 0 and 65535', $port)
+                sprintf('Invalid port: %d. Must be between 0 and 65535', $port), 2025275667
             );
         }
 
@@ -688,7 +688,7 @@ class Uri implements UriInterface, \JsonSerializable
     private function filterPath($path): string
     {
         if (!is_string($path)) {
-            throw new \InvalidArgumentException('Path must be a string');
+            throw new \InvalidArgumentException('Path must be a string', 5897827454);
         }
 
         return preg_replace_callback(
@@ -708,7 +708,7 @@ class Uri implements UriInterface, \JsonSerializable
     private function filterQueryAndFragment($str): string
     {
         if (!is_string($str)) {
-            throw new \InvalidArgumentException('Query and fragment must be a string');
+            throw new \InvalidArgumentException('Query and fragment must be a string', 9453299475);
         }
 
         return preg_replace_callback(
@@ -731,10 +731,10 @@ class Uri implements UriInterface, \JsonSerializable
 
         if ($this->getAuthority() === '') {
             if (0 === strpos($this->path, '//')) {
-                throw new MalformedUriException('The path of a URI without an authority must not start with two slashes "//"');
+                throw new MalformedUriException('The path of a URI without an authority must not start with two slashes "//"', 8146122261);
             }
             if ($this->scheme === '' && false !== strpos(explode('/', $this->path, 2)[0], ':')) {
-                throw new MalformedUriException('A relative URI must not have a path beginning with a segment containing a colon');
+                throw new MalformedUriException('A relative URI must not have a path beginning with a segment containing a colon', 2308210704);
             }
         }
     }

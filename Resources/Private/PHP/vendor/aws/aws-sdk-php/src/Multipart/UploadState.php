@@ -51,7 +51,7 @@ class UploadState
      * @param string $key   The param key of the upload_id.
      * @param string $value The param value of the upload_id.
      */
-    public function setUploadId($key, $value)
+    public function setUploadId($key, $value): void
     {
         $this->id[$key] = $value;
     }
@@ -71,7 +71,7 @@ class UploadState
      *
      * @param $partSize int Size of upload parts.
      */
-    public function setPartSize($partSize)
+    public function setPartSize($partSize): void
     {
         $this->partSize = $partSize;
     }
@@ -83,7 +83,7 @@ class UploadState
      * @param array $partData   Data from the upload operation that needs to be
      *                          recalled during the complete operation.
      */
-    public function markPartAsUploaded($partNumber, array $partData = [])
+    public function markPartAsUploaded($partNumber, array $partData = []): void
     {
         $this->uploadedParts[$partNumber] = $partData;
     }
@@ -118,7 +118,7 @@ class UploadState
      * @param int $status Status is an integer code defined by the constants
      *                    CREATED, INITIATED, and COMPLETED on this class.
      */
-    public function setStatus($status)
+    public function setStatus($status): void
     {
         $this->status = $status;
     }

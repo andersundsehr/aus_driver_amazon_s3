@@ -14,6 +14,6 @@ trait CryptoParamsTraitV2
         }
 
         throw new \InvalidArgumentException('An instance of MaterialsProviderInterfaceV2'
-            . ' must be passed in the "MaterialsProvider" field.');
+            . ' must be passed in the "MaterialsProvider" field.', 3625260560);
     }
 }

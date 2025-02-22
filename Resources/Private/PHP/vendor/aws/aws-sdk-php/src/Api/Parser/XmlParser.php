@@ -157,7 +157,7 @@ class XmlParser
                 !empty($shape['timestampFormat']) ? $shape['timestampFormat'] : null
             );
         }
-        throw new ParserException('Invalid timestamp value passed to XmlParser::parse_timestamp');
+        throw new ParserException('Invalid timestamp value passed to XmlParser::parse_timestamp', 1717638625);
     }
 
     private function parse_xml_attribute(Shape $shape, Shape $memberShape, $value)

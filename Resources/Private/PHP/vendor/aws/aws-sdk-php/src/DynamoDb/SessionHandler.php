@@ -222,7 +222,7 @@ class SessionHandler implements \SessionHandlerInterface
      * Triggers garbage collection on expired sessions.
      * @codeCoverageIgnore
      */
-    public function garbageCollect()
+    public function garbageCollect(): void
     {
         $this->connection->deleteExpired();
     }

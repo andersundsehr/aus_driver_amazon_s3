@@ -47,7 +47,7 @@ abstract class AbstractModel implements \ArrayAccess
      * @return void
      */
     #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->definition[$offset] = $value;
     }
@@ -65,7 +65,7 @@ abstract class AbstractModel implements \ArrayAccess
      * @return void
      */
     #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->definition[$offset]);
     }
@@ -74,7 +74,7 @@ abstract class AbstractModel implements \ArrayAccess
     {
         if (!isset($this->definition[$key])) {
             throw new \InvalidArgumentException('Expected shape definition at '
-                . $key);
+                . $key, 6018282809);
         }
 
         return $this->shapeFor($this->definition[$key]);

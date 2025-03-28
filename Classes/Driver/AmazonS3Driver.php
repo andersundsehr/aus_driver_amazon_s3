@@ -348,12 +348,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * Checks if a folder exists inside a storage folder
      *
      * @param string $folderName
-     * @param string $folderIdentifier
+     * @param string $folderIdentifier Parent folder
      * @return bool
      */
     public function folderExistsInFolder($folderName, $folderIdentifier)
     {
-        return $this->prefixExists(rtrim($folderIdentifier, '/') . '/' . $folderName . '/');
+        $identifier = rtrim($folderIdentifier, '/') . '/' . $folderName;
+        $this->normalizeFolderIdentifier($identifier);
+        return $this->prefixExists($identifier);
     }
 
     /**
@@ -365,8 +367,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function getFolderInFolder($folderName, $folderIdentifier)
     {
-        $identifier = $folderIdentifier . '/' . $folderName . '/';
-        $this->normalizeIdentifier($identifier);
+        $identifier = $folderIdentifier . '/' . $folderName;
+        $this->normalizeFolderIdentifier($identifier);
         return $identifier;
     }
 
@@ -430,6 +432,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function moveFileWithinStorage($fileIdentifier, $targetFolderIdentifier, $newFileName)
     {
+        $this->normalizeFolderIdentifier($targetFolderIdentifier);
         $targetIdentifier = $targetFolderIdentifier . $newFileName;
         $this->renameObject($fileIdentifier, $targetIdentifier);
         return $targetIdentifier;
@@ -739,14 +742,22 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $result = $this->getListObjects(
             $folderIdentifier,
             [
-                'MaxKeys' => 1
+                'MaxKeys' => 2
             ]
         );
 
-        // Contents will always include the folder itself
-        if (isset($result['Contents']) && sizeof($result['Contents']) > 1) {
+        //MinIO does not return the folder itself, but S3 does.
+        // Unify the results and remove the folder itself.
+        if (isset($result['Contents']) && count($result['Contents'])) {
+            if ($result['Contents'][0]['Key'] == $folderIdentifier) {
+                unset($result['Contents'][0]);
+            }
+        }
+
+        if (isset($result['Contents']) && count($result['Contents']) > 0) {
             return false;
         }
+
         return true;
     }
 
@@ -790,7 +801,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->normalizeIdentifier($folderIdentifier);
 
         return [
-            'identifier' => $folderIdentifier,
+            'identifier' => rtrim($folderIdentifier, '/') . '/',
             'name' => basename(rtrim($folderIdentifier, '/')),
             'storage' => $this->storageUid,
             'mtime' => null,
@@ -831,7 +842,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = false, array $filenameFilterCallbacks = [], $sort = '', $sortRev = false)
     {
-        $this->normalizeIdentifier($folderIdentifier);
+        $this->normalizeFolderIdentifier($folderIdentifier);
         $files = [];
         if ($folderIdentifier === self::ROOT_FOLDER_IDENTIFIER) {
             $folderIdentifier = '';
@@ -1396,7 +1407,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             return $this->getRootLevelFolder();
         }
         $this->normalizeIdentifier($identifier);
-        return new Folder($this->getStorage(), $identifier, basename(rtrim($identifier, '/')));
+        return new Folder($this->getStorage(), rtrim($identifier, '/') . '/', basename(rtrim($identifier, '/')));
     }
 
     /**
@@ -1479,6 +1490,22 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $identifier = str_replace('//', '/', $identifier);
         if ($identifier !== '/') {
             $identifier = ltrim($identifier, '/');
+        }
+    }
+
+    /**
+     * Appends a slash at the end if missing
+     *
+     * @param string &$identifier
+     */
+    protected function normalizeFolderIdentifier(&$identifier)
+    {
+        $this->normalizeIdentifier($identifier);
+        if ($identifier !== '/') {
+            $identifier = rtrim($identifier, '/') . '/';
+        }
+        if ($identifier === '/') {
+            $identifier = '';
         }
     }
 

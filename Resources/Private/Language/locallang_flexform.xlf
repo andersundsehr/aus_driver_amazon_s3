@@ -70,6 +70,19 @@
 			<trans-unit id="ausDriverAmazonS3.settings.enablePermissionsCheck">
 				<source>Check S3 permissions for each file and folder (very slow)</source>
 			</trans-unit>
+
+      <trans-unit id="driverConfiguration.fileContentHash">
+        <source>Method for file hash</source>
+      </trans-unit>
+      <trans-unit id="driverConfiguration.fileContentHash.ignore">
+        <source>Ignore (fastest)</source>
+      </trans-unit>
+      <trans-unit id="driverConfiguration.fileContentHash.receive">
+        <source>Receive from AWS if possible</source>
+      </trans-unit>
+      <trans-unit id="driverConfiguration.fileContentHash.force">
+        <source>Receive frolm AWS with a fallback to download and calculate (slowest, might download large files)</source>
+      </trans-unit>
 		</body>
 	</file>
 </xliff>

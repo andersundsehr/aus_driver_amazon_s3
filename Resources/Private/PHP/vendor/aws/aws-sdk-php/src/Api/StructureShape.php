@@ -61,14 +61,14 @@ class StructureShape extends Shape
         $members = $this->getMembers();
 
         if (!isset($members[$name])) {
-            throw new \InvalidArgumentException('Unknown member ' . $name);
+            throw new \InvalidArgumentException('Unknown member ' . $name, 8231238508);
         }
 
         return $members[$name];
     }
 
 
-    private function generateMembersHash()
+    private function generateMembersHash(): void
     {
         $this->members = [];
 

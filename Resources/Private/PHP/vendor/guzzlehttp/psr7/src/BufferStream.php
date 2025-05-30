@@ -86,7 +86,7 @@ final class BufferStream implements StreamInterface
 
     public function seek($offset, $whence = SEEK_SET): void
     {
-        throw new \RuntimeException('Cannot seek a BufferStream');
+        throw new \RuntimeException('Cannot seek a BufferStream', 7259320027);
     }
 
     public function eof(): bool
@@ -96,7 +96,7 @@ final class BufferStream implements StreamInterface
 
     public function tell(): int
     {
-        throw new \RuntimeException('Cannot determine the position of a BufferStream');
+        throw new \RuntimeException('Cannot determine the position of a BufferStream', 7983042710);
     }
 
     /**

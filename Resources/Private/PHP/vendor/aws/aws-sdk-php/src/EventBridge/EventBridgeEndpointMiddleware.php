@@ -94,22 +94,22 @@ class EventBridgeEndpointMiddleware
      * @param $endpointID
      * @param CommandInterface $cmd
      */
-    private function validateEndpointId($endpointID)
+    private function validateEndpointId($endpointID): void
     {
         if (empty($endpointID)) {
-            throw new \InvalidArgumentException("EventId must be a non-empty string");
+            throw new \InvalidArgumentException("EventId must be a non-empty string", 4248895792);
         }
         if (!self::isValidHostLabel($endpointID)) {
-            throw new InvalidArgumentException("EventId must be a valid host");
+            throw new InvalidArgumentException("EventId must be a valid host", 1551473252);
         }
         if ($this->config['use_fips_endpoint']) {
             throw new InvalidArgumentException(
-                "EventId is currently not compatible with FIPS pseudo regions"
+                "EventId is currently not compatible with FIPS pseudo regions", 1570400230
             );
         }
         if ($this->config['dual_stack']) {
             throw new InvalidArgumentException(
-                "EventId is currently not compatible with dualstack"
+                "EventId is currently not compatible with dualstack", 9221799512
             );
         }
     }

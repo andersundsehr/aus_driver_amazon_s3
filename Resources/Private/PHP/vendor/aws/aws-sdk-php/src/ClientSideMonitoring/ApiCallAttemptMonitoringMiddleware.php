@@ -119,7 +119,7 @@ class ApiCallAttemptMonitoringMiddleware extends AbstractMonitoringMiddleware
             ];
         }
 
-        throw new \InvalidArgumentException('Parameter must be an instance of ResultInterface, AwsException or Exception.');
+        throw new \InvalidArgumentException('Parameter must be an instance of ResultInterface, AwsException or Exception.', 4352062518);
     }
 
     private static function getResultAttemptLatency(ResultInterface $result)

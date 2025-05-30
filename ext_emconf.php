@@ -5,10 +5,8 @@ $EM_CONF[$_EXTKEY] = [
     'title' => 'Amazon AWS S3 FAL driver (CDN)',
     'description' => 'Provides a FAL driver for the Amazon Web Service S3.',
     'category' => 'be',
-    'version' => '1.12.1',
+    'version' => '1.14.2',
     'state' => 'stable',
-    'uploadfolder' => false,
-    'createDirs' => '',
     'clearcacheonload' => false,
     'author' => 'Markus Hölzle',
     'author_email' => 'typo3@markus-hoelzle.de',
@@ -17,7 +15,7 @@ $EM_CONF[$_EXTKEY] = [
         [
             'depends' =>
                 [
-                    'typo3' => '11.5.30-12.4.99',
+                    'typo3' => '13.4.0-13.4.99',
                 ],
             'conflicts' => [],
             'suggests' => [],

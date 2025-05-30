@@ -217,6 +217,6 @@ class ConfigurationProvider extends AbstractConfigurationProvider
         }
 
         throw new \InvalidArgumentException('Not a valid retry configuration'
-            . ' argument.');
+            . ' argument.', 5285337413);
     }
 }

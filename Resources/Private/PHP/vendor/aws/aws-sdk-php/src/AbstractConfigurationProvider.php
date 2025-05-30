@@ -64,7 +64,7 @@ abstract class AbstractConfigurationProvider
     {
         $links = func_get_args();
         if (empty($links)) {
-            throw new \InvalidArgumentException('No providers in chain');
+            throw new \InvalidArgumentException('No providers in chain', 8906578671);
         }
 
         return function () use ($links) {

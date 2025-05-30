@@ -211,7 +211,7 @@ class TreeInterpreter
                 };
 
             default:
-                throw new \RuntimeException("Unknown node type: {$node['type']}");
+                throw new \RuntimeException("Unknown node type: {$node['type']}", 8491994396);
         }
     }
 
@@ -229,7 +229,7 @@ class TreeInterpreter
             case '>=': return $left >= $right;
             case '<': return $left < $right;
             case '<=': return $left <= $right;
-            default: throw new \RuntimeException("Invalid comparison: $cmp");
+            default: throw new \RuntimeException("Invalid comparison: $cmp", 2790524400);
         }
     }
 }

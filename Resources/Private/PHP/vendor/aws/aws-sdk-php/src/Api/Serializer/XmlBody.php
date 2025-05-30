@@ -44,7 +44,7 @@ class XmlBody
         return $xml->outputMemory();
     }
 
-    private function startElement(Shape $shape, $name, XMLWriter $xml)
+    private function startElement(Shape $shape, $name, XMLWriter $xml): void
     {
         $xml->startElement($name);
 
@@ -56,7 +56,7 @@ class XmlBody
         }
     }
 
-    private function format(Shape $shape, $name, $value, XMLWriter $xml)
+    private function format(Shape $shape, $name, $value, XMLWriter $xml): void
     {
         // Any method mentioned here has a custom serialization handler.
         static $methods = [
@@ -77,7 +77,7 @@ class XmlBody
         }
     }
 
-    private function defaultShape(Shape $shape, $name, $value, XMLWriter $xml)
+    private function defaultShape(Shape $shape, $name, $value, XMLWriter $xml): void
     {
         $this->startElement($shape, $name, $xml);
         $xml->text($value);
@@ -89,7 +89,7 @@ class XmlBody
         $name,
         array $value,
         \XMLWriter $xml
-    ) {
+    ): void {
         $this->startElement($shape, $name, $xml);
 
         foreach ($this->getStructureMembers($shape, $value) as $k => $definition) {
@@ -132,7 +132,7 @@ class XmlBody
         $name,
         array $value,
         XMLWriter $xml
-    ) {
+    ): void {
         $items = $shape->getMember();
 
         if ($shape['flattened']) {
@@ -156,7 +156,7 @@ class XmlBody
         $name,
         array $value,
         XMLWriter $xml
-    ) {
+    ): void {
         $xmlEntry = $shape['flattened'] ? $shape['locationName'] : 'entry';
         $xmlKey = $shape->getKey()['locationName'] ?: 'key';
         $xmlValue = $shape->getValue()['locationName'] ?: 'value';
@@ -173,7 +173,7 @@ class XmlBody
         $xml->endElement();
     }
 
-    private function add_blob(Shape $shape, $name, $value, XMLWriter $xml)
+    private function add_blob(Shape $shape, $name, $value, XMLWriter $xml): void
     {
         $this->startElement($shape, $name, $xml);
         $xml->writeRaw(base64_encode($value));
@@ -185,7 +185,7 @@ class XmlBody
         $name,
         $value,
         XMLWriter $xml
-    ) {
+    ): void {
         $this->startElement($shape, $name, $xml);
         $timestampFormat = !empty($shape['timestampFormat'])
             ? $shape['timestampFormat']
@@ -199,7 +199,7 @@ class XmlBody
         $name,
         $value,
         XMLWriter $xml
-    ) {
+    ): void {
         $this->startElement($shape, $name, $xml);
         $xml->writeRaw($value ? 'true' : 'false');
         $xml->endElement();
@@ -210,7 +210,7 @@ class XmlBody
         $name,
         $value,
         XMLWriter $xml
-    ) {
+    ): void {
         if ($shape['xmlAttribute']) {
             $xml->writeAttribute($shape['locationName'] ?: $name, $value);
         } else {

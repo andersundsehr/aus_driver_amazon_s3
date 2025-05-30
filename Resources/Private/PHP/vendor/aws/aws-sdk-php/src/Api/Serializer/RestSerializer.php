@@ -127,7 +127,7 @@ abstract class RestSerializer
         return $opts;
     }
 
-    private function applyPayload(StructureShape $input, $name, array $args, array &$opts)
+    private function applyPayload(StructureShape $input, $name, array $args, array &$opts): void
     {
         if (!isset($args[$name])) {
             return;
@@ -147,7 +147,7 @@ abstract class RestSerializer
         $this->payload($m, $args[$name], $opts);
     }
 
-    private function applyHeader($name, Shape $member, $value, array &$opts)
+    private function applyHeader($name, Shape $member, $value, array &$opts): void
     {
         if ($member->getType() === 'timestamp') {
             $timestampFormat = !empty($member['timestampFormat'])
@@ -162,7 +162,7 @@ abstract class RestSerializer
             $value = json_encode($value);
             if (empty($value) && JSON_ERROR_NONE !== json_last_error()) {
                 throw new \InvalidArgumentException('Unable to encode the provided value'
-                    . ' with \'json_encode\'. ' . json_last_error_msg());
+                    . ' with \'json_encode\'. ' . json_last_error_msg(), 8063177152);
             }
 
             $value = base64_encode($value);
@@ -174,7 +174,7 @@ abstract class RestSerializer
     /**
      * Note: This is currently only present in the Amazon S3 model.
      */
-    private function applyHeaderMap($name, Shape $member, array $value, array &$opts)
+    private function applyHeaderMap($name, Shape $member, array $value, array &$opts): void
     {
         $prefix = $member['locationName'];
         foreach ($value as $k => $v) {
@@ -182,7 +182,7 @@ abstract class RestSerializer
         }
     }
 
-    private function applyQuery($name, Shape $member, $value, array &$opts)
+    private function applyQuery($name, Shape $member, $value, array &$opts): void
     {
         if ($member instanceof MapShape) {
             $opts['query'] = isset($opts['query']) && is_array($opts['query'])

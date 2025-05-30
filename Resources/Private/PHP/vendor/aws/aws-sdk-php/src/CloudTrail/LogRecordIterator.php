@@ -117,7 +117,7 @@ class LogRecordIterator implements \OuterIterator
     }
 
     #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->recordIndex++;
 
@@ -150,7 +150,7 @@ class LogRecordIterator implements \OuterIterator
     }
 
     #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->logFileIterator->rewind();
         $this->loadRecordsFromCurrentLogFile();

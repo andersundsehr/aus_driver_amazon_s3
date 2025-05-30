@@ -302,14 +302,14 @@ class S3EndpointMiddleware
             $arn = ArnParser::parse($command['Bucket']);
             $outpost = $arn->getService() == 's3-outposts';
             if ($outpost && $dualStack) {
-                throw new InvalidArgumentException("Outposts + dualstack is not supported");
+                throw new InvalidArgumentException("Outposts + dualstack is not supported", 6575486671);
             }
             if ($arn instanceof ObjectLambdaAccessPointArn) {
                 return $request;
             }
         }
         if ($dualStack) {
-            throw new InvalidArgumentException("Custom Endpoint + Dualstack not supported");
+            throw new InvalidArgumentException("Custom Endpoint + Dualstack not supported", 3100209478);
         }
         if ($command->getName() == 'WriteGetObjectResponse') {
             $host = "{$command['RequestRoute']}.{$this->endpoint}";

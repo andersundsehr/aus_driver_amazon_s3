@@ -47,7 +47,7 @@ class LruArrayCache implements CacheInterface, \Countable
         return null;
     }
 
-    public function set($key, $value, $ttl = 0)
+    public function set($key, $value, $ttl = 0): void
     {
         // Only call time() if the TTL is not 0/false/null
         $ttl = $ttl ? time() + $ttl : 0;
@@ -67,7 +67,7 @@ class LruArrayCache implements CacheInterface, \Countable
         }
     }
 
-    public function remove($key)
+    public function remove($key): void
     {
         unset($this->items[$key]);
     }

@@ -413,7 +413,7 @@ class TreeCompiler
     public function __call($method, $args)
     {
         throw new \RuntimeException(
-            sprintf('Invalid node encountered: %s', json_encode($args[0]))
+            sprintf('Invalid node encountered: %s', json_encode($args[0])), 1683537710
         );
     }
 }

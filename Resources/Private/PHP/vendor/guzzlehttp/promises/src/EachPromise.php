@@ -93,7 +93,7 @@ class EachPromise implements PromisorInterface
         return $this->aggregate;
     }
 
-    private function createPromise()
+    private function createPromise(): void
     {
         $this->mutex = false;
         $this->aggregate = new Promise(function () {
@@ -122,7 +122,7 @@ class EachPromise implements PromisorInterface
         $this->aggregate->then($clearFn, $clearFn);
     }
 
-    private function refillPending()
+    private function refillPending(): void
     {
         if (!$this->concurrency) {
             // Add all pending promises.
@@ -216,7 +216,7 @@ class EachPromise implements PromisorInterface
         }
     }
 
-    private function step($idx)
+    private function step($idx): void
     {
         // If the promise was already resolved, then ignore this step.
         if (Is::settled($this->aggregate)) {

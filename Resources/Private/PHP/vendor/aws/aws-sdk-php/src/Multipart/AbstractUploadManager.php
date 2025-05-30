@@ -98,7 +98,7 @@ abstract class AbstractUploadManager implements Promise\PromisorInterface
             // Initiate the upload.
             if ($this->state->isCompleted()) {
                 throw new \LogicException('This multipart upload has already '
-                    . 'been completed or aborted.'
+                    . 'been completed or aborted.', 7973237942
                 );
             }
 
@@ -140,7 +140,7 @@ abstract class AbstractUploadManager implements Promise\PromisorInterface
         })->otherwise($this->buildFailureCatch());
     }
 
-    private function transformException($e)
+    private function transformException($e): void
     {
         // Throw errors from the operations as a specific Multipart error.
         if ($e instanceof AwsException) {
@@ -236,7 +236,7 @@ abstract class AbstractUploadManager implements Promise\PromisorInterface
             if (!$this->config[$key]) {
                 throw new IAE('You must provide a value for "' . $key . '" in '
                     . 'your config for the MultipartUploader for '
-                    . $this->client->getApi()->getServiceFullName() . '.');
+                    . $this->client->getApi()->getServiceFullName() . '.', 3884184362);
             }
             $id[$param] = $this->config[$key];
         }

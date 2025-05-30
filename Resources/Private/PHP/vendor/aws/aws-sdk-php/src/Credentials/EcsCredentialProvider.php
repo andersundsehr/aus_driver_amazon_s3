@@ -77,7 +77,7 @@ class EcsCredentialProvider
             $reason = is_array($reason) ? $reason['exception'] : $reason;
             $msg = $reason->getMessage();
             throw new CredentialsException(
-                "Error retrieving credential from ECS ($msg)"
+                "Error retrieving credential from ECS ($msg)", 7228914456
             );
         });
     }
@@ -127,7 +127,7 @@ class EcsCredentialProvider
         $result = json_decode($response, true);
 
         if (!isset($result['AccessKeyId'])) {
-            throw new CredentialsException('Unexpected ECS credential value');
+            throw new CredentialsException('Unexpected ECS credential value', 6700915979);
         }
         return $result;
     }

@@ -112,7 +112,7 @@ class AmazonS3DriverTest extends TestCase
     /**
      * @test
      */
-    public function testPublicUrlGetter()
+    public function testPublicUrlGetter(): void
     {
         $assertedMappings = [
             '/foo/bar/test.file' => 'https://www.example.com/foo/bar/test.file', // start with slash
@@ -129,7 +129,7 @@ class AmazonS3DriverTest extends TestCase
     /**
      * @test
      */
-    public function testDefaultFolderGetter()
+    public function testDefaultFolderGetter(): void
     {
         $this->assertEquals('/', $this->driver->getDefaultFolder());
     }
@@ -137,7 +137,7 @@ class AmazonS3DriverTest extends TestCase
     /**
      * @test
      */
-    public function testRootLevelFolderGetter()
+    public function testRootLevelFolderGetter(): void
     {
         $this->assertEquals('/', $this->driver->getRootLevelFolder());
     }
@@ -145,7 +145,7 @@ class AmazonS3DriverTest extends TestCase
     /**
      * @test
      */
-    public function testGetFileInfoByIdentifier()
+    public function testGetFileInfoByIdentifier(): void
     {
         $fileIdentifier = 'foo/bar/test.file';
         $lastModifiedDateTime = new DateTimeResult();
@@ -180,7 +180,7 @@ class AmazonS3DriverTest extends TestCase
     /**
      * @test
      */
-    public function testGetFileInfoByIdentifierWithLimitedProperties()
+    public function testGetFileInfoByIdentifierWithLimitedProperties(): void
     {
         $fileIdentifier = 'foo/bar/test.file';
         $properties = ['name', 'identifier', 'size', 'storage'];
@@ -204,7 +204,7 @@ class AmazonS3DriverTest extends TestCase
     /**
      * @test
      */
-    public function testGetFileInfoByIdentifierWithPseudoMimeType()
+    public function testGetFileInfoByIdentifierWithPseudoMimeType(): void
     {
         $fileIdentifier = 'foo/bar/test.youtube';
         $lastModifiedDateTime = new DateTimeResult();

@@ -24,7 +24,7 @@ class BearerTokenAuthorization implements TokenAuthorization
     ) {
         if (empty($token) || empty($token->getToken())) {
             throw new InvalidArgumentException(
-                "Cannot authorize a request with an empty token"
+                "Cannot authorize a request with an empty token", 1409573445
             );
         }
         $accessToken = $token->getToken();

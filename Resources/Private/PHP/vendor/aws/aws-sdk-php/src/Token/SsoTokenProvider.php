@@ -40,23 +40,23 @@ class SsoTokenProvider implements RefreshableTokenProviderInterface
     {
         return Promise\Coroutine::of(function () {
             if (!@is_readable($this->filename)) {
-                throw new TokenException("Cannot read profiles from $this->filename");
+                throw new TokenException("Cannot read profiles from $this->filename", 5233602230);
             }
             $profiles = self::loadProfiles($this->filename);
             if (!isset($profiles[$this->ssoProfileName])) {
-                throw new TokenException("Profile {$this->ssoProfileName} does not exist in {$this->filename}.");
+                throw new TokenException("Profile {$this->ssoProfileName} does not exist in {$this->filename}.", 9921567478);
             }
             $ssoProfile = $profiles[$this->ssoProfileName];
             if (empty($ssoProfile['sso_session'])) {
                 throw new TokenException(
-                    "Profile {$this->ssoProfileName} in {$this->filename} must contain an sso_session."
+                    "Profile {$this->ssoProfileName} in {$this->filename} must contain an sso_session.", 9966574247
                 );
             }
 
             $sessionProfileName = 'sso-session ' . $ssoProfile['sso_session'];
             if (empty($profiles[$sessionProfileName])) {
                 throw new TokenException(
-                    "Profile {$this->ssoProfileName} does not exist in {$this->filename}"
+                    "Profile {$this->ssoProfileName} does not exist in {$this->filename}", 8707481639
                 );
             }
 
@@ -66,13 +66,13 @@ class SsoTokenProvider implements RefreshableTokenProviderInterface
             ) {
                 throw new TokenException(
                     "Profile {$this->ssoProfileName} in {$this->filename} must contain the following keys: "
-                    . "sso_start_url and sso_region."
+                    . "sso_start_url and sso_region.", 6877354310
                 );
             }
 
             $tokenLocation = self::getTokenLocation($ssoProfile['sso_session']);
             if (!@is_readable($tokenLocation)) {
-                throw new TokenException("Unable to read token file at $tokenLocation");
+                throw new TokenException("Unable to read token file at $tokenLocation", 5297058742);
             }
             $tokenData = $this->getTokenData($tokenLocation);
             $this->validateTokenData($tokenLocation, $tokenData);
@@ -113,7 +113,7 @@ class SsoTokenProvider implements RefreshableTokenProviderInterface
             ) {
                 throw new TokenException(
                     "Cannot refresh this token without an 'ssooidcClient' "
-                    . "and a 'start_url'"
+                    . "and a 'start_url'", 8596260556
                 );
             }
             $response = $this->ssoOidcClient->createToken([
@@ -180,15 +180,15 @@ class SsoTokenProvider implements RefreshableTokenProviderInterface
     {
         if (empty($tokenData['accessToken']) || empty($tokenData['expiresAt'])) {
             throw new TokenException(
-                "Token file at {$tokenLocation} must contain an access token and an expiration"
+                "Token file at {$tokenLocation} must contain an access token and an expiration", 5975137491
             );
         }
 
         $expiration = strtotime($tokenData['expiresAt']);
         if ($expiration === false) {
-            throw new TokenException("Cached SSO token returned an invalid expiration");
+            throw new TokenException("Cached SSO token returned an invalid expiration", 6480566559);
         } elseif ($expiration < time()) {
-            throw new TokenException("Cached SSO token returned an expired token");
+            throw new TokenException("Cached SSO token returned an expired token", 3293039635);
         }
         return $tokenData;
     }
@@ -198,7 +198,7 @@ class SsoTokenProvider implements RefreshableTokenProviderInterface
      * @param string $tokenLocation
      * @return void
      */
-    private function writeNewTokenDataToDisk(array $tokenData, $tokenLocation)
+    private function writeNewTokenDataToDisk(array $tokenData, $tokenLocation): void
     {
         $tokenData['expiresAt'] = gmdate(
             'Y-m-d\TH:i:s\Z',

@@ -73,7 +73,7 @@ class EndpointDiscoveryMiddleware
                 throw new UnresolvedEndpointException('This operation '
                     . 'requires the use of endpoint discovery, but this has '
                     . 'been disabled in the configuration. Enable endpoint '
-                    . 'discovery or use a different operation.');
+                    . 'discovery or use a different operation.', 3226365530);
             }
 
             // Continue only if enabled by config
@@ -82,7 +82,7 @@ class EndpointDiscoveryMiddleware
                     throw new UnresolvedEndpointException('This operation is '
                         . 'contradictorily marked both as using endpoint discovery '
                         . 'and being the endpoint discovery operation. Please '
-                        . 'verify the accuracy of your model files.');
+                        . 'verify the accuracy of your model files.', 8609956862);
                 }
 
                 // Original endpoint may be used if discovery optional
@@ -193,7 +193,7 @@ class EndpointDiscoveryMiddleware
 
         throw new UnresolvedEndpointException('The endpoint discovery operation '
             . 'yielded a response that did not contain properly formatted '
-            . 'endpoint data.');
+            . 'endpoint data.', 3674884206);
     }
 
     private function getCacheKey(
@@ -226,7 +226,7 @@ class EndpointDiscoveryMiddleware
         if (!isset($endpointOperation)) {
             throw new UnresolvedEndpointException('This command is set to use '
                 . 'endpoint discovery, but no endpoint discovery operation was '
-                . 'found. Please verify the accuracy of your model files.');
+                . 'found. Please verify the accuracy of your model files.', 3595058248);
         }
 
         $params = [];
@@ -404,7 +404,7 @@ class EndpointDiscoveryMiddleware
         }
 
         throw new UnresolvedEndpointException("The supplied endpoint '"
-            . "{$endpoint}' is invalid.");
+            . "{$endpoint}' is invalid.", 4658217778);
     }
 
     private function useOriginalUri(

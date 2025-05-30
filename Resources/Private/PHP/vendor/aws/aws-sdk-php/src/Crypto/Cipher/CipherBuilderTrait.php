@@ -66,7 +66,7 @@ trait CipherBuilderTrait
                 return 'cbc';
             default:
                 throw new CryptoException('Unrecognized or unsupported'
-                    . ' AESName for reverse lookup.');
+                    . ' AESName for reverse lookup.', 3065472692);
         }
     }
 }

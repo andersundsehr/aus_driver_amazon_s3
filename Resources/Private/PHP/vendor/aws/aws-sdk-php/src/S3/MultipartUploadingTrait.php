@@ -91,7 +91,7 @@ trait MultipartUploadingTrait
         // Ensure that the part size follows the rules: 5 MB <= size <= 5 GB.
         if ($partSize < MultipartUploader::PART_MIN_SIZE || $partSize > MultipartUploader::PART_MAX_SIZE) {
             throw new \InvalidArgumentException('The part size must be no less '
-                . 'than 5 MB and no greater than 5 GB.');
+                . 'than 5 MB and no greater than 5 GB.', 2884067384);
         }
 
         return $partSize;

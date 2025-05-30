@@ -88,7 +88,7 @@ class ApplyChecksumMiddleware
                 throw new InvalidArgumentException(
                     "Unsupported algorithm supplied for input variable {$checksumMemberName}."
                     . "  Supported checksums for this operation include: "
-                    . implode(", ", $supportedAlgorithms) . "."
+                    . implode(", ", $supportedAlgorithms) . ".", 5962820877
                 );
             }
             return $next($command, $request);

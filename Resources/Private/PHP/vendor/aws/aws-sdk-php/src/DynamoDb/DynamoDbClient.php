@@ -149,7 +149,7 @@ class DynamoDbClient extends AwsClient
     }
 
     /** @internal */
-    public static function _applyRetryConfig($value, array &$args, HandlerList $list)
+    public static function _applyRetryConfig($value, array &$args, HandlerList $list): void
     {
         if ($value) {
             $config = \Aws\Retry\ConfigurationProvider::unwrap($value);
@@ -188,7 +188,7 @@ class DynamoDbClient extends AwsClient
     }
 
     /** @internal */
-    public static function _applyApiProvider($value, array &$args, HandlerList $list)
+    public static function _applyApiProvider($value, array &$args, HandlerList $list): void
     {
         ClientResolver::_apply_api_provider($value, $args);
         $args['parser'] = new Crc32ValidatingParser($args['parser']);

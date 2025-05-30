@@ -30,14 +30,14 @@ trait CalculatesChecksumTrait
                     break;
                 throw new InvalidArgumentException(
                     "Invalid checksum requested: {$requestedAlgorithm}."
-                    . "  Valid algorithms are CRC32C, CRC32, SHA256, and SHA1."
+                    . "  Valid algorithms are CRC32C, CRC32, SHA256, and SHA1.", 1652958122
                 );
             }
         }  else {
             if ($requestedAlgorithm == 'crc32c') {
                 throw new CommonRuntimeException("crc32c is not supported for checksums "
                     . "without use of the common runtime for php.  Please enable the CRT or choose "
-                    . "a different algorithm."
+                    . "a different algorithm.", 8194363219
                 );
             }
             if ($requestedAlgorithm == "crc32") {

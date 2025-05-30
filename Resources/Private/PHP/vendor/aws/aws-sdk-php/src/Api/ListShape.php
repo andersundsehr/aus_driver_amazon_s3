@@ -22,7 +22,7 @@ class ListShape extends Shape
     {
         if (!$this->member) {
             if (!isset($this->definition['member'])) {
-                throw new \RuntimeException('No member attribute specified');
+                throw new \RuntimeException('No member attribute specified', 2607790910);
             }
             $this->member = Shape::create(
                 $this->definition['member'],

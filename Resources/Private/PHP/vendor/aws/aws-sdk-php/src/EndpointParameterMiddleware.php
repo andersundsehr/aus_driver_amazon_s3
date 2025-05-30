@@ -60,7 +60,7 @@ class EndpointParameterMiddleware
                 foreach ($parameters[1] as $index => $parameter) {
                     if (empty($command[$parameter])) {
                         throw new \InvalidArgumentException(
-                            "The parameter '{$parameter}' must be set and not empty."
+                            "The parameter '{$parameter}' must be set and not empty.", 2288717647
                         );
                     }
 
@@ -78,7 +78,7 @@ class EndpointParameterMiddleware
             $host = $prefix . $uri->getHost();
             if (!\Aws\is_valid_hostname($host)) {
                 throw new \InvalidArgumentException(
-                    "The supplied parameters result in an invalid hostname: '{$host}'."
+                    "The supplied parameters result in an invalid hostname: '{$host}'.", 8201879921
                 );
             }
             $request = $request->withUri($uri->withHost($host));

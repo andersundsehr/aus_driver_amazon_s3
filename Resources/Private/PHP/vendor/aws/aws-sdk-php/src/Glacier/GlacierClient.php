@@ -139,7 +139,7 @@ class GlacierClient extends AwsClient
                 ) {
                     $body = $request->getBody();
                     if (!$body->isSeekable()) {
-                        throw new CouldNotCreateChecksumException('sha256');
+                        throw new CouldNotCreateChecksumException('sha256', 4716546991);
                     }
 
                     // Add a tree hash if not provided.

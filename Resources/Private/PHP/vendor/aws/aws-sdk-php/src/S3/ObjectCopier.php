@@ -134,11 +134,11 @@ class ObjectCopier implements PromisorInterface
         return $this->promise()->wait();
     }
 
-    private function validateLocation(array $location)
+    private function validateLocation(array $location): void
     {
         if (empty($location['Bucket']) || empty($location['Key'])) {
             throw new \InvalidArgumentException('Locations provided to an'
-                . ' Aws\S3\ObjectCopier must have a non-empty Bucket and Key');
+                . ' Aws\S3\ObjectCopier must have a non-empty Bucket and Key', 6951538257);
         }
     }
 

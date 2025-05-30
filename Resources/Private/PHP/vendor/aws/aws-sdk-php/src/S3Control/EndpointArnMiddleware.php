@@ -199,7 +199,7 @@ class EndpointArnMiddleware
                             throw new \InvalidArgumentException("The account ID"
                                 . " supplied in the command ({$cmd['AccountId']})"
                                 . " does not match the account ID supplied in the"
-                                . " ARN (" . $arn->getAccountId() . ").");
+                                . " ARN (" . $arn->getAccountId() . ").", 6140021933);
                         }
                     } else {
                         $cmd['AccountId'] = $arn->getAccountId();
@@ -290,7 +290,7 @@ class EndpointArnMiddleware
         }
 
         throw new InvalidArnException('Provided ARN was not a valid S3 bucket'
-            . ' ARN.');
+            . ' ARN.', 7734756539);
     }
 
     private function validateAccessPointArn(ArnInterface $arn)
@@ -300,7 +300,7 @@ class EndpointArnMiddleware
         }
 
         throw new InvalidArnException('Provided ARN was not a valid S3 access'
-            . ' point ARN.');
+            . ' point ARN.', 7650244687);
     }
 
     /**
@@ -318,7 +318,7 @@ class EndpointArnMiddleware
         ) {
             throw new UnresolvedEndpointException(
                 'Dualstack is currently not supported with S3 Outposts ARNs.'
-                . ' Please disable dualstack or do not supply an Outposts ARN.');
+                . ' Please disable dualstack or do not supply an Outposts ARN.', 4357941373);
         }
 
         // Get partitions for ARN and client region
@@ -341,12 +341,12 @@ class EndpointArnMiddleware
         // Verify that the partition matches for supplied partition and region
         if ($arn->getPartition() !== $clientPart->getName()) {
             throw new InvalidRegionException('The supplied ARN partition'
-                . " does not match the client's partition.");
+                . " does not match the client's partition.", 9125072482);
         }
         if ($clientPart->getName() !== $arnPart->getName()) {
             throw new InvalidRegionException('The corresponding partition'
                 . ' for the supplied ARN region does not match the'
-                . " client's partition.");
+                . " client's partition.", 8496789500);
         }
 
         // Ensure ARN region matches client region unless

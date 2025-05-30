@@ -251,7 +251,7 @@ class StreamHandler
                     $message .= "[$key] $value".\PHP_EOL;
                 }
             }
-            throw new \RuntimeException(\trim($message));
+            throw new \RuntimeException(\trim($message), 2868116348);
         }
 
         return $resource;
@@ -288,7 +288,7 @@ class StreamHandler
         $context = $this->getDefaultContext($request);
 
         if (isset($options['on_headers']) && !\is_callable($options['on_headers'])) {
-            throw new \InvalidArgumentException('on_headers must be callable');
+            throw new \InvalidArgumentException('on_headers must be callable', 4998267726);
         }
 
         if (!empty($options)) {
@@ -302,14 +302,14 @@ class StreamHandler
 
         if (isset($options['stream_context'])) {
             if (!\is_array($options['stream_context'])) {
-                throw new \InvalidArgumentException('stream_context must be an array');
+                throw new \InvalidArgumentException('stream_context must be an array', 7189552485);
             }
             $context = \array_replace_recursive($context, $options['stream_context']);
         }
 
         // Microsoft NTLM authentication only supported with curl handler
         if (isset($options['auth'][2]) && 'ntlm' === $options['auth'][2]) {
-            throw new \InvalidArgumentException('Microsoft NTLM authentication only supported with curl handler');
+            throw new \InvalidArgumentException('Microsoft NTLM authentication only supported with curl handler', 8494053024);
         }
 
         $uri = $this->resolveHost($request, $options);
@@ -491,7 +491,7 @@ class StreamHandler
             return;
         }
 
-        throw new \InvalidArgumentException('Invalid crypto_method request option: unknown version provided');
+        throw new \InvalidArgumentException('Invalid crypto_method request option: unknown version provided', 6487039498);
     }
 
     /**
@@ -509,10 +509,10 @@ class StreamHandler
         if (\is_string($value)) {
             $options['ssl']['cafile'] = $value;
             if (!\file_exists($value)) {
-                throw new \RuntimeException("SSL CA bundle not found: $value");
+                throw new \RuntimeException("SSL CA bundle not found: $value", 6467969958);
             }
         } elseif ($value !== true) {
-            throw new \InvalidArgumentException('Invalid verify request option');
+            throw new \InvalidArgumentException('Invalid verify request option', 7664153381);
         }
 
         $options['ssl']['verify_peer'] = true;
@@ -531,7 +531,7 @@ class StreamHandler
         }
 
         if (!\file_exists($value)) {
-            throw new \RuntimeException("SSL certificate not found: {$value}");
+            throw new \RuntimeException("SSL certificate not found: {$value}", 4897385191);
         }
 
         $options['ssl']['local_cert'] = $value;

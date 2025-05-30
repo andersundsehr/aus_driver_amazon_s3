@@ -62,7 +62,7 @@ final class AppendStream implements StreamInterface
     public function addStream(StreamInterface $stream): void
     {
         if (!$stream->isReadable()) {
-            throw new \InvalidArgumentException('Each stream must be readable');
+            throw new \InvalidArgumentException('Each stream must be readable', 1501109483);
         }
 
         // The stream is only seekable if all streams are seekable
@@ -156,9 +156,9 @@ final class AppendStream implements StreamInterface
     public function seek($offset, $whence = SEEK_SET): void
     {
         if (!$this->seekable) {
-            throw new \RuntimeException('This AppendStream is not seekable');
+            throw new \RuntimeException('This AppendStream is not seekable', 2049901472);
         } elseif ($whence !== SEEK_SET) {
-            throw new \RuntimeException('The AppendStream can only seek with SEEK_SET');
+            throw new \RuntimeException('The AppendStream can only seek with SEEK_SET', 6211987375);
         }
 
         $this->pos = $this->current = 0;
@@ -235,7 +235,7 @@ final class AppendStream implements StreamInterface
 
     public function write($string): int
     {
-        throw new \RuntimeException('Cannot write to an AppendStream');
+        throw new \RuntimeException('Cannot write to an AppendStream', 8420152373);
     }
 
     /**

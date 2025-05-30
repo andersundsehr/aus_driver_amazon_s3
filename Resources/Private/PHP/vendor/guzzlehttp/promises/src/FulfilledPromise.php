@@ -16,7 +16,7 @@ class FulfilledPromise implements PromiseInterface
     {
         if (is_object($value) && method_exists($value, 'then')) {
             throw new \InvalidArgumentException(
-                'You cannot create a FulfilledPromise with a promise.'
+                'You cannot create a FulfilledPromise with a promise.', 1358751854
             );
         }
 
@@ -68,13 +68,13 @@ class FulfilledPromise implements PromiseInterface
     public function resolve($value)
     {
         if ($value !== $this->value) {
-            throw new \LogicException("Cannot resolve a fulfilled promise");
+            throw new \LogicException("Cannot resolve a fulfilled promise", 5769194445);
         }
     }
 
     public function reject($reason)
     {
-        throw new \LogicException("Cannot reject a fulfilled promise");
+        throw new \LogicException("Cannot reject a fulfilled promise", 8124695798);
     }
 
     public function cancel()

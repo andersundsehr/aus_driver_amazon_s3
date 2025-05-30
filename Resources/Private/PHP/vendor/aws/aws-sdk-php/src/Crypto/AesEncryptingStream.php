@@ -114,7 +114,7 @@ class AesEncryptingStream implements AesStreamInterface
             $this->cipherMethod->seek($wholeBlockOffset);
             $this->read($offset - $wholeBlockOffset);
         } else {
-            throw new LogicException('Unrecognized whence.');
+            throw new LogicException('Unrecognized whence.', 5005227787);
         }
     }
 

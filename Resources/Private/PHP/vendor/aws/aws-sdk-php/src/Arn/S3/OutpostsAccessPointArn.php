@@ -64,14 +64,14 @@ class OutpostsAccessPointArn extends BaseAccessPointArn implements
      *
      * @param array $data
      */
-    public static function validate(array $data)
+    public static function validate(array $data): void
     {
         Arn::validate($data);
 
         if (($data['service'] !== 's3-outposts')) {
             throw new InvalidArnException("The 3rd component of an S3 Outposts"
                 . " access point ARN represents the service and must be"
-                . " 's3-outposts'.");
+                . " 's3-outposts'.", 1335254792);
         }
 
         self::validateRegion($data, 'S3 Outposts access point ARN');
@@ -80,31 +80,31 @@ class OutpostsAccessPointArn extends BaseAccessPointArn implements
         if (($data['resource_type'] !== 'outpost')) {
             throw new InvalidArnException("The 6th component of an S3 Outposts"
                 . " access point ARN represents the resource type and must be"
-                . " 'outpost'.");
+                . " 'outpost'.", 2637419743);
         }
 
         if (!self::isValidHostLabel($data['outpost_id'])) {
             throw new InvalidArnException("The 7th component of an S3 Outposts"
                 . " access point ARN is required, represents the outpost ID, and"
-                . " must be a valid host label.");
+                . " must be a valid host label.", 1255643774);
         }
 
         if ($data['accesspoint_type'] !== 'accesspoint') {
             throw new InvalidArnException("The 8th component of an S3 Outposts"
-                . " access point ARN must be 'accesspoint'");
+                . " access point ARN must be 'accesspoint'", 8714254614);
         }
 
         if (!self::isValidHostLabel($data['accesspoint_name'])) {
             throw new InvalidArnException("The 9th component of an S3 Outposts"
                 . " access point ARN is required, represents the accesspoint name,"
-                . " and must be a valid host label.");
+                . " and must be a valid host label.", 8518872640);
         }
 
         if (!empty($data['resource_extra'])) {
             throw new InvalidArnException("An S3 Outposts access point ARN"
                 . " should only have 9 components, delimited by the characters"
                 . " ':' and '/'. '{$data['resource_extra']}' was found after the"
-                . " 9th component.");
+                . " 9th component.", 5422123822);
         }
     }
 }

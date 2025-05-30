@@ -35,7 +35,7 @@ trait StreamDecoratorTrait
             return $this->stream;
         }
 
-        throw new \UnexpectedValueException("$name not found on class");
+        throw new \UnexpectedValueException("$name not found on class", 4851393890);
     }
 
     public function __toString(): string
@@ -153,6 +153,6 @@ trait StreamDecoratorTrait
      */
     protected function createStream(): StreamInterface
     {
-        throw new \BadMethodCallException('Not implemented');
+        throw new \BadMethodCallException('Not implemented', 2910563947);
     }
 }

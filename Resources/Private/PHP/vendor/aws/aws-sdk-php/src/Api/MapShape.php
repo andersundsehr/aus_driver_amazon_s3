@@ -26,7 +26,7 @@ class MapShape extends Shape
     {
         if (!$this->value) {
             if (!isset($this->definition['value'])) {
-                throw new \RuntimeException('No value specified');
+                throw new \RuntimeException('No value specified', 5049837489);
             }
 
             $this->value = Shape::create(

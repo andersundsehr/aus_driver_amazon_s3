@@ -11,7 +11,7 @@ mkdir ../../.Build/minio-data
 docker stop minio-setup || true
 docker-compose run -d --rm --name minio-setup -p 9000:9000 minio
 # minio needs some time to start up
-sleep 5
+sleep 10
 
 mc alias remove typo3s3test || true
 mc alias set typo3s3test http://127.0.0.1:9000 minioadmin minioadmin

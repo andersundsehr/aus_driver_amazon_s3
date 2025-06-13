@@ -5,7 +5,7 @@ $EM_CONF[$_EXTKEY] = [
     'title' => 'Amazon AWS S3 FAL driver (CDN)',
     'description' => 'Provides a FAL driver for the Amazon Web Service S3.',
     'category' => 'be',
-    'version' => '1.12.1',
+    'version' => '1.13.0',
     'state' => 'stable',
     'uploadfolder' => false,
     'createDirs' => '',
@@ -17,7 +17,7 @@ $EM_CONF[$_EXTKEY] = [
         [
             'depends' =>
                 [
-                    'typo3' => '11.5.30-12.4.99',
+                    'typo3' => '11.5.30-13.4.99',
                 ],
             'conflicts' => [],
             'suggests' => [],

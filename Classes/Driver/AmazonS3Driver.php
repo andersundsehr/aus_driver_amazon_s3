@@ -264,16 +264,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     public function hash($fileIdentifier, $hashAlgorithm)
     {
         if ($this->fileContentHash) {
-            // TODO check sending and receiving hashes
-            $result = $this->s3Client->getObjectAttributes([
+            $result = $this->s3Client->headObject([
                 'Bucket' => $this->configuration['bucket'],
                 'Key' => $fileIdentifier,
-                'ObjectAttributes' => ['Checksum'],
             ]);
-            $key = 'Checksum' . strtoupper($hashAlgorithm);
-            if (isset($result['Checksum'][$key])) {
-                // TODO decode base64 and encode to hex
-                return $result['Checksum'][$key];
+
+            $key = 'hash-' . $hashAlgorithm;
+            if (isset($result['Metadata'][$key])) {
+                return $result['Metadata'][$key];
             }
 
             if ($this->fileContentHash === self::FILE_CONTENT_HASH_FORCE) {
@@ -454,7 +452,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     $localFilePath,
                     $targetIdentifier,
                     $this->configuration['bucket'],
-                    $this->getCacheControl($targetIdentifier)
+                    $this->getCacheControl($targetIdentifier),
+                    $this->fileContentHash
                 );
             }
 

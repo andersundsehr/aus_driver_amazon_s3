@@ -13,6 +13,7 @@
 
 namespace AUS\AusDriverAmazonS3\S3Adapter;
 
+use Aws\Command;
 use Aws\Exception\MultipartUploadException;
 use Aws\S3\MultipartUploader;
 use TYPO3\CMS\Core\Resource\MimeTypeDetector;
@@ -34,17 +35,27 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
      * @param string $bucket S3 bucket name
      * @param string $cacheControl Cache control header
      */
-    public function upload(string $localFilePath, string $targetFilePath, string $bucket, string $cacheControl): void
+    public function upload(string $localFilePath, string $targetFilePath, string $bucket, string $cacheControl, int $fileContentHash): void
     {
         $contentType = $this->detectContentType($localFilePath, $targetFilePath);
+
+        $metadata = [];
+        if ($fileContentHash > 0) {
+            $metadata = [
+                'hash-md5' => md5_file($localFilePath),
+                'hash-sha1' => sha1_file($localFilePath),
+                'hash-sha256' => hash_file('sha256', $localFilePath),
+            ];
+        }
 
         $uploader = new MultipartUploader($this->s3Client, $localFilePath, [
             'bucket' => $bucket,
             'key' => $targetFilePath,
-            'params' => [
-                'ContentType' => $contentType,
-                'CacheControl' => $cacheControl,
-            ],
+            'before_initiate' => static function(Command $command) use ($contentType, $cacheControl, $metadata) {
+                $command['ContentType'] = $contentType;
+                $command['CacheControl'] = $cacheControl;
+                $command['Metadata'] = $metadata;
+            },
         ]);
 
         // Upload and recover from errors

@@ -14,6 +14,7 @@
 namespace AUS\AusDriverAmazonS3\S3Adapter;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
+use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
@@ -49,7 +50,7 @@ class MetaInfoDownloadAdapter extends AbstractS3Adapter
         ];
 
         if (!empty($response['ContentType'])) {
-            $metaInfo['mimetype'] = $this->getOverwrittenMimeType($response['ContentType'], $metaInfo['extension']);
+            $metaInfo['mimetype'] = $this->getOverwrittenMimeType($response['ContentType'], $metaInfo['extension'], basename($identifier));
         }
         if (!empty($response['ContentLength'])) {
             $metaInfo['size'] = (int)$response['ContentLength'];
@@ -66,9 +67,10 @@ class MetaInfoDownloadAdapter extends AbstractS3Adapter
      * @see \TYPO3\CMS\Core\Type\File\FileInfo::getMimeType
      * @param string $mimeType Content type provided by AWS S3
      * @param string $extension The extension of the file name
+     * @param string $filename The file name
      * @return string The mime type as string
      */
-    protected function getOverwrittenMimeType(string $mimeType, string $extension): string
+    protected function getOverwrittenMimeType(string $mimeType, string $extension, string $filename): string
     {
         $fileExtensionToMimeTypeMapping = $GLOBALS['TYPO3_CONF_VARS']['SYS']['FileInfo']['fileExtensionToMimeType'];
         $lowercaseFileExtension = strtolower($extension);
@@ -84,7 +86,7 @@ class MetaInfoDownloadAdapter extends AbstractS3Adapter
             GeneralUtility::callUserFunction(
                 $mimeTypeGuesser,
                 $hookParameters,
-                $this
+                new FileInfo($filename)
             );
         }
 

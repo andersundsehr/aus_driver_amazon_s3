@@ -19,6 +19,8 @@ use Aws\Api\DateTimeResult;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Resource\MimeTypeCompatibilityTypeGuesser;
+use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
@@ -50,6 +52,7 @@ class MetaInfoDownloadAdapterTest extends TestCase
         parent::setUp();
         $this->metaInfoDownloadAdapter = new MetaInfoDownloadAdapter();
         $this->driver = $this->prophesize(AmazonS3Driver::class);
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][FileInfo::class]['mimeTypeGuessers'][MimeTypeCompatibilityTypeGuesser::class] = MimeTypeCompatibilityTypeGuesser::class . '->guessMimeType';
     }
 
     /**
@@ -102,7 +105,7 @@ class MetaInfoDownloadAdapterTest extends TestCase
         $lastModifiedDateTime = new DateTimeResult();
         $awsResponse = [
             'LastModified' => $lastModifiedDateTime,
-            'ContentType' => 'image/png',
+            'ContentType' => 'text/plain',
             'ContentLength' => 123,
         ];
         $expectedMetaInfoKeys = ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'];

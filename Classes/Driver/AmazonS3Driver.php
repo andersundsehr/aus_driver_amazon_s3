@@ -67,6 +67,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
 
     const ROOT_FOLDER_IDENTIFIER = '/';
 
+    const FILE_CONTENT_HASH_IGNORE = 0;
+
+    const FILE_CONTENT_HASH_RECEIVE = 1;
+
+    const FILE_CONTENT_HASH_FORCE = 2;
+
     /**
      * @var S3Client
      */
@@ -164,6 +170,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     protected $compatibilityService;
 
+    protected $fileContentHash = self::FILE_CONTENT_HASH_IGNORE;
+
     /**
      * @param array $configuration
      * @param S3Client $s3Client
@@ -255,6 +263,40 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function hash($fileIdentifier, $hashAlgorithm)
     {
+        if ($this->fileContentHash) {
+            $result = $this->s3Client->headObject([
+                'Bucket' => $this->configuration['bucket'],
+                'Key' => $fileIdentifier,
+            ]);
+
+            $key = 'hash-' . $hashAlgorithm;
+            if (isset($result['Metadata'][$key])) {
+                return $result['Metadata'][$key];
+            }
+
+            if ($this->fileContentHash === self::FILE_CONTENT_HASH_FORCE) {
+                $result = $this->s3Client->getObject([
+                    'Bucket' => $this->configuration['bucket'],
+                    'Key' => $fileIdentifier,
+                ]);
+
+                $bodyStream = $result['Body']->detach();
+
+                $hashContext = hash_init($hashAlgorithm);
+
+                while (!feof($bodyStream)) {
+                    $chunk = fread($bodyStream, 32768);
+                    if ($chunk === false) {
+                        break;
+                    }
+                    hash_update($hashContext, $chunk);
+                }
+                fclose($bodyStream);
+
+                return hash_final($hashContext);
+            }
+        }
+
         return $this->hashIdentifier($fileIdentifier);
     }
 
@@ -410,7 +452,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     $localFilePath,
                     $targetIdentifier,
                     $this->configuration['bucket'],
-                    $this->getCacheControl($targetIdentifier)
+                    $this->getCacheControl($targetIdentifier),
+                    $this->fileContentHash
                 );
             }
 
@@ -1085,6 +1128,15 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $baseUrl .= ($this->configuration['bucket'] ?? '') . '.s3.amazonaws.com';
         }
 
+        switch ($this->configuration['fileContentHash'] ?? '') {
+            case 'receive':
+                $this->fileContentHash = self::FILE_CONTENT_HASH_RECEIVE;
+                break;
+            case 'force':
+                $this->fileContentHash = self::FILE_CONTENT_HASH_FORCE;
+                break;
+        }
+
         if (
             isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing']) &&
             is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][self::EXTENSION_KEY]['initializeBaseUrl-postProcessing'])
@@ -1264,6 +1316,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 'Bucket' => $this->configuration['bucket'],
                 'Key' => $identifier
             ])->toArray();
+
             $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
             $metaInfo = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
             $this->metaInfoCache->set($cacheIdentifier, $metaInfo);

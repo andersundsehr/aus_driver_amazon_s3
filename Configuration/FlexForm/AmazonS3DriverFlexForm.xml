@@ -257,6 +257,32 @@
 					</config>
 				</TCEforms>
 			</caseSensitive>
+      <fileContentHash>
+        <TCEforms>
+          <label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash</label>
+          <config>
+            <type>select</type>
+            <renderType>selectSingle</renderType>
+            <size>1</size>
+            <minitems>1</minitems>
+            <maxitems>1</maxitems>
+            <items type="array">
+              <numIndex index="0" type="array">
+                <numIndex index="0">LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.ignore</numIndex>
+                <numIndex index="1">ignore</numIndex>
+              </numIndex>
+              <numIndex index="1" type="array">
+                <numIndex index="0">LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.receive</numIndex>
+                <numIndex index="1">receive</numIndex>
+              </numIndex>
+              <numIndex index="2" type="array">
+                <numIndex index="0">LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.force</numIndex>
+                <numIndex index="1">force</numIndex>
+              </numIndex>
+            </items>
+          </config>
+        </TCEforms>
+      </fileContentHash>
 		</el>
 	</ROOT>
 </T3DataStructure>

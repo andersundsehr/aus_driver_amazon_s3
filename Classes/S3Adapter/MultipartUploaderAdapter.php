@@ -34,6 +34,7 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
      * @param string $targetFilePath File path and name on target S3 bucket
      * @param string $bucket S3 bucket name
      * @param string $cacheControl Cache control header
+     * @param int $fileContentHash Hash setting, used for metadata
      */
     public function upload(string $localFilePath, string $targetFilePath, string $bucket, string $cacheControl, int $fileContentHash): void
     {
@@ -51,7 +52,7 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
         $uploader = new MultipartUploader($this->s3Client, $localFilePath, [
             'bucket' => $bucket,
             'key' => $targetFilePath,
-            'before_initiate' => static function(Command $command) use ($contentType, $cacheControl, $metadata) {
+            'before_initiate' => static function (Command $command) use ($contentType, $cacheControl, $metadata) {
                 $command['ContentType'] = $contentType;
                 $command['CacheControl'] = $cacheControl;
                 $command['Metadata'] = $metadata;

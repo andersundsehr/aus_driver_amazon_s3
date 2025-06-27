@@ -1222,7 +1222,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
 
         $this->cachePrefix = md5(
             $configuration['endpoint']
-                ?? ($configuration['region'] . '-' . $this->configuration['bucket'])
+                ?? ($configuration['region'] . '-' . ($this->configuration['bucket'] ?? '-'))
         ) . '-';
         return $this;
     }

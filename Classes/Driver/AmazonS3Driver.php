@@ -45,7 +45,6 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Resource\Capabilities;
 
-
 /**
  * Class AmazonS3Driver
  * Driver for Amazon Simple Storage Service (S3)
@@ -584,13 +583,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 'Key' => $fileIdentifier,
                 'SaveAs' => $temporaryPath,
             ]);
-        }
-        catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             // Just prevent the exception content to be written in the temporary file. See next condition below
         }
 
-        if (!is_file($temporaryPath) ) {
-
+        if (!is_file($temporaryPath)) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
         }
         /** @var GetFileForLocalProcessingEvent $event */
@@ -792,7 +789,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param string $folderIdentifier
      * @return bool TRUE if there are no files and folders within $folder
      */
-    public function isFolderEmpty(string $folderIdentifier):bool
+    public function isFolderEmpty(string $folderIdentifier): bool
     {
         $result = $this->getListObjects(
             $folderIdentifier,
@@ -1589,7 +1586,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     /**
      * @return void
      */
-    protected function resetIdentifierMap():void
+    protected function resetIdentifierMap(): void
     {
         $this->identifierMap = [];
     }

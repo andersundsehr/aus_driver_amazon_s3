@@ -17,6 +17,7 @@ namespace AUS\AusDriverAmazonS3\Index;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
 use TYPO3\CMS\Core\Type\File\ImageInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -38,7 +39,7 @@ class Extractor implements ExtractorInterface
      */
     public function getFileTypeRestrictions()
     {
-        return [\TYPO3\CMS\Core\Resource\FileType::IMAGE];
+        return [FileType::IMAGE];
     }
 
     /**
@@ -91,7 +92,7 @@ class Extractor implements ExtractorInterface
      */
     public function canProcess(File $file)
     {
-        return $file->getType() == \TYPO3\CMS\Core\Resource\FileType::IMAGE && $file->getStorage()->getDriverType() === AmazonS3Driver::DRIVER_TYPE;
+        return $file->isImage() && $file->getStorage()->getDriverType() === AmazonS3Driver::DRIVER_TYPE;
     }
 
     /**

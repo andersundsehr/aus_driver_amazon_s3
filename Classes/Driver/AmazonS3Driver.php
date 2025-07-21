@@ -44,6 +44,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Resource\Capabilities;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class AmazonS3Driver
@@ -1185,7 +1186,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
                 self::loadExternalClasses();
             }
-            if ($this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
+            if ($this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch']) && $GLOBALS['TSFE'] instanceof TypoScriptFrontendController) {
                 $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
             }
         }

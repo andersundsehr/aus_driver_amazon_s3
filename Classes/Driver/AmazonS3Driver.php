@@ -1586,7 +1586,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if (!is_array($result['Contents'] ?? null)) {
             return [];
         }
-        return array_filter($result['Contents'], function (&$object) use ($identifier, $recursive, $filter) {
+        return array_filter($result['Contents'], function ($object) use ($identifier, $recursive, $filter) {
             return (
                 $object['Key'] !== $identifier &&
                 (

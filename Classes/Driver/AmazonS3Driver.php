@@ -102,8 +102,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     protected $identifierMap = [];
 
     /**
-     * Object meta data is cached here as array or null
-     * $identifier => [meta info as array]
+     * Object meta data is cached here
      *
      * @var FrontendInterface
      */

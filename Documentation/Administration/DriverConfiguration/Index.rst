@@ -72,3 +72,37 @@ Example permissions:
 	}
 
 
+
+Overriding storage configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It is possible to override the driver configuration in the
+`config/system/additional.php` file.
+This allows to use environment variable based storage configuration,
+and no secret keys need to be stored in the database anymore.
+
+Record-based storage configuration can be overridden by defining
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aus_driver_amazon_s3']['storage']
+
+or
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aus_driver_amazon_s3']['storage_X']
+
+(where X is the UID of the storage record) in `config/system/additional.php`.
+
+Storage configuration in the database record is merged with the generic 'storage'
+configuration, which then with the uid-specific storage config.
+
+Example for defining the credentials in `config/system/additional.php`:
+
+.. code-block:: php
+
+   $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aus_driver_amazon_s3']['storage_23'] = [
+       'key'       => $_ENV['S3_KEY'],
+       'secretKey' => $_ENV['S3_SECRET'],
+   ];

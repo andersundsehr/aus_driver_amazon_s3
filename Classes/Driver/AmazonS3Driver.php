@@ -232,8 +232,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function initialize()
     {
-        $this->initializeBaseUrl()
-            ->initializeSettings()
+        $this->initializeSettings()
             ->initializeClient();
         // Test connection if we are in the edit view of this storage
         if (
@@ -1153,7 +1152,17 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     }
 
     /**
-     * initializeSettings
+     * Load extension configuration and load additional storage configuration.
+     *
+     * Also loads the base URL, external classes and sets the prefetch header.
+     *
+     * Record-based storage configuration can be overridden by defining
+     * $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aus_driver_amazon_s3']['storage']
+     * or
+     * $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['aus_driver_amazon_s3']['storage_X']
+     * (where X is the UID of the storage record)
+     * in config/system/additional.php.
+     * This makes it possible to use environment variable based storage configuration.
      *
      * @return $this
      */
@@ -1161,13 +1170,24 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     {
         if (self::$settings === null) {
             self::$settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::EXTENSION_KEY);
+        }
 
-            if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
-                self::loadExternalClasses();
-            }
-            if ($this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch']) && $GLOBALS['TSFE'] instanceof TypoScriptFrontendController) {
-                $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
-            }
+        //allow overriding storage configuration from AdditionalConfiguration.php
+        if (isset(self::$settings['storage'])) {
+            $this->configuration = array_merge($this->configuration, self::$settings['storage']);
+        }
+        if (isset(self::$settings['storage_' . $this->storageUid])) {
+            $this->configuration = array_merge($this->configuration, self::$settings['storage_' . $this->storageUid]);
+        }
+
+        if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
+            self::loadExternalClasses();
+        }
+
+        $this->initializeBaseUrl();
+
+        if ($this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
+            $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
         }
         return $this;
     }

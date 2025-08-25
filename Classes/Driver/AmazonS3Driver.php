@@ -837,9 +837,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * Returns information about a file.
      *
      * @param string $folderIdentifier
-     * @return array
      */
-    public function getFolderInfoByIdentifier($folderIdentifier)
+    public function getFolderInfoByIdentifier($folderIdentifier): array
     {
         $this->normalizeIdentifier($folderIdentifier);
 
@@ -847,6 +846,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             'identifier' => rtrim($folderIdentifier, '/') . '/',
             'name' => basename(rtrim($folderIdentifier, '/')),
             'storage' => $this->storageUid,
+            'ctime' => null,
             'mtime' => null,
         ];
     }

@@ -193,6 +193,14 @@
                     <size>30</size>
                 </config>
             </publicBaseUrl>
+			<baseFolder>
+                <label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.baseFolder</label>
+                <description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.baseFolder-description</description>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+			</baseFolder>
             <cacheHeaderDuration>
                 <label>
                     LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.cacheHeaderDuration

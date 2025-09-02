@@ -19,6 +19,7 @@ use Aws\Api\DateTimeResult;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Resource\MimeTypeCompatibilityTypeGuesser;
 use TYPO3\CMS\Core\Type\File\FileInfo;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -52,7 +53,9 @@ class MetaInfoDownloadAdapterTest extends TestCase
         parent::setUp();
         $this->metaInfoDownloadAdapter = new MetaInfoDownloadAdapter();
         $this->driver = $this->prophesize(AmazonS3Driver::class);
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][FileInfo::class]['mimeTypeGuessers'][MimeTypeCompatibilityTypeGuesser::class] = MimeTypeCompatibilityTypeGuesser::class . '->guessMimeType';
+        if ((new Typo3Version())->getMajorVersion() > 11) {
+            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][FileInfo::class]['mimeTypeGuessers'][MimeTypeCompatibilityTypeGuesser::class] = MimeTypeCompatibilityTypeGuesser::class . '->guessMimeType';
+        }
     }
 
     /**

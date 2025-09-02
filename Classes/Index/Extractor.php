@@ -18,6 +18,7 @@ use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Type\File\ImageInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -28,8 +29,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Stefan Lamm <s.lamm@andersundsehr.com>
  * @package AUS\AusDriverAmazonS3\Index
  */
-class Extractor implements ExtractorInterface
+class Extractor implements ExtractorInterface, SingletonInterface
 {
+    /**
+     * @var array<string, array<int>>
+     */
+    private array $cache = [];
+
     /**
      * Returns an array of supported file types;
      * An empty array indicates all filetypes
@@ -122,11 +128,19 @@ class Extractor implements ExtractorInterface
      */
     public function getImageDimensionsOfRemoteFile(FileInterface $file): array
     {
+        if (isset($this->cache[$file->getIdentifier()])) {
+            return $this->cache[$file->getIdentifier()];
+        }
+
         $fileNameAndPath = $file->getForLocalProcessing(false);
         $imageInfo = GeneralUtility::makeInstance(ImageInfo::class, $fileNameAndPath);
-        return [
+        $sizes = [
             $imageInfo->getWidth(),
             $imageInfo->getHeight(),
         ];
+
+        $this->cache[$file->getIdentifier()] = $sizes;
+        GeneralUtility::unlink_tempfile($fileNameAndPath);
+        return $sizes;
     }
 }

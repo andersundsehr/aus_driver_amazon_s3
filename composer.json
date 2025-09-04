@@ -9,16 +9,16 @@
   },
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": ">=7.4",
-    "typo3/cms-core": "^11.5.6 || ^12.4.5",
+    "php": ">=8.2.0 <8.5.0",
+    "typo3/cms-core": "~v11.5.41 || ~v12.4.36",
     "aws/aws-sdk-php": "^3.288"
   },
   "require-dev": {
     "pluswerk/grumphp-config": "^5.0",
-    "typo3/testing-framework": "*",
-    "phpspec/prophecy": "dev-master",
-    "phpspec/prophecy-phpunit": "dev-master",
-    "saschaegerer/phpstan-typo3": "^1.8.9",
+    "typo3/testing-framework": "^7.1.1 || ^8.2.7",
+    "phpspec/prophecy": "^1.22.0",
+    "phpspec/prophecy-phpunit": "^2.4.0",
+    "saschaegerer/phpstan-typo3": "^1.10.2",
     "ssch/typo3-rector": "^1.3.5"
   },
   "autoload": {

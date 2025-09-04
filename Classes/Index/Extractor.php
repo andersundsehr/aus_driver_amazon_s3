@@ -15,10 +15,12 @@
 namespace AUS\AusDriverAmazonS3\Index;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
-use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Type\File\ImageInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -29,12 +31,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Stefan Lamm <s.lamm@andersundsehr.com>
  * @package AUS\AusDriverAmazonS3\Index
  */
-class Extractor implements ExtractorInterface, SingletonInterface
+class Extractor implements ExtractorInterface
 {
-    /**
-     * @var array<string, array<int>>
-     */
-    private array $cache = [];
+    private ?FrontendInterface $cache = null;
+
+    public function __construct()
+    {
+        try {
+            $this->cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
+        } catch (NoSuchCacheException) {
+        }
+    }
 
     /**
      * Returns an array of supported file types;
@@ -128,8 +135,9 @@ class Extractor implements ExtractorInterface, SingletonInterface
      */
     public function getImageDimensionsOfRemoteFile(FileInterface $file): array
     {
-        if (isset($this->cache[$file->getIdentifier()])) {
-            return $this->cache[$file->getIdentifier()];
+        $identifier = sha1($file->getIdentifier());
+        if ($this->cache?->has($identifier)) {
+            return $this->cache->get($identifier);
         }
 
         $fileNameAndPath = $file->getForLocalProcessing(false);
@@ -139,7 +147,7 @@ class Extractor implements ExtractorInterface, SingletonInterface
             $imageInfo->getHeight(),
         ];
 
-        $this->cache[$file->getIdentifier()] = $sizes;
+        $this->cache?->set($identifier, $sizes);
         GeneralUtility::unlink_tempfile($fileNameAndPath);
         return $sizes;
     }

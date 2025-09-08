@@ -215,19 +215,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     }
 
     /**
-     * loadExternalClasses
-     * @throws \Exception
-     */
-    public static function loadExternalClasses()
-    {
-        // Backwards compatibility: for TYPO3 versions lower than 10.0
-        $loadSdk = !Environment::isComposerMode() && !function_exists('Aws\\manifest');
-        if ($loadSdk) {
-            require ExtensionManagementUtility::extPath(self::EXTENSION_KEY) . '/Resources/Private/PHP/vendor/autoload.php';
-        }
-    }
-
-    /**
      * @return void
      */
     public function processConfiguration()
@@ -1199,10 +1186,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         }
         if (isset(self::$settings['storage_' . $this->storageUid])) {
             $this->configuration = array_merge($this->configuration, self::$settings['storage_' . $this->storageUid]);
-        }
-
-        if (!isset(self::$settings['doNotLoadAmazonLib']) || !self::$settings['doNotLoadAmazonLib']) {
-            self::loadExternalClasses();
         }
 
         $this->initializeBaseUrl();

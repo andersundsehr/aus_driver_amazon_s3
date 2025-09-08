@@ -18,6 +18,7 @@ $EM_CONF[$_EXTKEY] = [
             'depends' =>
                 [
                     'typo3' => '11.5.30-12.4.99',
+                    'aws_sdk_php' => '3.356.0-3.999.999',
                 ],
             'conflicts' => [],
             'suggests' => [],

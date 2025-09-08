@@ -46,7 +46,6 @@ class AmazonS3DriverTest extends FunctionalTestCase
         parent::setUp();
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [
             'dnsPrefetch' => '1',
-            'doNotLoadAmazonLib' => '0',
             'enablePermissionsCheck' => '0',
         ];
 

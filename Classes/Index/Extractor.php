@@ -135,9 +135,12 @@ class Extractor implements ExtractorInterface
      */
     public function getImageDimensionsOfRemoteFile(FileInterface $file): array
     {
-        $identifier = sha1($file->getIdentifier());
+        $identifier = 'andersundsehr_aus_driver_amazon_s3_' . sha1($file->getIdentifier());
         if ($this->cache?->has($identifier)) {
-            return $this->cache->get($identifier);
+            $sizes = $this->cache->get($identifier);
+            if (is_array($sizes) && count($sizes) === 2) {
+                return $sizes;
+            }
         }
 
         $fileNameAndPath = $file->getForLocalProcessing(false);

@@ -1,36 +1,151 @@
 name: tests
 
 on:
+  workflow_dispatch:
   push:
+    branches: ["**"]
   pull_request:
-  schedule:
-    - cron:  '27 4 * * *'
+
+permissions:
+  contents: read
 
 jobs:
   testsuite:
-    name: all tests
+    name: "PHP: ${{ matrix.php }} DB: ${{ matrix.db }}"
+
     runs-on: ubuntu-24.04
+
+    env:
+      RUNNER_TOOL_CACHE: ${{ github.workspace }}/.toolcache
+      RUNNER_TEMP:       ${{ github.workspace }}/.tmp
+      typo3DatabaseDriver: pdo_sqlite
+      typo3DatabaseName: ':memory:'
+      TYPO3_CONTEXT: Testing
+
     strategy:
+      fail-fast: true
       matrix:
-        php: ['8.1', '8.2']
+        include:
+          # TYPO3 11
+          - php: 'ghcr.io/typo3/core-testing-php82:latest'
+            typo3: '11'
+            db: 'sqlite'
+            artifact_id: 'typo3v11-php82'
+          - php: 'ghcr.io/typo3/core-testing-php83:latest'
+            typo3: '11'
+            db: 'sqlite'
+            artifact_id: 'typo3v11-php83'
+          # TYPO3 12
+          - php: 'ghcr.io/typo3/core-testing-php83:latest'
+            typo3: '12'
+            db: 'sqlite'
+            artifact_id: 'typo3v12-php83'
+          - php: 'ghcr.io/typo3/core-testing-php84:latest'
+            typo3: '12'
+            db: 'sqlite'
+            artifact_id: 'typo3v12-php84'
+
+    services:
+      minio:
+        image: bitnami/minio:2025.7.23
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        options: >-
+          --health-cmd="curl -fsS http://localhost:9000/minio/health/live || exit 1"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=60
+          --health-start-period=20s
+
+    container: ${{ matrix.php }}
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
+      - name: Install Node (Alpine)
+        run: |
+          set -eux
+          apk add --no-cache nodejs npm git file
+          node -v
+          npm -v
+
+      # Configure caching
+      - name: Cache deps (vendor + composer cache)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/.Build/composer-cache
+            ${{ github.workspace }}/usr/local/bin/mc
+            ${{ github.workspace }}/usr/local/bin/composer
+          key: artifact_id-{{ matrix.artifact_id }}
+
+      - run: echo "COMPOSER_CACHE_DIR=${{ github.workspace }}/.Build/composer-cache" >> "$GITHUB_ENV"
 
       - name: Composer
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerInstall
-
-      - name: Composer validate
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate
+        run: |
+          /usr/local/bin/composer update --with typo3/minimal:^${{ matrix.typo3 }} --prefer-dist
 
       - name: GrumPHP
-        run: .Build/vendor/phpro/grumphp/bin/grumphp run
-
-      - name: Lint PHP
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
+        run: .Build/vendor/phpro/grumphp/bin/grumphp run --ansi --no-interaction
 
       - name: Unit tests
-        run: mkdir -p .Build/Web/typo3conf/ && rm -rf .Build/Web/typo3conf/ext && ln -sfn ../../../../ .Build/Web/typo3conf/ext && Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
+        env:
+          XDEBUG_MODE: off
+        run: |
+          .Build/bin/phpunit -c Build/UnitTests.xml
 
-      - name: Functional tests
-        run: mkdir -p .Build/Web/typo3conf/ && rm -rf .Build/Web/typo3conf/ext && ln -sfn ../../../../ .Build/Web/typo3conf/ext && Build/Scripts/runTests.sh -p ${{ matrix.php }} -d sqlite -s functional
+      - name: Install MinIO client (mc)
+        run: |
+          test -x /usr/local/bin/mc || curl -fsSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+          chmod +x /usr/local/bin/mc
+          mc --version
+
+      - name: Seed MinIO
+        env:
+          MINIO_HOST: http://minio:9000
+          MINIO_ACCESS_KEY: minioadmin
+          MINIO_SECRET_KEY: minioadmin
+        run: |
+          set -e
+          mc alias set typo3s3test "$MINIO_HOST" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
+          # create bucket and allow anyonmous download
+          mc mb --ignore-existing typo3s3test/test-bucket/
+          mc anonymous set download typo3s3test/test-bucket/
+          # Test-User + Policy
+          mc admin user add typo3s3test test-key test-secretkey || true
+          mc admin policy attach typo3s3test readwrite --user test-key
+          # Upload test data
+          mc cp --recursive Tests/Functional/Bucketfiles/ typo3s3test/test-bucket/
+
+      - name: Functional tests (sqlite)
+        env:
+          XDEBUG_MODE: off
+        run: |
+          mkdir -p .Build/Web/typo3temp/var/tests/functional-sqlite-dbs/
+          .Build/bin/phpunit \
+            -c Build/FunctionalTests.xml
+
+      - name: Save result
+        if: always()
+        run: |
+          mkdir -p summary
+          echo "PHP=${{ matrix.php }} TYPO3=${{ matrix.typo3 }} RESULT=${{ job.status }}" \
+            >> summary/results.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results-${{ matrix.artifact_id }}
+          path: summary/results.txt
+  summary:
+    runs-on: ubuntu-latest
+    needs: testsuite
+    if: always()
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: summary
+      - name: Show results
+        run: |
+          echo "### Matrix results"
+          cat summary/**/results.txt

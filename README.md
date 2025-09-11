@@ -178,6 +178,8 @@ If you wish other hooks - don’t be shy: [GitHub issue tracking: Amazon S3 FAL 
 
 Run `make tests` to run both unit and functional tests.
 
+Run `make run` to run multiple php versions with different TYPO3 versions tests.
+
 To switch TYPO3 test version to 11:
 ```bash
 composer update --with typo3/cms-core:^11.5.6

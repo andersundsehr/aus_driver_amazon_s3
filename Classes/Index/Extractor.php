@@ -15,6 +15,9 @@
 namespace AUS\AusDriverAmazonS3\Index;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
@@ -30,6 +33,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Extractor implements ExtractorInterface
 {
+    private ?FrontendInterface $cache = null;
+
+    public function __construct()
+    {
+        try {
+            $this->cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('runtime');
+        } catch (NoSuchCacheException) {
+        }
+    }
+
     /**
      * Returns an array of supported file types;
      * An empty array indicates all filetypes
@@ -122,11 +135,23 @@ class Extractor implements ExtractorInterface
      */
     public function getImageDimensionsOfRemoteFile(FileInterface $file): array
     {
+        $identifier = 'andersundsehr_aus_driver_amazon_s3_' . sha1($file->getIdentifier());
+        if ($this->cache?->has($identifier)) {
+            $sizes = $this->cache->get($identifier);
+            if (is_array($sizes) && count($sizes) === 2) {
+                return $sizes;
+            }
+        }
+
         $fileNameAndPath = $file->getForLocalProcessing(false);
         $imageInfo = GeneralUtility::makeInstance(ImageInfo::class, $fileNameAndPath);
-        return [
+        $sizes = [
             $imageInfo->getWidth(),
             $imageInfo->getHeight(),
         ];
+
+        $this->cache?->set($identifier, $sizes);
+        GeneralUtility::unlink_tempfile($fileNameAndPath);
+        return $sizes;
     }
 }

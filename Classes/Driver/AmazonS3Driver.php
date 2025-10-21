@@ -1078,19 +1078,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function mergeConfigurationCapabilities(Capabilities $capabilities): Capabilities
     {
-        $allCapabilities = [
-            Capabilities::CAPABILITY_BROWSABLE,
-            Capabilities::CAPABILITY_PUBLIC,
-            Capabilities::CAPABILITY_WRITABLE,
-            Capabilities::CAPABILITY_HIERARCHICAL_IDENTIFIERS,
-        ];
-
-        foreach ($allCapabilities as $capability) {
-            if ($capabilities->hasCapability($capability)) {
-                $this->capabilities->addCapabilities($capability);
-            }
-        }
-
+        $this->capabilities->and($capabilities);
         return $this->capabilities;
     }
 

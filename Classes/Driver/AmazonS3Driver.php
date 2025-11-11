@@ -184,7 +184,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * @param array $configuration
      * @param S3Client $s3Client
      */
-    public function __construct(array $configuration = [], $s3Client = null, EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(array $configuration = [], $s3Client = null, ?EventDispatcherInterface $eventDispatcher = null)
     {
         parent::__construct($configuration);
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);

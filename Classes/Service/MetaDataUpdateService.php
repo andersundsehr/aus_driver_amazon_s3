@@ -19,6 +19,7 @@ use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\Exception\InvalidUidException;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
@@ -35,7 +36,7 @@ class MetaDataUpdateService implements SingletonInterface
      */
     public function updateMetadata(array $fileProperties): void
     {
-        if ($fileProperties['type'] !== \TYPO3\CMS\Core\Resource\FileType::IMAGE) {
+        if ($fileProperties['type'] !== FileType::IMAGE->value) {
             return;
         }
 

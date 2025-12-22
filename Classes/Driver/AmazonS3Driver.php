@@ -583,11 +583,16 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     public function getFileForLocalProcessing(string $fileIdentifier, bool $writable = true): string
     {
         $temporaryPath = $this->getTemporaryPathForFile($fileIdentifier);
-        $this->s3Client->getObject([
-            'Bucket' => $this->configuration['bucket'],
-            'Key' => $this->addBaseFolder($fileIdentifier),
-            'SaveAs' => $temporaryPath,
-        ]);
+        try {
+            $this->s3Client->getObject([
+                'Bucket' => $this->configuration['bucket'],
+                'Key' => $this->addBaseFolder($fileIdentifier),
+                'SaveAs' => $temporaryPath,
+            ]);
+        } catch (\Exception $exception) {
+            // Just prevent the exception content to be written in the temporary file. See next condition below
+        }
+
         if (!is_file($temporaryPath)) {
             throw new \RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577649);
         }

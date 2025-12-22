@@ -10,7 +10,7 @@
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": ">=8.2.0 <8.5.0",
-    "typo3/cms-core": "~v11.5.41 || ~v12.4.36",
+    "typo3/cms-core": "~v11.5.41 || ~v12.4.36 || ^13.4",
     "aws/aws-sdk-php": "^3.288"
   },
   "require-dev": {

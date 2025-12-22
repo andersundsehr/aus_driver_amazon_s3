@@ -589,7 +589,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 'Key' => $this->addBaseFolder($fileIdentifier),
                 'SaveAs' => $temporaryPath,
             ]);
-        } catch (\Exception $exception) {
+        } catch (\Aws\S3\Exception\S3Exception $exception) {
+            if (!$exception->getPrevious() || $exception->getPrevious()->getCode() !== 404) {
+                throw $exception;
+            }
+
             // Just prevent the exception content to be written in the temporary file. See next condition below
         }
 

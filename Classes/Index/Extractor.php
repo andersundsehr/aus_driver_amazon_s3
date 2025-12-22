@@ -51,7 +51,7 @@ class Extractor implements ExtractorInterface
      */
     public function getFileTypeRestrictions()
     {
-        return [File::FILETYPE_IMAGE];
+        return [\TYPO3\CMS\Core\Resource\FileType::IMAGE];
     }
 
     /**
@@ -104,7 +104,7 @@ class Extractor implements ExtractorInterface
      */
     public function canProcess(File $file)
     {
-        return $file->getType() == File::FILETYPE_IMAGE && $file->getStorage()->getDriverType() === AmazonS3Driver::DRIVER_TYPE;
+        return $file->getType() == \TYPO3\CMS\Core\Resource\FileType::IMAGE && $file->getStorage()->getDriverType() === AmazonS3Driver::DRIVER_TYPE;
     }
 
     /**

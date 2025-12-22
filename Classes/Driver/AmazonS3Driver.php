@@ -31,6 +31,7 @@ use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Resource\Capabilities;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Driver\StreamableDriverInterface;
 use TYPO3\CMS\Core\Resource\Exception;
@@ -189,11 +190,14 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $this->compatibilityService = GeneralUtility::makeInstance(CompatibilityService::class);
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
-        $this->capabilities =
-            ResourceStorage::CAPABILITY_BROWSABLE
-            | ResourceStorage::CAPABILITY_PUBLIC
-            | ResourceStorage::CAPABILITY_WRITABLE
-            | ResourceStorage::CAPABILITY_HIERARCHICAL_IDENTIFIERS;
+
+        $this->capabilities = GeneralUtility::makeInstance(Capabilities::class)->addCapabilities(
+            Capabilities::CAPABILITY_BROWSABLE,
+            Capabilities::CAPABILITY_PUBLIC,
+            Capabilities::CAPABILITY_WRITABLE,
+            Capabilities::CAPABILITY_HIERARCHICAL_IDENTIFIERS
+        );
+
         $this->streamWrapperProtocol = 's3-' . substr(md5(uniqid()), 0, 7);
         $this->s3Client = $s3Client;
         $this->metaInfoCache = GeneralUtility::makeInstance(CacheManager::class)->getCache('ausdriveramazons3_metainfocache');
@@ -1060,14 +1064,22 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      * Merges the capabilites merged by the user at the storage
      * configuration into the actual capabilities of the driver
      * and returns the result.
-     *
-     * @param int $capabilities
-     *
-     * @return int
      */
-    public function mergeConfigurationCapabilities($capabilities)
+    public function mergeConfigurationCapabilities(Capabilities $capabilities): Capabilities
     {
-        $this->capabilities &= $capabilities;
+        $allCapabilities = [
+            Capabilities::CAPABILITY_BROWSABLE,
+            Capabilities::CAPABILITY_PUBLIC,
+            Capabilities::CAPABILITY_WRITABLE,
+            Capabilities::CAPABILITY_HIERARCHICAL_IDENTIFIERS,
+        ];
+
+        foreach ($allCapabilities as $capability) {
+            if ($capabilities->hasCapability($capability)) {
+                $this->capabilities->addCapabilities($capability);
+            }
+        }
+
         return $this->capabilities;
     }
 

@@ -9,17 +9,16 @@
   },
   "license": "LGPL-3.0-or-later",
   "require": {
-    "php": ">=8.2.0 <8.5.0",
-    "typo3/cms-core": "~v11.5.41 || ~v12.4.36 || ^13.4",
+    "typo3/cms-core": "^13.4",
     "aws/aws-sdk-php": "^3.288"
   },
   "require-dev": {
-    "pluswerk/grumphp-config": "^5.0",
-    "typo3/testing-framework": "^7.1.1 || ^8.2.7",
-    "phpspec/prophecy": "^1.22.0",
-    "phpspec/prophecy-phpunit": "^2.4.0",
-    "saschaegerer/phpstan-typo3": "^1.10.2",
-    "ssch/typo3-rector": "^1.3.5"
+    "pluswerk/grumphp-config": "^10.1.3",
+    "typo3/testing-framework": "^8.0",
+    "phpspec/prophecy": "dev-master",
+    "phpspec/prophecy-phpunit": "dev-master",
+    "saschaegerer/phpstan-typo3": "^2.0.0",
+    "ssch/typo3-rector": "^3.1.0"
   },
   "autoload": {
     "psr-4": {
@@ -61,12 +60,6 @@
       "extension-key": "aus_driver_amazon_s3",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
-    },
-    "pluswerk/grumphp-config": {
-      "auto-setting": true
-    },
-    "grumphp": {
-      "config-default-path": "vendor/pluswerk/grumphp-config/grumphp.yml"
     }
   }
 }

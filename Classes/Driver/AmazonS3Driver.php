@@ -1287,7 +1287,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 FlashMessage::class,
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.message', static::EXTENSION_NAME),
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestSuccessful.title', static::EXTENSION_NAME),
-                FlashMessage::OK
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::OK
             );
             $messageQueue->addMessage($message);
         } catch (\Exception $exception) {
@@ -1296,7 +1296,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 FlashMessage::class,
                 $exception->getMessage(),
                 LocalizationUtility::translate($localizationPrefix . 'connectionTestFailed.title', static::EXTENSION_NAME),
-                FlashMessage::WARNING
+                \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::WARNING
             );
             $messageQueue->addMessage($message);
         }
@@ -1494,7 +1494,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                             FlashMessage::class,
                             $exception->getMessage(),
                             '',
-                            FlashMessage::WARNING
+                            \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::WARNING
                         );
                         $messageQueue->addMessage($message);
                     }

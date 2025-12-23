@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
 use TYPO3\CMS\Core\Type\File\ImageInfo;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -51,7 +52,7 @@ class Extractor implements ExtractorInterface
      */
     public function getFileTypeRestrictions()
     {
-        return [File::FILETYPE_IMAGE];
+        return [FileType::IMAGE];
     }
 
     /**
@@ -104,7 +105,7 @@ class Extractor implements ExtractorInterface
      */
     public function canProcess(File $file)
     {
-        return $file->getType() == File::FILETYPE_IMAGE && $file->getStorage()->getDriverType() === AmazonS3Driver::DRIVER_TYPE;
+        return $file->isImage() && $file->getStorage()->getDriverType() === AmazonS3Driver::DRIVER_TYPE;
     }
 
     /**

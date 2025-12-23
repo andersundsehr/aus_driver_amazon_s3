@@ -87,7 +87,7 @@
         <source>Receive from AWS if possible</source>
       </trans-unit>
       <trans-unit id="driverConfiguration.fileContentHash.force">
-        <source>Receive frolm AWS with a fallback to download and calculate (slowest, might download large files)</source>
+        <source>Receive from AWS with a fallback to download and calculate (slowest, might download large files)</source>
       </trans-unit>
 		</body>
 	</file>

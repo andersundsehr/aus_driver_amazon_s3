@@ -11,7 +11,7 @@
   "require": {
     "php": ">=8.2.0 <8.5.0",
     "typo3/cms-core": "~v11.5.41 || ~v12.4.36",
-    "aws/aws-sdk-php": "^3.288"
+    "aws/aws-sdk-php": "^3.368"
   },
   "require-dev": {
     "pluswerk/grumphp-config": "^5.0",

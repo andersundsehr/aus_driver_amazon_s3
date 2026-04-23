@@ -1191,7 +1191,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->initializeBaseUrl();
         $this->initializeBaseFolder();
 
-        if ($this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
+        if (isset($GLOBALS['TSFE']) && $this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
             $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
         }
         return $this;

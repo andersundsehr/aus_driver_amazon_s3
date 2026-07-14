@@ -69,7 +69,6 @@ class AmazonS3DriverTest extends TestCase
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [];
         $GLOBALS['TYPO3_CONF_VARS']['LOG'] = [];
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['FileInfo']['fileExtensionToMimeType']['youtube'] = 'video/youtube';
-        $GLOBALS['TSFE'] = new \stdClass();
 
         Environment::initialize(
             $this->prophesize(ApplicationContext::class)->reveal(),
@@ -105,7 +104,7 @@ class AmazonS3DriverTest extends TestCase
 
     public function tearDown(): void
     {
-        unset($GLOBALS['TYPO3_REQUEST'], $GLOBALS['TSFE']);
+        unset($GLOBALS['TYPO3_REQUEST']);
         parent::tearDown();
     }
 

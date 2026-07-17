@@ -59,12 +59,13 @@ Options:
             - postgres: use postgres
             - sqlite: use sqlite
 
-    -p <7.2|7.3|7.4|8.0>
+    -p <7.2|7.3|7.4|8.0|8.4>
         Specifies the PHP minor version to be used
             - 7.2: use PHP 7.2
             - 7.3: use PHP 7.3
             - 7.4: use PHP 7.4
             - 8.0: use PHP 8.0
+            - 8.4: use PHP 8.4
 
     -e "<phpunit options>"
         Only with -s functional|unit
@@ -269,10 +270,10 @@ case ${TEST_SUITE} in
         docker compose down
         ;;
     update)
-        # pull typo3/core-testing-*:latest versions of those ones that exist locally
-        docker images typo3/core-testing-*:latest --format "{{.Repository}}:latest" | xargs -I {} docker pull {}
-        # remove "dangling" typo3/core-testing-* images (those tagged as <none>)
-        docker images typo3/core-testing-* --filter "dangling=true" --format "{{.ID}}" | xargs -I {} docker rmi {}
+        # pull ghcr.io/typo3/core-testing-php-*:latest versions of those ones that exist locally
+        docker images ghcr.io/typo3/core-testing-php-*:latest --format "{{.Repository}}:latest" | xargs -I {} docker pull {}
+        # remove "dangling" ghcr.io/typo3/core-testing-php-* images (those tagged as <none>)
+        docker images ghcr.io/typo3/core-testing-php-* --filter "dangling=true" --format "{{.ID}}" | xargs -I {} docker rmi {}
         ;;
     *)
         echo "Invalid -s option argument ${TEST_SUITE}" >&2

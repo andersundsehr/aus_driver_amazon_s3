@@ -52,7 +52,7 @@
     ],
     "test": [
       "@setupTest",
-      "./Build/Scripts/runTests.sh -p '8.2' -s composerInstall && ./Build/Scripts/runTests.sh -p '8.2' -s composerValidate && ./Build/Scripts/runTests.sh -p '8.2' -s unit && ./Build/Scripts/runTests.sh -p '8.2' -s lint"
+      "./Build/Scripts/runTests.sh -p '8.4' -s composerInstall && ./Build/Scripts/runTests.sh -p '8.4' -s composerValidate && ./Build/Scripts/runTests.sh -p '8.4' -s unit && ./Build/Scripts/runTests.sh -p '8.4' -s lint"
     ]
   },
   "extra": {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AUS\AusDriverAmazonS3\Tests\Unit\S3Adapter;
 
 use AUS\AusDriverAmazonS3\S3Adapter\MultipartUploaderAdapter;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class MultipartUploaderAdapterTest extends TestCase
@@ -17,9 +18,7 @@ class MultipartUploaderAdapterTest extends TestCase
         $this->multipartUploaderAdapter = new MultipartUploaderAdapter();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function detectContentTypeTest()
     {
         $fixtures = dirname(__FILE__) . '/../Fixtures/MultipartUploaderAdapter/';

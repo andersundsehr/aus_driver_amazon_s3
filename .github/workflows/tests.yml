@@ -24,7 +24,7 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate
 
       - name: GrumPHP
-        run: .Build/vendor/phpro/grumphp/bin/grumphp run
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s grumphp
 
       - name: Lint PHP
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint

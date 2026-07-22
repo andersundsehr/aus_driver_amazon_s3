@@ -47,6 +47,7 @@ Options:
             - composerInstallMax: "composer update", with no platform.php config.
             - composerInstallMin: "composer update --prefer-lowest", with platform.php set to PHP version x.x.0.
             - composerValidate: "composer validate"
+            - grumphp: "GrumPHP run"
             - lint: PHP linting
             - unit (default): PHP unit tests
             - functional: functional tests
@@ -255,6 +256,12 @@ case ${TEST_SUITE} in
                 echo "${HELP}" >&2
                 exit 1
         esac
+        docker compose down
+        ;;
+    grumphp)
+        setUpDockerComposeDotEnv
+        docker compose run grumphp
+        SUITE_EXIT_CODE=$?
         docker compose down
         ;;
     lint)

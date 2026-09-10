@@ -38,18 +38,15 @@ class MetaInfoDownloadAdapterTest extends TestCase
     /**
      * @var MetaInfoDownloadAdapter
      */
-    protected $metaInfoDownloadAdapter = null;
+    protected $metaInfoDownloadAdapter;
 
     /**
      * @var AmazonS3Driver|ObjectProphecy
      */
-    protected $driver = null;
+    protected $driver;
 
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->metaInfoDownloadAdapter = new MetaInfoDownloadAdapter();
@@ -60,7 +57,7 @@ class MetaInfoDownloadAdapterTest extends TestCase
     }
 
     #[Test]
-    public function getMetaInfoFromResponseTest()
+    public function getMetaInfoFromResponseTest(): void
     {
         // prepare test data
         $identifier = 'foo/bar/test.png';
@@ -98,7 +95,7 @@ class MetaInfoDownloadAdapterTest extends TestCase
     }
 
     #[Test]
-    public function getMetaInfoFromResponseWithPseudoMimeTypeTest()
+    public function getMetaInfoFromResponseWithPseudoMimeTypeTest(): void
     {
         // prepare test data
         $identifier = 'foo/bar/test.youtube';

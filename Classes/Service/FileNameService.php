@@ -26,12 +26,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FileNameService implements SingletonInterface
 {
-    protected $unsafeFilenameCharacterExpression = '\\x00-\\x2C\\/\\x3A-\\x3F\\x5B-\\x60\\x7B-\\xBF';
+    protected string $unsafeFilenameCharacterExpression = '\\x00-\\x2C\\/\\x3A-\\x3F\\x5B-\\x60\\x7B-\\xBF';
 
     /**
-     * @var CharsetConverter
+     * @var CharsetConverter|null
      */
-    protected $charsetConversion = null;
+    protected $charsetConversion;
 
     /**
      * Returns a string where any character not matching [.a-zA-Z0-9_-] is
@@ -53,21 +53,21 @@ class FileNameService implements SingletonInterface
         );
 
         // Strip trailing dots and return
-        $cleanFileName = rtrim($cleanFileName, '.');
+        $cleanFileName = rtrim($cleanFileName ?? '', '.');
         if ($cleanFileName === '') {
             throw new InvalidFileNameException(
                 'File name ' . $fileName . ' is invalid.',
                 1320288991
             );
         }
+
         return $cleanFileName;
     }
 
     protected function getCharsetConversionObject(): CharsetConverter
     {
-        if (!isset($this->charsetConversion)) {
-            $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
-        }
+        $this->charsetConversion ??= GeneralUtility::makeInstance(CharsetConverter::class);
+
         return $this->charsetConversion;
     }
 }

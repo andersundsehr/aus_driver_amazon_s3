@@ -1,7 +1,9 @@
 includes:
   - phpstan-baseline.neon
-  - vendor/andersundsehr/phpstan-git-files/extension.php
+  - .Build/vendor/andersundsehr/phpstan-git-files/extension.php
 
 parameters:
   level: 8
   reportUnmatchedIgnoredErrors: false
+  excludePaths:
+    - 'Tests/*'

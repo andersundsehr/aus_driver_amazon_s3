@@ -11,6 +11,8 @@
  *
  ***/
 
+declare(strict_types=1);
+
 namespace AUS\AusDriverAmazonS3\EventListener;
 
 use AUS\AusDriverAmazonS3\Service\MetaDataUpdateService;

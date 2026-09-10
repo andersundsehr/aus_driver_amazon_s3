@@ -12,16 +12,16 @@ class MultipartUploaderAdapterTest extends TestCase
 {
     private MultipartUploaderAdapter $multipartUploaderAdapter;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->multipartUploaderAdapter = new MultipartUploaderAdapter();
     }
 
     #[Test]
-    public function detectContentTypeTest()
+    public function detectContentTypeTest(): void
     {
-        $fixtures = dirname(__FILE__) . '/../Fixtures/MultipartUploaderAdapter/';
+        $fixtures = __DIR__ . '/../Fixtures/MultipartUploaderAdapter/';
 
         $this->assertEquals('application/javascript', $this->multipartUploaderAdapter->detectContentType($fixtures . 'js.js', 'js.js'));
         $this->assertEquals('image/png', $this->multipartUploaderAdapter->detectContentType($fixtures . 'png', 'png'));

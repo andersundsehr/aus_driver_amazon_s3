@@ -31,6 +31,7 @@ use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\Driver\StreamableDriverInterface;
 use TYPO3\CMS\Core\Resource\Exception;
@@ -1219,7 +1220,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         $this->initializeBaseFolder();
 
         if ($this->compatibilityService->isFrontend() && (!isset(self::$settings['dnsPrefetch']) || self::$settings['dnsPrefetch'])) {
-            $GLOBALS['TSFE']->additionalHeaderData['ausDriverAmazonS3_dnsPrefetch'] = '<link rel="dns-prefetch" href="' . $this->baseUrl . '">';
+            GeneralUtility::makeInstance(PageRenderer::class)->addHeaderData(
+                '<link rel="dns-prefetch" href="' . $this->baseUrl . '">'
+            );
         }
         return $this;
     }

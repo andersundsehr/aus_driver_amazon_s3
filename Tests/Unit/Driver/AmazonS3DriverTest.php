@@ -17,7 +17,9 @@ use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use Aws\Api\DateTimeResult;
 use Aws\Result;
 use Aws\S3\S3Client;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,6 +28,7 @@ use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -97,6 +100,9 @@ class AmazonS3DriverTest extends TestCase
         ]);
         $this->s3Client = $this->prophesize(S3Client::class);
         $eventDispatcher = $this->prophesize(EventDispatcher::class);
+        $pageRenderer = $this->prophesize(PageRenderer::class);
+        $pageRenderer->addHeaderData(Argument::any())->willReturn(null);
+        GeneralUtility::setSingletonInstance(PageRenderer::class, $pageRenderer->reveal());
         $this->driver = new AmazonS3Driver($this->testConfiguration, $this->s3Client->reveal(), $eventDispatcher->reveal());
         $this->driver->setStorageUid(42);
         $this->driver->initialize();
@@ -108,9 +114,7 @@ class AmazonS3DriverTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testPublicUrlGetter()
     {
         $assertedMappings = [
@@ -125,25 +129,19 @@ class AmazonS3DriverTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testDefaultFolderGetter()
     {
         $this->assertEquals('/', $this->driver->getDefaultFolder());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testRootLevelFolderGetter()
     {
         $this->assertEquals('/', $this->driver->getRootLevelFolder());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testGetFileInfoByIdentifier()
     {
         $fileIdentifier = 'foo/bar/test.file';
@@ -176,9 +174,7 @@ class AmazonS3DriverTest extends TestCase
         $this->assertEquals($this->driver->getStorageUid(), $info['storage']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testGetFileInfoByIdentifierWithLimitedProperties()
     {
         $fileIdentifier = 'foo/bar/test.file';
@@ -200,9 +196,7 @@ class AmazonS3DriverTest extends TestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testGetFileInfoByIdentifierWithPseudoMimeType()
     {
         $fileIdentifier = 'foo/bar/test.youtube';

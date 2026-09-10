@@ -29,7 +29,7 @@ services:
       - ../../.Build/minio-data:/minio-data
 
   composer_install:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
@@ -45,7 +45,7 @@ services:
         composer install --no-progress --no-interaction;
       "
   composer_install_max:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
@@ -73,7 +73,7 @@ services:
       '
 
   composer_install_min:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
@@ -101,7 +101,7 @@ services:
       '
 
   composer_validate:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
@@ -118,7 +118,7 @@ services:
       "
 
   functional_mariadb10:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     links:
       - mariadb10
@@ -157,7 +157,7 @@ services:
       "
 
   functional_mssql2019latest:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     links:
       - mssql2019latest
@@ -200,7 +200,7 @@ services:
       "
 
   functional_postgres10:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     links:
       - postgres10
@@ -240,7 +240,7 @@ services:
       "
 
   functional_sqlite:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     links:
       - minio
@@ -272,8 +272,26 @@ services:
         fi
       "
 
+  grumphp:
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    user: ${HOST_UID}
+    volumes:
+      - ${ROOT_DIR}:${ROOT_DIR}
+      - ${HOST_HOME}:${HOST_HOME}
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+    working_dir: ${ROOT_DIR}
+    command: >
+      /bin/sh -c "
+        if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
+          set -x
+        fi
+        php -v | grep '^PHP';
+        .Build/vendor/phpro/grumphp/bin/grumphp run;
+      "
+
   lint:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
@@ -290,7 +308,7 @@ services:
       "
 
   unit:
-    image: typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
+    image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}

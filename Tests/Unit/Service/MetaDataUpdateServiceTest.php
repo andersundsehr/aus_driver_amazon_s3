@@ -16,6 +16,7 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Service;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use AUS\AusDriverAmazonS3\Service\MetaDataUpdateService;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -32,9 +33,7 @@ class MetaDataUpdateServiceTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testRecordUpdatedOrCreatedDoNotHandleUnknownFileType()
     {
         $file = $this->prophesize(File::class)->reveal();
@@ -49,9 +48,7 @@ class MetaDataUpdateServiceTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testRecordUpdatedOrCreatedDoNotHandleApplicationFileType()
     {
         $file = $this->prophesize(File::class)->reveal();

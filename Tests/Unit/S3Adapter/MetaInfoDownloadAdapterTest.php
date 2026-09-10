@@ -51,9 +51,7 @@ class MetaInfoDownloadAdapterTest extends TestCase
         parent::setUp();
         $this->metaInfoDownloadAdapter = new MetaInfoDownloadAdapter();
         $this->driver = $this->prophesize(AmazonS3Driver::class);
-        if ((new Typo3Version())->getMajorVersion() > 11) {
-            $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][FileInfo::class]['mimeTypeGuessers'][MimeTypeCompatibilityTypeGuesser::class] = MimeTypeCompatibilityTypeGuesser::class . '->guessMimeType';
-        }
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][FileInfo::class]['mimeTypeGuessers'][MimeTypeCompatibilityTypeGuesser::class] = MimeTypeCompatibilityTypeGuesser::class . '->guessMimeType';
     }
 
     #[Test]

@@ -16,6 +16,7 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\S3Adapter;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\S3Adapter\MetaInfoDownloadAdapter;
 use Aws\Api\DateTimeResult;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -58,9 +59,7 @@ class MetaInfoDownloadAdapterTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMetaInfoFromResponseTest()
     {
         // prepare test data
@@ -98,9 +97,7 @@ class MetaInfoDownloadAdapterTest extends TestCase
         $this->assertEquals(42, $metaInfo['storage']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMetaInfoFromResponseWithPseudoMimeTypeTest()
     {
         // prepare test data

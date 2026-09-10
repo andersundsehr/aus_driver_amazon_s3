@@ -15,6 +15,7 @@ namespace AUS\AusDriverAmazonS3\Tests\Unit\Index;
 
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Resource\File;
@@ -44,9 +45,7 @@ class ExtractorTest extends TestCase
         $this->extractor = new Extractor();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanProcessImageFileType()
     {
         $storage = $this->prophesize(ResourceStorage::class);
@@ -59,9 +58,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals(true, $this->extractor->canProcess($file->reveal()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanNotProcessOtherDriverType()
     {
         $storage = $this->prophesize(ResourceStorage::class);
@@ -74,9 +71,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanNotProcessUnknownFileType()
     {
         $storage = $this->prophesize(ResourceStorage::class);
@@ -89,9 +84,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanNotProcessApplicationFileType()
     {
         $storage = $this->prophesize(ResourceStorage::class);
@@ -104,9 +97,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanNotProcessVideoFileType()
     {
         $storage = $this->prophesize(ResourceStorage::class);
@@ -119,9 +110,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanNotProcessAudioFileType()
     {
         $storage = $this->prophesize(ResourceStorage::class);
@@ -134,9 +123,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testCanNotProcessTextFileType()
     {
         $storage = $this->prophesize(ResourceStorage::class);
@@ -149,9 +136,7 @@ class ExtractorTest extends TestCase
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testExtractMetaDataIfRequired()
     {
         $file = $this->prophesize(File::class);
@@ -166,9 +151,7 @@ class ExtractorTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function testExtractNoMetaDataIfNotRequired()
     {
         $file = $this->prophesize(File::class);

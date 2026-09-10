@@ -8,9 +8,12 @@ use TYPO3\CMS\Core\Core\ApplicationContext;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\EventDispatcher\NoopEventDispatcher;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Psr\Http\Message\ServerRequestInterface;
 
 class AmazonS3DriverTest extends FunctionalTestCase
 {
@@ -148,6 +151,72 @@ class AmazonS3DriverTest extends FunctionalTestCase
             'http://minio/file.txt',
             $this->driver->getPublicUrl('file.txt')
         );
+    }
+
+    public function testPublicCapabilitySwitchesBetweenDirectAndTypo3PassthroughUrl(): void
+    {
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getAttribute('applicationType')->willReturn(SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $GLOBALS['TYPO3_REQUEST'] = $request->reveal();
+        $previousAutoTagging = $GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['frontend.cache.autoTagging'] ?? null;
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['frontend.cache.autoTagging'] = false;
+
+        $storageRecord = [
+            'uid' => 42,
+            'name' => 'Amazon S3',
+            'configuration' => $this->testConfiguration,
+            'is_browsable' => 1,
+            'is_public' => 1,
+            'is_writable' => 1,
+            'is_online' => 1,
+        ];
+        $eventDispatcher = GeneralUtility::makeInstance(NoopEventDispatcher::class);
+
+        $publicStorage = new ResourceStorage($this->driver, $storageRecord, $eventDispatcher);
+        $publicFile = new File(
+            [
+                'uid' => 1,
+                'identifier' => '23.txt',
+                'name' => '23.txt',
+                'missing' => 0,
+            ],
+            $publicStorage
+        );
+
+        $this->assertSame('http://minio/23.txt', $publicFile->getPublicUrl());
+
+        $storageRecord['is_public'] = 0;
+        $privateDriver = new AmazonS3Driver(
+            $this->testConfiguration,
+            null,
+            $eventDispatcher
+        );
+        $privateDriver->setStorageUid(42);
+        $privateStorage = new ResourceStorage($privateDriver, $storageRecord, $eventDispatcher);
+        $privateFile = new File(
+            [
+                'uid' => 1,
+                'identifier' => '23.txt',
+                'name' => '23.txt',
+                'missing' => 0,
+            ],
+            $privateStorage
+        );
+
+        $privateUrl = (string)$privateFile->getPublicUrl();
+        $query = parse_url($privateUrl, PHP_URL_QUERY);
+        parse_str((string)$query, $queryParameters);
+
+        $this->assertStringContainsString('eID=dumpFile', $privateUrl);
+        $this->assertSame('f', $queryParameters['t']);
+        $this->assertSame('1', (string)$queryParameters['f']);
+        $this->assertArrayHasKey('token', $queryParameters);
+
+        if ($previousAutoTagging === null) {
+            unset($GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['frontend.cache.autoTagging']);
+        } else {
+            $GLOBALS['TYPO3_CONF_VARS']['SYS']['features']['frontend.cache.autoTagging'] = $previousAutoTagging;
+        }
     }
 
     public function testGetFilesInFolderRoot()
@@ -298,7 +367,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->driver->initialize();
 
         $this->expectException(\Aws\S3\Exception\S3Exception::class);
-        $this->expectExceptionMessageMatches('/.*Failed to connect to minio port 9001.*/');
+        $this->expectExceptionMessageMatches('/Failed to connect to minio(?::9001| port 9001)/');
         $this->driver->getFileContents('23.txt');
     }
 

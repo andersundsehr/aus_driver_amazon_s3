@@ -299,7 +299,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->driver->initialize();
 
         $this->expectException(\Aws\S3\Exception\S3Exception::class);
-        $this->expectExceptionMessageMatches('/.*Failed to connect to minio port 9001.*/');
+        $this->expectExceptionMessageMatches('/Failed to connect to minio(?::9001| port 9001)/');
         $this->driver->getFileContents('23.txt');
     }
 

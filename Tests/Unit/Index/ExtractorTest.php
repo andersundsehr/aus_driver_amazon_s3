@@ -13,6 +13,7 @@
 
 namespace AUS\AusDriverAmazonS3\Tests\Unit\Index;
 
+use TYPO3\CMS\Core\Resource\FileType;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use PHPUnit\Framework\Attributes\Test;
@@ -34,110 +35,107 @@ class ExtractorTest extends TestCase
     /**
      * @var Extractor
      */
-    protected $extractor = null;
+    protected $extractor;
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->extractor = new Extractor();
     }
 
     #[Test]
-    public function testCanProcessImageFileType()
+    public function testCanProcessImageFileType(): void
     {
         $storage = $this->prophesize(ResourceStorage::class);
         $storage->getDriverType()->willReturn(AmazonS3Driver::DRIVER_TYPE)->shouldBeCalled();
         $file = $this->prophesize(File::class);
         $file->getStorage()->willReturn($storage->reveal());
-        $file->getType()->willReturn(File::FILETYPE_IMAGE);
+        $file->getType()->willReturn(FileType::IMAGE->value);
         $file->isImage()->willReturn(true);
 
         $this->assertEquals(true, $this->extractor->canProcess($file->reveal()));
     }
 
     #[Test]
-    public function testCanNotProcessOtherDriverType()
+    public function testCanNotProcessOtherDriverType(): void
     {
         $storage = $this->prophesize(ResourceStorage::class);
         $storage->getDriverType()->willReturn('UnknownDriver')->shouldBeCalled();
         $file = $this->prophesize(File::class);
         $file->getStorage()->willReturn($storage->reveal());
-        $file->getType()->willReturn(File::FILETYPE_IMAGE);
+        $file->getType()->willReturn(FileType::IMAGE->value);
         $file->isImage()->willReturn(true);
 
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
     #[Test]
-    public function testCanNotProcessUnknownFileType()
+    public function testCanNotProcessUnknownFileType(): void
     {
         $storage = $this->prophesize(ResourceStorage::class);
         $storage->getDriverType()->willReturn(AmazonS3Driver::DRIVER_TYPE);
         $file = $this->prophesize(File::class);
         $file->getStorage()->willReturn($storage->reveal());
-        $file->getType()->willReturn(File::FILETYPE_UNKNOWN);
+        $file->getType()->willReturn(FileType::UNKNOWN->value);
         $file->isImage()->willReturn(false);
 
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
     #[Test]
-    public function testCanNotProcessApplicationFileType()
+    public function testCanNotProcessApplicationFileType(): void
     {
         $storage = $this->prophesize(ResourceStorage::class);
         $storage->getDriverType()->willReturn(AmazonS3Driver::DRIVER_TYPE);
         $file = $this->prophesize(File::class);
         $file->getStorage()->willReturn($storage->reveal());
-        $file->getType()->willReturn(File::FILETYPE_APPLICATION);
+        $file->getType()->willReturn(FileType::APPLICATION->value);
         $file->isImage()->willReturn(false);
 
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
     #[Test]
-    public function testCanNotProcessVideoFileType()
+    public function testCanNotProcessVideoFileType(): void
     {
         $storage = $this->prophesize(ResourceStorage::class);
         $storage->getDriverType()->willReturn(AmazonS3Driver::DRIVER_TYPE);
         $file = $this->prophesize(File::class);
         $file->getStorage()->willReturn($storage->reveal());
-        $file->getType()->willReturn(File::FILETYPE_VIDEO);
+        $file->getType()->willReturn(FileType::VIDEO->value);
         $file->isImage()->willReturn(false);
 
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
     #[Test]
-    public function testCanNotProcessAudioFileType()
+    public function testCanNotProcessAudioFileType(): void
     {
         $storage = $this->prophesize(ResourceStorage::class);
         $storage->getDriverType()->willReturn(AmazonS3Driver::DRIVER_TYPE);
         $file = $this->prophesize(File::class);
         $file->getStorage()->willReturn($storage->reveal());
-        $file->getType()->willReturn(File::FILETYPE_AUDIO);
+        $file->getType()->willReturn(FileType::AUDIO->value);
         $file->isImage()->willReturn(false);
 
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
     #[Test]
-    public function testCanNotProcessTextFileType()
+    public function testCanNotProcessTextFileType(): void
     {
         $storage = $this->prophesize(ResourceStorage::class);
         $storage->getDriverType()->willReturn(AmazonS3Driver::DRIVER_TYPE);
         $file = $this->prophesize(File::class);
         $file->getStorage()->willReturn($storage->reveal());
-        $file->getType()->willReturn(File::FILETYPE_TEXT);
+        $file->getType()->willReturn(FileType::TEXT->value);
         $file->isImage()->willReturn(false);
 
         $this->assertEquals(false, $this->extractor->canProcess($file->reveal()));
     }
 
     #[Test]
-    public function testExtractMetaDataIfRequired()
+    public function testExtractMetaDataIfRequired(): void
     {
         $file = $this->prophesize(File::class);
         $mock = $this->getMockBuilder(Extractor::class)->onlyMethods(['getImageDimensionsOfRemoteFile'])->getMock();
@@ -152,7 +150,7 @@ class ExtractorTest extends TestCase
     }
 
     #[Test]
-    public function testExtractNoMetaDataIfNotRequired()
+    public function testExtractNoMetaDataIfNotRequired(): void
     {
         $file = $this->prophesize(File::class);
         $mock = $this->getMockBuilder(Extractor::class)->onlyMethods(['getImageDimensionsOfRemoteFile'])->getMock();

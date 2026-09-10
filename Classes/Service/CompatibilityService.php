@@ -27,26 +27,26 @@ class CompatibilityService implements SingletonInterface
 {
     /**
      * Check if the TYPO3 Backend mode is currently used
-     * @return bool
      */
     public function isBackend(): bool
     {
         if (Environment::isCli()) {
             return false;
         }
+
         return isset($GLOBALS['TYPO3_REQUEST'])
             && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
     }
 
     /**
      * Check if the TYPO3 Frontend mode is currently used
-     * @return bool
      */
     public function isFrontend(): bool
     {
         if (Environment::isCli()) {
             return false;
         }
+
         return isset($GLOBALS['TYPO3_REQUEST'])
             && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend();
     }
@@ -54,7 +54,7 @@ class CompatibilityService implements SingletonInterface
     /**
      * Check if $str begins with $partStr
      */
-    public function isFirstPartOfStr($str, $partStr): bool
+    public function isFirstPartOfStr(string $str, string $partStr): bool
     {
         return str_starts_with($str, $partStr);
     }

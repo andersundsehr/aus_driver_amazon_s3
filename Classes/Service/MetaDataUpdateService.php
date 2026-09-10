@@ -31,9 +31,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class MetaDataUpdateService implements SingletonInterface
 {
+    public function __construct(private readonly ResourceFactory $resourceFactory)
+    {
+    }
+
     /**
      * @throws InvalidUidException
      */
+    /** @param array<string, mixed> $fileProperties */
     public function updateMetadata(array $fileProperties): void
     {
         if ($fileProperties['type'] !== FileType::IMAGE->value) {
@@ -66,8 +71,7 @@ class MetaDataUpdateService implements SingletonInterface
 
     protected function getStorage(int $uid): ResourceStorage
     {
-        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
-        assert($resourceFactory instanceof ResourceFactory);
+        $resourceFactory = $this->resourceFactory;
         return $resourceFactory->getStorageObject($uid);
     }
 

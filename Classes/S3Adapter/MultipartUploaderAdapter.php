@@ -16,6 +16,7 @@ namespace AUS\AusDriverAmazonS3\S3Adapter;
 use Aws\Command;
 use Aws\Exception\MultipartUploadException;
 use Aws\S3\MultipartUploader;
+use RuntimeException;
 use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -49,10 +50,10 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
             ];
         }
 
-        $uploader = new MultipartUploader($this->s3Client, $localFilePath, [
+        $uploader = new MultipartUploader($this->getS3Client(), $localFilePath, [
             'bucket' => $bucket,
             'key' => $targetFilePath,
-            'before_initiate' => static function (Command $command) use ($contentType, $cacheControl, $metadata) {
+            'before_initiate' => static function (Command $command) use ($contentType, $cacheControl, $metadata): void {
                 $command['ContentType'] = $contentType;
                 $command['CacheControl'] = $cacheControl;
                 $command['Metadata'] = $metadata;
@@ -65,7 +66,7 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
             try {
                 $result = $uploader->upload();
             } catch (MultipartUploadException $e) {
-                $uploader = new MultipartUploader($this->s3Client, $localFilePath, [
+                $uploader = new MultipartUploader($this->getS3Client(), $localFilePath, [
                     'state' => $e->getState(),
                 ]);
                 $errorCount++;
@@ -75,25 +76,30 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
         // Abort a multipart upload if failed
         try {
             $uploader->upload();
-        } catch (MultipartUploadException $e) {
+        } catch (MultipartUploadException $multipartUploadException) {
             // State contains the "Bucket", "Key", and "UploadId"
-            $params = $e->getState()->getId();
-            $this->s3Client->abortMultipartUpload($params);
-            throw $e;
+            $params = $multipartUploadException->getState()->getId();
+            $this->getS3Client()->abortMultipartUpload($params);
+            throw $multipartUploadException;
         }
     }
 
     public function detectContentType(string $localFilePath, string $targetFilePath): string
     {
         $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($fileInfo === false) {
+            throw new RuntimeException('Unable to initialize the file type detector.', 9592824447);
+        }
+
         $contentType = finfo_file($fileInfo, $localFilePath);
         finfo_close($fileInfo);
+        if ($contentType === false) {
+            return 'application/octet-stream';
+        }
 
         $mimeDetector = GeneralUtility::makeInstance(MimeTypeDetector::class);
         if (
-            $contentType === 'text/plain'
-            || $contentType === 'application/octet-stream'
-            || $contentType === 'image/svg'
+            in_array($contentType, ['text/plain', 'application/octet-stream', 'image/svg'], true)
         ) {
             // file's magic database often fails to detect plain text files
             // we manually fix the mime type here.
@@ -101,6 +107,7 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
             $mimeTypes = $mimeDetector->getMimeTypesForFileExtension($ext) ;
             return $mimeTypes ? $mimeTypes[0] : $contentType;
         }
+
         return $contentType;
     }
 }

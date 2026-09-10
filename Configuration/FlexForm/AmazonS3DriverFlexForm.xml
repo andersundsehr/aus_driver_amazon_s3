@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <T3DataStructure>
-    <meta>
-        <langDisable>0</langDisable>
-    </meta>
     <ROOT>
         <type>array</type>
         <el>
@@ -22,119 +19,117 @@
                 <config>
                     <type>select</type>
                     <renderType>selectSingle</renderType>
-                    <items type="array">
-                        <numIndex index="0" type="array">
+                    <items>
+                        <numIndex index="0">
                             <label>US East (Ohio) - us-east-2</label>
                             <value>us-east-2</value>
                         </numIndex>
-                        <numIndex index="1" type="array">
+                        <numIndex index="1">
                             <label>US East (N. Virginia) - us-east-1</label>
                             <value>us-east-1</value>
                         </numIndex>
-                        <numIndex index="2" type="array">
+                        <numIndex index="2">
                             <label>US West (N. California) - us-west-1</label>
                             <value>us-west-1</value>
                         </numIndex>
-                        <numIndex index="3" type="array">
+                        <numIndex index="3">
                             <label>US West (Oregon) - us-west-2</label>
                             <value>us-west-2</value>
                         </numIndex>
-                        <numIndex index="4" type="array">
+                        <numIndex index="4">
                             <label>Africa (Cape Town) - af-south-1</label>
                             <value>af-south-1</value>
                         </numIndex>
-                        <numIndex index="5" type="array">
+                        <numIndex index="5">
                             <label>Asia Pacific (Hong Kong) - ap-east-1</label>
                             <value>ap-east-1</value>
                         </numIndex>
-                        <numIndex index="6" type="array">
+                        <numIndex index="6">
                             <label>Asia Pacific (Jakarta) - ap-southeast-3</label>
                             <value>ap-southeast-3</value>
                         </numIndex>
-                        <numIndex index="7" type="array">
+                        <numIndex index="7">
                             <label>Asia Pacific (Mumbai) - ap-south-1</label>
                             <value>ap-south-1</value>
                         </numIndex>
-                        <numIndex index="8" type="array">
+                        <numIndex index="8">
                             <label>Asia Pacific (Osaka) - ap-northeast-3</label>
                             <value>ap-northeast-3</value>
                         </numIndex>
-                        <numIndex index="9" type="array">
+                        <numIndex index="9">
                             <label>Asia Pacific (Seoul) - ap-northeast-2</label>
                             <value>ap-northeast-2</value>
                         </numIndex>
-                        <numIndex index="10" type="array">
+                        <numIndex index="10">
                             <label>Asia Pacific (Singapore) - ap-southeast-1</label>
                             <value>ap-southeast-1</value>
                         </numIndex>
-                        <numIndex index="11" type="array">
+                        <numIndex index="11">
                             <label>Asia Pacific (Sydney) - ap-southeast-2</label>
                             <value>ap-southeast-2</value>
                         </numIndex>
-                        <numIndex index="12" type="array">
+                        <numIndex index="12">
                             <label>Asia Pacific (Tokyo) - ap-northeast-1</label>
                             <value>ap-northeast-1</value>
                         </numIndex>
-                        <numIndex index="13" type="array">
+                        <numIndex index="13">
                             <label>Canada (Central) - ca-central-1</label>
                             <value>ca-central-1</value>
                         </numIndex>
-                        <numIndex index="14" type="array">
+                        <numIndex index="14">
                             <label>China (Beijing) - cn-north-1</label>
                             <value>cn-north-1</value>
                         </numIndex>
-                        <numIndex index="15" type="array">
+                        <numIndex index="15">
                             <label>China (Ningxia) - cn-northwest-1</label>
                             <value>cn-northwest-1</value>
                         </numIndex>
-                        <numIndex index="16" type="array">
+                        <numIndex index="16">
                             <label>Europe (Frankfurt) - eu-central-1</label>
                             <value>eu-central-1</value>
                         </numIndex>
-                        <numIndex index="17" type="array">
+                        <numIndex index="17">
                             <label>Europe (Ireland) - eu-west-1</label>
                             <value>eu-west-1</value>
                         </numIndex>
-                        <numIndex index="18" type="array">
+                        <numIndex index="18">
                             <label>Europe (London) - eu-west-2</label>
                             <value>eu-west-2</value>
                         </numIndex>
-                        <numIndex index="19" type="array">
+                        <numIndex index="19">
                             <label>Europe (Milan) - eu-south-1</label>
                             <value>eu-south-1</value>
                         </numIndex>
-                        <numIndex index="20" type="array">
+                        <numIndex index="20">
                             <label>Europe (Paris) - eu-west-3</label>
                             <value>eu-west-3</value>
                         </numIndex>
-                        <numIndex index="21" type="array">
+                        <numIndex index="21">
                             <label>Europe (Stockholm) - eu-north-1</label>
                             <value>eu-north-1</value>
                         </numIndex>
-                        <numIndex index="22" type="array">
+                        <numIndex index="22">
                             <label>South America (São Paulo) - sa-east-1</label>
                             <value>sa-east-1</value>
                         </numIndex>
-                        <numIndex index="23" type="array">
+                        <numIndex index="23">
                             <label>Middle East (Bahrain) - me-south-1</label>
                             <value>me-south-1</value>
                         </numIndex>
-                        <numIndex index="24" type="array">
+                        <numIndex index="24">
                             <label>Middle East (UAE) - me-central-1</label>
                             <value>me-central-1</value>
                         </numIndex>
-                        <numIndex index="25" type="array">
+                        <numIndex index="25">
                             <label>AWS GovCloud (US-East) - us-gov-east-1</label>
                             <value>us-gov-east-1</value>
                         </numIndex>
-                        <numIndex index="26" type="array">
+                        <numIndex index="26">
                             <label>AWS GovCloud (US-West) - us-gov-west-1</label>
                             <value>us-gov-west-1</value>
                         </numIndex>
                     </items>
-                    <size>1</size>
                     <minitems>1</minitems>
-                    <maxitems>1</maxitems>
                 </config>
             </region>
             <customHost>
@@ -218,21 +213,19 @@
                 <config>
                     <type>select</type>
                     <renderType>selectSingle</renderType>
-                    <size>1</size>
                     <minitems>1</minitems>
-                    <maxitems>1</maxitems>
-                    <items type="array">
-                        <numIndex index="0" type="array">
+                    <items>
+                        <numIndex index="0">
                             <label>
                                 LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol.auto
                             </label>
                             <value>auto</value>
                         </numIndex>
-                        <numIndex index="1" type="array">
+                        <numIndex index="1">
                             <label>https://</label>
                             <value>https://</value>
                         </numIndex>
-                        <numIndex index="2" type="array">
+                        <numIndex index="2">
                             <label>http://</label>
                             <value>http://</value>
                         </numIndex>
@@ -249,14 +242,14 @@
                     <size>1</size>
                     <minitems>1</minitems>
                     <maxitems>1</maxitems>
-                    <items type="array">
-                        <numIndex index="0" type="array">
+                    <items>
+                        <numIndex index="0">
                             <label>
                                 LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature.auto
                             </label>
                             <value>0</value>
                         </numIndex>
-                        <numIndex index="1" type="array">
+                        <numIndex index="1">
                             <label>v4</label>
                             <value>v4</value>
                         </numIndex>
@@ -282,20 +275,20 @@
                     <size>1</size>
                     <minitems>1</minitems>
                     <maxitems>1</maxitems>
-                    <items type="array">
-                        <numIndex index="0" type="array">
+                    <items>
+                        <numIndex index="0">
                             <label>
                                 LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.ignore
                             </label>
                             <value>ignore</value>
                         </numIndex>
-                        <numIndex index="1" type="array">
+                        <numIndex index="1">
                             <label>
                                 LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.receive
                             </label>
                             <value>receive</value>
                         </numIndex>
-                        <numIndex index="2" type="array">
+                        <numIndex index="2">
                             <label>
                                 LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.force
                             </label>

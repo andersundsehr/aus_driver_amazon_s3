@@ -13,6 +13,7 @@
 
 namespace AUS\AusDriverAmazonS3\Tests\Unit\Service;
 
+use TYPO3\CMS\Core\Resource\FileType;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use AUS\AusDriverAmazonS3\Index\Extractor;
 use AUS\AusDriverAmazonS3\Service\MetaDataUpdateService;
@@ -34,30 +35,36 @@ class MetaDataUpdateServiceTest extends TestCase
     use ProphecyTrait;
 
     #[Test]
-    public function testRecordUpdatedOrCreatedDoNotHandleUnknownFileType()
+    public function testRecordUpdatedOrCreatedDoNotHandleUnknownFileType(): void
     {
         $file = $this->prophesize(File::class)->reveal();
 
-        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->onlyMethods(['getStorage', 'getExtractor'])->getMock();
+        $mock = $this->getMockBuilder(MetaDataUpdateService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getStorage', 'getExtractor'])
+            ->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
         $mock->updateMetadata([
-            'type' => File::FILETYPE_UNKNOWN,
+            'type' => FileType::UNKNOWN->value,
             'storage' => 42,
             'identifier' => 'foo/bar.file',
         ]);
     }
 
     #[Test]
-    public function testRecordUpdatedOrCreatedDoNotHandleApplicationFileType()
+    public function testRecordUpdatedOrCreatedDoNotHandleApplicationFileType(): void
     {
         $file = $this->prophesize(File::class)->reveal();
 
-        $mock = $this->getMockBuilder(MetaDataUpdateService::class)->onlyMethods(['getStorage', 'getExtractor'])->getMock();
+        $mock = $this->getMockBuilder(MetaDataUpdateService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getStorage', 'getExtractor'])
+            ->getMock();
         $mock->expects($this->exactly(0))->method('getStorage')->willReturn($this->getStorageProphecy($file)->reveal());
         $mock->expects($this->exactly(0))->method('getExtractor')->willReturn($this->getExtractorProphecy($file)->reveal());
         $mock->updateMetadata([
-            'type' => File::FILETYPE_APPLICATION,
+            'type' => FileType::APPLICATION->value,
             'storage' => 42,
             'identifier' => 'foo/bar.file',
         ]);
@@ -65,7 +72,6 @@ class MetaDataUpdateServiceTest extends TestCase
 
     /**
      * @param $file
-     * @return ObjectProphecy
      */
     protected function getStorageProphecy($file): ObjectProphecy
     {
@@ -77,7 +83,6 @@ class MetaDataUpdateServiceTest extends TestCase
 
     /**
      * @param $file
-     * @return ObjectProphecy
      */
     protected function getExtractorProphecy($file): ObjectProphecy
     {

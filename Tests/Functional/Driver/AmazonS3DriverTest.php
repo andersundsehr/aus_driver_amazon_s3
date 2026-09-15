@@ -2,6 +2,10 @@
 
 namespace AUS\AusDriverAmazonS3\Tests\Functional\Driver;
 
+use TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use ReflectionClass;
+use Aws\S3\Exception\S3Exception;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\ApplicationContext;
@@ -24,7 +28,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
     /**
      * @var AmazonS3Driver
      */
-    protected $driver = null;
+    protected $driver;
 
     /**
      * @var string[]
@@ -44,7 +48,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         'caseSensitive'       => 1,
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [
@@ -55,16 +59,16 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $cacheManager->setCacheConfigurations([
             'ausdriveramazons3_metainfocache' => [
-                'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
-                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+                'backend' => TransientMemoryBackend::class,
+                'frontend' => VariableFrontend::class,
             ],
             'ausdriveramazons3_requestcache' => [
-                'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
-                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+                'backend' => TransientMemoryBackend::class,
+                'frontend' => VariableFrontend::class,
             ]
         ]);
 
-        $rc = new \ReflectionClass(AmazonS3Driver::class);
+        $rc = new ReflectionClass(AmazonS3Driver::class);
         $rc->setStaticPropertyValue('settings', null);
 
         $this->driver = new AmazonS3Driver(
@@ -76,7 +80,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->driver->initialize();
     }
 
-    public function testDeleteFile()
+    public function testDeleteFile(): void
     {
         $localPath = __DIR__ . '/tmp.txt';
         file_put_contents($localPath, '42');
@@ -97,7 +101,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->assertFalse($this->driver->fileExists('tmp-uploaded.txt'));
     }
 
-    public function testDeleteFolder()
+    public function testDeleteFolder(): void
     {
         $this->assertFalse($this->driver->folderExists('tmp-dir'));
 
@@ -108,14 +112,14 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->assertFalse($this->driver->folderExists('tmp-dir'));
     }
 
-    public function testFileExists()
+    public function testFileExists(): void
     {
         $this->assertFalse($this->driver->fileExists('doesnotexist.txt'));
         $this->assertTrue($this->driver->fileExists('23.txt'));
         $this->assertTrue($this->driver->fileExists('images/bytes-1009.png'));
     }
 
-    public function testFolderExists()
+    public function testFolderExists(): void
     {
         $this->assertTrue(
             $this->driver->folderExists($this->driver->getDefaultFolder())
@@ -128,7 +132,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->assertTrue($this->driver->folderExists('images/'));
     }
 
-    public function testFolderExistsInFolder()
+    public function testFolderExistsInFolder(): void
     {
         $this->assertTrue($this->driver->folderExistsInFolder('subfolder11', 'folder1'));
 
@@ -140,12 +144,12 @@ class AmazonS3DriverTest extends FunctionalTestCase
         );
     }
 
-    public function testGetFileContents()
+    public function testGetFileContents(): void
     {
         $this->assertEquals("42\n", $this->driver->getFileContents('23.txt'));
     }
 
-    public function testGetPublicUrl()
+    public function testGetPublicUrl(): void
     {
         $this->assertEquals(
             'http://minio/file.txt',
@@ -192,6 +196,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
             $eventDispatcher
         );
         $privateDriver->setStorageUid(42);
+
         $privateStorage = new ResourceStorage($privateDriver, $storageRecord, $eventDispatcher);
         $privateFile = new File(
             [
@@ -219,7 +224,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         }
     }
 
-    public function testGetFilesInFolderRoot()
+    public function testGetFilesInFolderRoot(): void
     {
         $this->assertEquals(
             [
@@ -229,7 +234,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         );
     }
 
-    public function testGetFilesInFolder()
+    public function testGetFilesInFolder(): void
     {
         $this->assertEquals(
             [
@@ -239,7 +244,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         );
     }
 
-    public function testGetFileInfoByIdentifierAllProperties()
+    public function testGetFileInfoByIdentifierAllProperties(): void
     {
         $info = $this->driver->getFileInfoByIdentifier('images/bytes-1009.png');
         $this->assertEquals('bytes-1009.png', $info['name']);
@@ -252,13 +257,13 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->assertEquals(1009, $info['size']);
     }
 
-    public function testGetFileInfoByIdentifierOnlyMimetype()
+    public function testGetFileInfoByIdentifierOnlyMimetype(): void
     {
         $info = $this->driver->getFileInfoByIdentifier('images/bytes-1009.png', ['mimetype']);
         $this->assertEquals('image/png', $info['mimetype']);
     }
 
-    public function testGetFoldersInFolderRoot()
+    public function testGetFoldersInFolderRoot(): void
     {
         $this->markTestSkipped('need sys_file_storage for this');
         $this->assertEquals(
@@ -267,19 +272,19 @@ class AmazonS3DriverTest extends FunctionalTestCase
         );
     }
 
-    public function testIsFolderEmptySlash()
+    public function testIsFolderEmptySlash(): void
     {
         $this->assertCount(1, $this->driver->getFilesInFolder('images/'));
         $this->assertFalse($this->driver->isFolderEmpty('images/'));
     }
 
-    public function testIsFolderEmptyNoSlash()
+    public function testIsFolderEmptyNoSlash(): void
     {
         $this->assertCount(1, $this->driver->getFilesInFolder('images'));
         $this->assertFalse($this->driver->isFolderEmpty('images'));
     }
 
-    public function testCopyFileWithinStorage()
+    public function testCopyFileWithinStorage(): void
     {
         $this->assertFalse($this->driver->fileExists('copytarget.txt'));
         $this->assertEquals(
@@ -291,7 +296,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->assertTrue($this->driver->deleteFile('copytarget.txt'));
     }
 
-    public function testMoveFileWithinStorageRoot()
+    public function testMoveFileWithinStorageRoot(): void
     {
         $this->assertTrue($this->driver->fileExists('23.txt'));
         $this->assertFalse($this->driver->fileExists('movetarget.txt'));
@@ -308,7 +313,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         );
     }
 
-    public function testMoveFileWithinStorageSubfolder()
+    public function testMoveFileWithinStorageSubfolder(): void
     {
         $this->assertTrue($this->driver->fileExists('23.txt'));
         $this->assertFalse($this->driver->fileExists('images/movetarget.txt'));
@@ -325,7 +330,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         );
     }
 
-    public function testMoveFileWithinStorageSubfolderNoSlash()
+    public function testMoveFileWithinStorageSubfolderNoSlash(): void
     {
         $this->assertTrue($this->driver->fileExists('23.txt'));
         $this->assertFalse($this->driver->fileExists('images/movetarget.txt'));
@@ -342,16 +347,16 @@ class AmazonS3DriverTest extends FunctionalTestCase
         );
     }
 
-    public function testSetFileContents()
+    public function testSetFileContents(): void
     {
         $this->assertEquals(5, $this->driver->setFileContents('write.txt', 'write'));
         $this->assertEquals('write', $this->driver->getFileContents('write.txt'));
         $this->assertTrue($this->driver->deleteFile('write.txt'));
     }
 
-    public function testEnvStorageConfigurationGeneric()
+    public function testEnvStorageConfigurationGeneric(): void
     {
-        $rc = new \ReflectionClass(AmazonS3Driver::class);
+        $rc = new ReflectionClass(AmazonS3Driver::class);
         $rc->setStaticPropertyValue('settings', null);
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage'] = [
@@ -366,14 +371,14 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->driver->setStorageUid(42);
         $this->driver->initialize();
 
-        $this->expectException(\Aws\S3\Exception\S3Exception::class);
+        $this->expectException(S3Exception::class);
         $this->expectExceptionMessageMatches('/Failed to connect to minio(?::9001| port 9001)/');
         $this->driver->getFileContents('23.txt');
     }
 
-    public function testEnvStorageConfigurationUid()
+    public function testEnvStorageConfigurationUid(): void
     {
-        $rc = new \ReflectionClass(AmazonS3Driver::class);
+        $rc = new ReflectionClass(AmazonS3Driver::class);
         $rc->setStaticPropertyValue('settings', null);
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage'] = [

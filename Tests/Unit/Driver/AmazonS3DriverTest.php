@@ -13,6 +13,8 @@
 
 namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
 
+use TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
 use Aws\Api\DateTimeResult;
 use Aws\Result;
@@ -44,12 +46,12 @@ class AmazonS3DriverTest extends TestCase
     /**
      * @var AmazonS3Driver
      */
-    protected $driver = null;
+    protected $driver;
 
     /**
      * @var ObjectProphecy
      */
-    protected $s3Client = null;
+    protected $s3Client;
 
     /**
      * @var string[]
@@ -63,10 +65,7 @@ class AmazonS3DriverTest extends TestCase
         'secretKey' => 'test-secretKey',
     ];
 
-    /**
-     * @return void
-     */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY] = [];
@@ -90,12 +89,12 @@ class AmazonS3DriverTest extends TestCase
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $cacheManager->setCacheConfigurations([
             'ausdriveramazons3_metainfocache' => [
-                'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
-                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+                'backend' => TransientMemoryBackend::class,
+                'frontend' => VariableFrontend::class,
             ],
             'ausdriveramazons3_requestcache' => [
-                'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class,
-                'frontend' => \TYPO3\CMS\Core\Cache\Frontend\VariableFrontend::class,
+                'backend' => TransientMemoryBackend::class,
+                'frontend' => VariableFrontend::class,
             ]
         ]);
         $this->s3Client = $this->prophesize(S3Client::class);
@@ -108,14 +107,14 @@ class AmazonS3DriverTest extends TestCase
         $this->driver->initialize();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($GLOBALS['TYPO3_REQUEST']);
         parent::tearDown();
     }
 
     #[Test]
-    public function testPublicUrlGetter()
+    public function testPublicUrlGetter(): void
     {
         $assertedMappings = [
             '/foo/bar/test.file' => 'https://www.example.com/foo/bar/test.file', // start with slash
@@ -130,19 +129,19 @@ class AmazonS3DriverTest extends TestCase
     }
 
     #[Test]
-    public function testDefaultFolderGetter()
+    public function testDefaultFolderGetter(): void
     {
         $this->assertEquals('/', $this->driver->getDefaultFolder());
     }
 
     #[Test]
-    public function testRootLevelFolderGetter()
+    public function testRootLevelFolderGetter(): void
     {
         $this->assertEquals('/', $this->driver->getRootLevelFolder());
     }
 
     #[Test]
-    public function testGetFileInfoByIdentifier()
+    public function testGetFileInfoByIdentifier(): void
     {
         $fileIdentifier = 'foo/bar/test.file';
         $lastModifiedDateTime = new DateTimeResult();
@@ -175,7 +174,7 @@ class AmazonS3DriverTest extends TestCase
     }
 
     #[Test]
-    public function testGetFileInfoByIdentifierWithLimitedProperties()
+    public function testGetFileInfoByIdentifierWithLimitedProperties(): void
     {
         $fileIdentifier = 'foo/bar/test.file';
         $properties = ['name', 'identifier', 'size', 'storage'];
@@ -197,7 +196,7 @@ class AmazonS3DriverTest extends TestCase
 
 
     #[Test]
-    public function testGetFileInfoByIdentifierWithPseudoMimeType()
+    public function testGetFileInfoByIdentifierWithPseudoMimeType(): void
     {
         $fileIdentifier = 'foo/bar/test.youtube';
         $lastModifiedDateTime = new DateTimeResult();

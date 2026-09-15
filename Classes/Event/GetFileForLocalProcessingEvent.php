@@ -11,6 +11,8 @@
  *
  ***/
 
+declare(strict_types=1);
+
 namespace AUS\AusDriverAmazonS3\Event;
 
 /**
@@ -22,15 +24,8 @@ namespace AUS\AusDriverAmazonS3\Event;
  */
 final class GetFileForLocalProcessingEvent
 {
-    private string $fileIdentifier;
-    private string $temporaryPath;
-    private bool $writable;
-
-    public function __construct(string $fileIdentifier, string $temporaryPath, bool $writable)
+    public function __construct(private readonly string $fileIdentifier, private string $temporaryPath, private readonly bool $writable)
     {
-        $this->fileIdentifier = $fileIdentifier;
-        $this->temporaryPath = $temporaryPath;
-        $this->writable = $writable;
     }
 
     public function getFileIdentifier(): string

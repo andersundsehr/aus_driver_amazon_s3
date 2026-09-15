@@ -48,7 +48,7 @@ class Extractor implements ExtractorInterface
      * Returns an array of supported file types;
      * An empty array indicates all filetypes
      *
-     * @return array
+     * @return array<int, FileType>
      */
     public function getFileTypeRestrictions()
     {
@@ -65,7 +65,7 @@ class Extractor implements ExtractorInterface
      * If the driver did not register a name, it's the classname.
      * empty array indicates no restrictions
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getDriverRestrictions()
     {
@@ -100,7 +100,6 @@ class Extractor implements ExtractorInterface
     /**
      * Checks if the given file can be processed by this Extractor
      *
-     * @param File $file
      * @return boolean
      */
     public function canProcess(File $file)
@@ -113,34 +112,34 @@ class Extractor implements ExtractorInterface
      *
      * Should return an array with database properties for sys_file_metadata to write
      *
-     * @param File $file
-     * @param array $previousExtractedData optional, contains the array of already extracted data
-     * @return array
+     * @param array<string, mixed> $previousExtractedData optional, contains the array of already extracted data
+     * @return array<string, mixed>
      */
     public function extractMetaData(File $file, array $previousExtractedData = [])
     {
         if (empty($previousExtractedData['width']) || empty($previousExtractedData['height'])) {
             $imageDimensions = $this->getImageDimensionsOfRemoteFile($file);
-            if ($imageDimensions !== null) {
-                $previousExtractedData['width'] = $imageDimensions[0];
-                $previousExtractedData['height'] = $imageDimensions[1];
-            }
+            $previousExtractedData['width'] = $imageDimensions[0];
+            $previousExtractedData['height'] = $imageDimensions[1];
         }
 
         return $previousExtractedData;
     }
 
-    /**
-     * @param FileInterface $file
-     * @return array
-     */
+    /** @return array{int, int} */
     public function getImageDimensionsOfRemoteFile(FileInterface $file): array
     {
         $identifier = 'andersundsehr_aus_driver_amazon_s3_' . sha1($file->getIdentifier());
         if ($this->cache?->has($identifier)) {
             $sizes = $this->cache->get($identifier);
-            if (is_array($sizes) && count($sizes) === 2) {
-                return $sizes;
+            if (
+                is_array($sizes)
+                && count($sizes) === 2
+                && isset($sizes[0], $sizes[1])
+                && is_int($sizes[0])
+                && is_int($sizes[1])
+            ) {
+                return [$sizes[0], $sizes[1]];
             }
         }
 

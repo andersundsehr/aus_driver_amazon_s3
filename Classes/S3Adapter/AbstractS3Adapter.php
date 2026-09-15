@@ -11,8 +11,11 @@
  *
  ***/
 
+declare(strict_types=1);
+
 namespace AUS\AusDriverAmazonS3\S3Adapter;
 
+use RuntimeException;
 use Aws\S3\S3Client;
 
 /**
@@ -24,16 +27,19 @@ use Aws\S3\S3Client;
 class AbstractS3Adapter
 {
     /**
-     * @var S3Client
-     */
-    protected $s3Client;
-
-    /**
      * AbstractS3Adapter constructor.
      * @param S3Client $s3Client
      */
-    public function __construct(?S3Client $s3Client = null)
+    public function __construct(protected ?S3Client $s3Client = null)
     {
-        $this->s3Client = $s3Client;
+    }
+
+    protected function getS3Client(): S3Client
+    {
+        if ($this->s3Client === null) {
+            throw new RuntimeException('The S3 client has not been initialized.', 7342829236);
+        }
+
+        return $this->s3Client;
     }
 }

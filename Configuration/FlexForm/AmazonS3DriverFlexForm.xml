@@ -171,6 +171,7 @@
                 </label>
                 <config>
                     <type>password</type>
+                    <hashed>0</hashed>
                     <size>30</size>
                 </config>
             </secretKey>

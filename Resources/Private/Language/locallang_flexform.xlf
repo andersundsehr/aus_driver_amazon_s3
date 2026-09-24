@@ -66,26 +66,27 @@
 			<trans-unit id="driverConfiguration.message.connectionTestSuccessful.message">
 				<source>Congratulations! AWS S3 is successfully connected to TYPO3.</source>
 			</trans-unit>
-
 			<trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
 				<source>Use DNS prefetching HTML tag</source>
 			</trans-unit>
 			<trans-unit id="ausDriverAmazonS3.settings.enablePermissionsCheck">
 				<source>Check S3 permissions for each file and folder (very slow)</source>
 			</trans-unit>
-
-      <trans-unit id="driverConfiguration.fileContentHash">
-        <source>Method for file hash</source>
-      </trans-unit>
-      <trans-unit id="driverConfiguration.fileContentHash.ignore">
-        <source>Ignore (fastest)</source>
-      </trans-unit>
-      <trans-unit id="driverConfiguration.fileContentHash.receive">
-        <source>Receive from AWS if possible</source>
-      </trans-unit>
-      <trans-unit id="driverConfiguration.fileContentHash.force">
-        <source>Receive frolm AWS with a fallback to download and calculate (slowest, might download large files)</source>
-      </trans-unit>
+			<trans-unit id="driverConfiguration.fileContentHash">
+				<source>Method for file hash</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.fileContentHash.ignore">
+				<source>Ignore (fastest; use a pseudo hash)</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.fileContentHash.receive">
+				<source>Use the hash from S3 if available; otherwise use a pseudo hash</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.fileContentHash.force">
+				<source>Use the hash from S3 if available; otherwise download the file and calculate it (slowest; may generate substantial network traffic)</source>
+			</trans-unit>
+			<trans-unit id="driverConfiguration.fileContentHash.strict">
+				<source>Require the hash from S3; throw an exception if missing (no file download)</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -295,6 +295,12 @@
                             </label>
                             <value>force</value>
                         </numIndex>
+                        <numIndex index="3">
+                            <label>
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.strict
+                            </label>
+                            <value>strict</value>
+                        </numIndex>
                     </items>
                 </config>
             </fileContentHash>

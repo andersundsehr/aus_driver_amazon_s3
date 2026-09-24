@@ -13,6 +13,9 @@
 
 namespace AUS\AusDriverAmazonS3\Tests\Unit\Driver;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use ReflectionProperty;
 use TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend;
 use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use AUS\AusDriverAmazonS3\Driver\AmazonS3Driver;
@@ -31,6 +34,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -97,6 +101,8 @@ class AmazonS3DriverTest extends TestCase
                 'frontend' => VariableFrontend::class,
             ]
         ]);
+        $cacheManager->getCache('ausdriveramazons3_metainfocache')->flush();
+        $cacheManager->getCache('ausdriveramazons3_requestcache')->flush();
         $this->s3Client = $this->prophesize(S3Client::class);
         $eventDispatcher = $this->prophesize(EventDispatcher::class);
         $pageRenderer = $this->prophesize(PageRenderer::class);
@@ -138,6 +144,68 @@ class AmazonS3DriverTest extends TestCase
     public function testRootLevelFolderGetter(): void
     {
         $this->assertEquals('/', $this->driver->getRootLevelFolder());
+    }
+
+    #[Test]
+    public function getFolderInfoRejectsMissingFolder(): void
+    {
+        $this->s3Client->listObjectsV2([
+            'Bucket' => 'test-bucket',
+            'Prefix' => 'form_definitions/',
+            'MaxKeys' => 1,
+        ])->willReturn(new Result(['Contents' => [], 'IsTruncated' => false]))->shouldBeCalledOnce();
+        $this->s3Client->headObject([
+            'Bucket' => 'test-bucket',
+            'Key' => 'form_definitions/',
+        ])->willThrow(new RuntimeException('Missing S3 folder marker', 0, new RuntimeException('', 404)))->shouldBeCalledOnce();
+
+        $this->expectException(FolderDoesNotExistException::class);
+        $this->driver->getFolderInfoByIdentifier('/form_definitions/');
+    }
+
+    #[Test]
+    public function getFolderInfoAcceptsExistingFolderAndRoot(): void
+    {
+        $this->s3Client->listObjectsV2([
+            'Bucket' => 'test-bucket',
+            'Prefix' => 'form_definitions/',
+            'MaxKeys' => 1,
+        ])->willReturn(new Result([
+            'Contents' => [[
+                'Key' => 'form_definitions/contact.form.yaml',
+                'Size' => 42,
+                'LastModified' => new DateTimeResult(),
+            ]],
+            'IsTruncated' => false,
+        ]))->shouldBeCalledOnce();
+
+        self::assertSame('form_definitions/', $this->driver->getFolderInfoByIdentifier('/form_definitions/')['identifier']);
+        self::assertSame('/', $this->driver->getFolderInfoByIdentifier('/')['identifier']);
+    }
+
+    #[Test]
+    public function getFolderInfoReusesFolderListing(): void
+    {
+        (new ReflectionProperty(AmazonS3Driver::class, 'processingFolder'))
+            ->setValue($this->driver, '_processed_');
+        $this->s3Client->listObjectsV2([
+            'Bucket' => 'test-bucket',
+            'Prefix' => '',
+            'Delimiter' => '/',
+        ])->willReturn(new Result([
+            'CommonPrefixes' => [
+                ['Prefix' => 'form_definitions/'],
+                ['Prefix' => 'uploads/'],
+            ],
+            'IsTruncated' => false,
+        ]))->shouldBeCalledOnce();
+
+        self::assertSame(
+            ['/form_definitions/' => '/form_definitions/', '/uploads/' => '/uploads/'],
+            $this->driver->getFoldersInFolder('/')
+        );
+        self::assertSame('form_definitions/', $this->driver->getFolderInfoByIdentifier('/form_definitions/')['identifier']);
+        self::assertSame('uploads/', $this->driver->getFolderInfoByIdentifier('/uploads/')['identifier']);
     }
 
     #[Test]
@@ -226,5 +294,113 @@ class AmazonS3DriverTest extends TestCase
         $this->assertEquals('video/youtube', $info['mimetype']);
         $this->assertEquals(12345, $info['size']);
         $this->assertEquals($this->driver->getStorageUid(), $info['storage']);
+    }
+
+    #[Test]
+    public function testReceiveHashCompletesListMetadataOnce(): void
+    {
+        $this->assertReceiveHashAfterListing(['hash-sha1' => 'stored-sha1'], 'stored-sha1');
+    }
+
+    #[Test]
+    public function testReceiveHashWithoutStoredHashCompletesMetadataOnlyOnce(): void
+    {
+        $this->assertReceiveHashAfterListing([], $this->driver->hashIdentifier('file.txt'));
+    }
+
+    #[Test]
+    #[DataProvider('strictHashMetadataProvider')]
+    public function testStrictHashRequiresMatchingMetadata(array $metadata, ?string $expectedHash): void
+    {
+        $driver = new AmazonS3Driver(
+            array_replace($this->testConfiguration, ['fileContentHash' => 'strict']),
+            $this->s3Client->reveal(),
+            $this->prophesize(EventDispatcher::class)->reveal()
+        );
+        $driver->setStorageUid(42);
+        $driver->initialize();
+        $this->s3Client->headObject(Argument::type('array'))->willReturn(new Result([
+            'LastModified' => new DateTimeResult(),
+            'ContentLength' => 0,
+            'Metadata' => $metadata,
+        ]))->shouldBeCalledOnce();
+        $this->s3Client->getObject(Argument::any())->shouldNotBeCalled();
+
+        if ($expectedHash === null) {
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionCode(1790164800);
+            $this->expectExceptionMessage('Missing S3 metadata "hash-sha1" for file "file.txt"');
+        }
+
+        self::assertSame($expectedHash, $driver->hash('file.txt', 'sha1'));
+    }
+
+    public static function strictHashMetadataProvider(): array
+    {
+        return [
+            'matching hash' => [['hash-sha1' => 'stored-sha1'], 'stored-sha1'],
+            'missing hash' => [[], null],
+            'different algorithm only' => [['hash-md5' => 'stored-md5'], null],
+        ];
+    }
+
+    private function assertReceiveHashAfterListing(array $metadata, string $expectedHash): void
+    {
+        $this->driver = new AmazonS3Driver(
+            array_replace($this->testConfiguration, ['fileContentHash' => 'receive']),
+            $this->s3Client->reveal(),
+            $this->prophesize(EventDispatcher::class)->reveal()
+        );
+        $this->driver->setStorageUid(42);
+        $this->driver->initialize();
+
+        $lastModified = new DateTimeResult();
+        $this->s3Client->listObjectsV2(Argument::type('array'))->willReturn(new Result([
+            'Contents' => [['Key' => 'file.txt', 'Size' => 0, 'LastModified' => $lastModified]],
+            'IsTruncated' => false,
+        ]))->shouldBeCalledOnce();
+        $this->s3Client->headObject(Argument::type('array'))->willReturn(new Result([
+            'LastModified' => $lastModified,
+            'ContentLength' => 0,
+            'ContentType' => 'text/plain',
+            'Metadata' => $metadata,
+        ]))->shouldBeCalledOnce();
+
+        $this->driver->getFilesInFolder('/');
+        self::assertSame(['size' => 0], $this->driver->getFileInfoByIdentifier('file.txt', ['size']));
+        self::assertSame($expectedHash, $this->driver->hash('file.txt', 'sha1'));
+        self::assertSame($expectedHash, $this->driver->hash('/file.txt', 'sha1'));
+        $info = $this->driver->getFileInfoByIdentifier('file.txt');
+        self::assertSame('text/plain', $info['mimetype']);
+        self::assertArrayNotHasKey('_aus_s3_head_complete', $info);
+        self::assertSame(['mimetype' => 'text/plain'], $this->driver->getFileInfoByIdentifier('file.txt', ['mimetype']));
+        $this->driver->getFilesInFolder('/');
+        self::assertSame($expectedHash, $this->driver->hash('file.txt', 'sha1'));
+    }
+
+    #[Test]
+    public function testReceiveHashBeforeListingKeepsCompleteMetadata(): void
+    {
+        $this->driver = new AmazonS3Driver(
+            array_replace($this->testConfiguration, ['fileContentHash' => 'receive']),
+            $this->s3Client->reveal(),
+            $this->prophesize(EventDispatcher::class)->reveal()
+        );
+        $this->driver->setStorageUid(42);
+        $this->driver->initialize();
+
+        $lastModified = new DateTimeResult();
+        $this->s3Client->headObject(Argument::type('array'))->willReturn(new Result([
+            'LastModified' => $lastModified,
+            'ContentLength' => 0,
+            'Metadata' => ['hash-sha1' => 'stored-sha1'],
+        ]))->shouldBeCalledOnce();
+        $this->s3Client->listObjectsV2(Argument::type('array'))->willReturn(new Result([
+            'Contents' => [['Key' => 'file.txt', 'Size' => 0, 'LastModified' => $lastModified]],
+            'IsTruncated' => false,
+        ]))->shouldBeCalledOnce();
+        self::assertSame('stored-sha1', $this->driver->hash('file.txt', 'sha1'));
+        $this->driver->getFilesInFolder('/');
+        self::assertSame('stored-sha1', $this->driver->hash('file.txt', 'sha1'));
     }
 }

@@ -64,8 +64,13 @@ class MetaInfoDownloadAdapterTest extends TestCase
             'LastModified' => $lastModifiedDateTime,
             'ContentType' => 'image/png',
             'ContentLength' => 123,
+            'Metadata' => [
+                'sha256' => 'abc123',
+                'custom-key' => 'custom-value',
+                'name' => 'must-not-overwrite-name',
+            ],
         ];
-        $expectedMetaInfoKeys = ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage'];
+        $expectedMetaInfoKeys = ['name', 'identifier', 'ctime', 'mtime', 'extension', 'mimetype', 'size', 'identifier_hash', 'folder_hash', 'storage', 'sha256', 'custom-key'];
 
         // prepare used dependencies
         $this->driver->hashIdentifier($identifier)->willReturn(sha1('/' . $identifier));
@@ -90,6 +95,9 @@ class MetaInfoDownloadAdapterTest extends TestCase
         $this->assertEquals('image/png', $metaInfo['mimetype']);
         $this->assertEquals(123, $metaInfo['size']);
         $this->assertEquals(42, $metaInfo['storage']);
+        $this->assertEquals('abc123', $metaInfo['sha256']);
+        $this->assertEquals('custom-value', $metaInfo['custom-key']);
+        $this->assertEquals(basename($identifier), $metaInfo['name']);
     }
 
     #[Test]

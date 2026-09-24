@@ -9,6 +9,7 @@
     "docs": "https://docs.typo3.org/p/andersundsehr/aus-driver-amazon-s3/master/en-us/"
   },
   "require": {
+    "php": "^8.2",
     "aws/aws-sdk-php": "^3.288",
     "typo3/cms-core": "^13.4"
   },

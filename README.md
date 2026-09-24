@@ -42,6 +42,27 @@ Add the following configurations:
 -   Public base url (optional): this is the public url of your bucket, if empty its default to “bucketname.s3.amazonaws.com”
 -   Protocol: network protocol (https://, http:// or auto detection)
 
+#### File hash setting
+
+Choose **Method for file hash** in the file storage's driver configuration. TYPO3 uses the result as a file content hash, so an identifier-based pseudo hash does not change when the contents of a file at the same path change.
+
+| Setting | How the hash is obtained | When to use it |
+| --- | --- | --- |
+| **Ignore** (`ignore`, default) | Returns a pseudo hash based on the file identifier. No S3 request is needed to calculate the hash. | Fastest choice for large existing buckets or bulk indexing when content hashes are not required. |
+| **Receive from S3** (`receive`) | Reads the requested hash from S3 object metadata. If it is missing, returns the identifier-based pseudo hash. Looking up uncached metadata requires a HEAD request per file. | Choose when files have stored hash metadata and you want content hashes without downloading the files. |
+| **Download and calculate** (`force`) | Uses the hash in S3 metadata if present. Otherwise downloads the entire object and calculates the requested hash. | Choose only when a real content hash is required even for objects without stored hash metadata. This can be slow and generate substantial network traffic during indexing. |
+| **Require from S3** (`strict`) | Reads the requested hash from S3 object metadata. If it is missing, throws a `RuntimeException`. Looking up uncached metadata requires a HEAD request per file; the object body is never downloaded for hashing. | Choose when every hash must describe the file contents, downloads are unacceptable, and missing metadata should fail the operation. |
+
+Choose `ignore` for speed when a pseudo hash is acceptable. Choose `receive` to use stored content hashes where available while accepting pseudo hashes for other files. Choose `force` when a content hash is required and downloading objects with missing hashes is acceptable. Choose `strict` when a content hash is required without downloading: a missing hash causes the calling operation (such as indexing) to fail, so ensure the metadata exists first.
+
+The requested algorithm must have a matching metadata key: for example, `hash-sha1` for SHA-1. Having only `hash-md5` does not satisfy a SHA-1 request. `strict` is a separate fourth choice; selecting `receive` still allows the existing pseudo hash fallback.
+
+For nonempty files uploaded through this extension while `receive`, `force`, or `strict` is selected, the driver stores MD5, SHA-1, and SHA-256 hashes in S3 object metadata. Existing objects and files uploaded with `ignore` may lack that metadata; changing the setting does not add hashes to those objects. For a large bucket without hash metadata, start with `ignore` for bulk indexing and select a content-hash mode only after assessing the cost and the need for content-based change detection.
+
+Changing the setting also does not update hashes already saved in TYPO3's file index. Those entries keep their previous hash until they are reindexed, and a saved pseudo hash does not represent the file contents. Reindexing with `receive` still produces a pseudo hash for objects without matching hash metadata; reindexing with `force` downloads those objects to calculate a content hash; reindexing with `strict` throws an exception for those objects.
+
+To refresh **all** existing hashes after changing the setting, use a one-off TYPO3 CLI command that processes the storage's existing `sys_file` records in batches and calls [`Indexer::updateIndexEntry()`](https://api.typo3.org/13.4/classes/TYPO3-CMS-Core-Resource-Index-Indexer.html) for each file. The standard ["File abstraction layer: Update storage index" Scheduler task](https://docs.typo3.org/m/typo3/reference-coreapi/13.4/en-us/ApiOverview/Fal/Administration/Maintenance.html) only updates existing files whose modification time has changed; it has no option to force an update of every unchanged file. Keep the existing `sys_file` records and their UIDs so file references remain intact. With `force`, plan for a full download of every object lacking hash metadata.
+
 #### Hint: Amazon AWS S3 bucket configuration
 
 Make sure that your AWS S3 bucket is accessible to public web users.

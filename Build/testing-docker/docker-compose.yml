@@ -122,6 +122,7 @@ services:
     user: ${HOST_UID}
     links:
       - mariadb10
+      - minio
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
       - ${HOST_HOME}:${HOST_HOME}
@@ -161,6 +162,7 @@ services:
     user: ${HOST_UID}
     links:
       - mssql2019latest
+      - minio
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
       - ${HOST_HOME}:${HOST_HOME}
@@ -204,6 +206,7 @@ services:
     user: ${HOST_UID}
     links:
       - postgres10
+      - minio
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
       - ${HOST_HOME}:${HOST_HOME}

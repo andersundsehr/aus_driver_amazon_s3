@@ -13,6 +13,7 @@
 
 namespace AUS\AusDriverAmazonS3\Driver;
 
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use InvalidArgumentException;
 use RuntimeException;
 use TYPO3\CMS\Core\Http\Stream;
@@ -32,7 +33,6 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Log\LogLevel;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -47,12 +47,10 @@ use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Resource\ResourceStorageInterface;
 use TYPO3\CMS\Core\Resource\StorageRepository;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\Resource\Capabilities;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class AmazonS3Driver
@@ -63,25 +61,29 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements StreamableDriverInterface
 {
-    const DRIVER_TYPE = 'AusDriverAmazonS3';
+    public const DRIVER_TYPE = 'AusDriverAmazonS3';
 
-    const EXTENSION_KEY = 'aus_driver_amazon_s3';
+    public const EXTENSION_KEY = 'aus_driver_amazon_s3';
 
-    const EXTENSION_NAME = 'AusDriverAmazonS3';
+    protected const EXTENSION_NAME = 'AusDriverAmazonS3';
 
-    const FILTER_ALL = 'all';
+    protected const FILTER_ALL = 'all';
 
-    const FILTER_FOLDERS = 'folders';
+    protected const FILTER_FOLDERS = 'folders';
 
-    const FILTER_FILES = 'files';
+    protected const FILTER_FILES = 'files';
 
-    const ROOT_FOLDER_IDENTIFIER = '/';
+    protected const ROOT_FOLDER_IDENTIFIER = '/';
 
-    const FILE_CONTENT_HASH_IGNORE = 0;
+    protected const FILE_CONTENT_HASH_IGNORE = 0;
 
-    const FILE_CONTENT_HASH_RECEIVE = 1;
+    protected const FILE_CONTENT_HASH_RECEIVE = 1;
 
-    const FILE_CONTENT_HASH_FORCE = 2;
+    protected const FILE_CONTENT_HASH_FORCE = 2;
+
+    protected const FILE_CONTENT_HASH_STRICT = 3;
+
+    private const META_INFO_HEAD_COMPLETE = '_aus_s3_head_complete';
 
     /**
      * The base URL that points to this driver's storage. As long is this is not set, it is assumed that this folder
@@ -159,6 +161,8 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
 
     protected CompatibilityService $compatibilityService;
 
+    protected MetaInfoDownloadAdapter $metaInfoDownloadAdapter;
+
     protected int $fileContentHash = self::FILE_CONTENT_HASH_IGNORE;
 
     /**
@@ -169,6 +173,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         parent::__construct($configuration);
         $this->eventDispatcher = $eventDispatcher ?? GeneralUtility::makeInstance(EventDispatcherInterface::class);
         $this->compatibilityService = GeneralUtility::makeInstance(CompatibilityService::class);
+        $this->metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
 
         $this->capabilities = GeneralUtility::makeInstance(Capabilities::class)->addCapabilities(
@@ -222,24 +227,30 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
 
     /**
      * Creates a (cryptographic) hash for a file.
+     *
+     * @throws RuntimeException If strict mode is selected and the requested hash metadata is missing.
      */
     public function hash(string $fileIdentifier, string $hashAlgorithm): string
     {
         if ($this->fileContentHash) {
-            $result = $this->getS3Client()->headObject([
-                'Bucket' => $this->configuration['bucket'],
-                'Key' => $fileIdentifier,
-            ]);
+            $result = $this->getMetaInfo($fileIdentifier, true);
 
             $key = 'hash-' . $hashAlgorithm;
-            if (isset($result['Metadata'][$key])) {
-                return $result['Metadata'][$key];
+            if (isset($result[$key])) {
+                return $result[$key];
+            }
+
+            if ($this->fileContentHash === self::FILE_CONTENT_HASH_STRICT) {
+                throw new RuntimeException(
+                    'Missing S3 metadata "' . $key . '" for file "' . $fileIdentifier . '" in strict file hash mode.',
+                    1790164800
+                );
             }
 
             if ($this->fileContentHash === self::FILE_CONTENT_HASH_FORCE) {
                 $result = $this->getS3Client()->getObject([
                     'Bucket' => $this->configuration['bucket'],
-                    'Key' => $fileIdentifier,
+                    'Key' => $this->addBaseFolder($fileIdentifier),
                 ]);
 
                 $bodyStream = $result['Body']->detach();
@@ -289,12 +300,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      */
     public function getFileInfoByIdentifier(string $fileIdentifier, array $propertiesToExtract = []): array
     {
-        if (count($propertiesToExtract) === 0 || in_array('mimetype', $propertiesToExtract)) {
-            // force to reload the infos from S3 if the mime type was requested
-            $this->flushMetaInfoCache($fileIdentifier);
-        }
-
-        $return = $this->getMetaInfo($fileIdentifier);
+        // LIST lacks MIME type and custom metadata; complete it once through HEAD.
+        $requireCompleteMetadata = $propertiesToExtract === [] || in_array('mimetype', $propertiesToExtract, true);
+        $return = $this->getMetaInfo($fileIdentifier, $requireCompleteMetadata);
         if ($return === null) {
             throw new InvalidArgumentException('File ' . $fileIdentifier . ' does not exist', 1503500470);
         }
@@ -382,6 +390,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         if (!is_uploaded_file($localFilePath) && $this->objectExists($localIdentifier)) {
             if ($removeOriginal) {
                 rename($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
+                $this->flushMetaInfoCache($localIdentifier);
             } else {
                 copy($this->getStreamWrapperPath($localIdentifier), $this->getStreamWrapperPath($targetIdentifier));
             }
@@ -451,8 +460,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         }
 
         $written = $this->setFileContents($fileIdentifier, $contents);
-        $this->flushMetaInfoCache($fileIdentifier);
-        return $written > 0;
+        return $written === strlen($contents);
     }
 
     /**
@@ -484,6 +492,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                         }
                     } else {
                         unlink($this->getStreamWrapperPath($object['Key']));
+                        $this->flushMetaInfoCache($object['Key']);
                     }
                 }
             }
@@ -514,8 +523,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 'Key' => $this->addBaseFolder($fileIdentifier),
                 'SaveAs' => $temporaryPath,
             ]);
-        } catch (\Exception) {
-            // Just prevent the exception content to be written in the temporary file. See next condition below
+        } catch (\Exception $exception) {
+            if (is_file($temporaryPath)) {
+                unlink($temporaryPath);
+            }
+
+            throw new RuntimeException('Copying file ' . $fileIdentifier . ' to temporary path failed.', 1320577650, $exception);
         }
 
         if (!is_file($temporaryPath)) {
@@ -594,15 +607,28 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     /**
      * Sets the contents of a file to the specified value.
      *
+     * Explicitly flush the S3 stream to detect upload errors that file_put_contents() does not report.
+     * @see https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/s3-stream-wrapper.html
+     *
      * @return int The number of bytes written to the file
      */
     public function setFileContents(string $fileIdentifier, string $contents): int
     {
-        $result = file_put_contents($this->getStreamWrapperPath($fileIdentifier), $contents);
-        if ($result === false) {
+        $stream = fopen($this->getStreamWrapperPath($fileIdentifier), 'w');
+        if ($stream === false) {
             throw new RuntimeException('Setting contents of file "' . $fileIdentifier . '" failed.', 5294171989);
         }
 
+        try {
+            $result = fwrite($stream, $contents);
+            if ($result === false || $result !== strlen($contents) || !fflush($stream)) {
+                throw new RuntimeException('Setting contents of file "' . $fileIdentifier . '" failed.', 5294171989);
+            }
+        } finally {
+            fclose($stream);
+        }
+
+        $this->flushMetaInfoCache($fileIdentifier);
         return $result;
     }
 
@@ -772,6 +798,17 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     public function getFolderInfoByIdentifier(string $folderIdentifier): array
     {
         $this->normalizeIdentifier($folderIdentifier);
+        if ($folderIdentifier === '') {
+            $folderIdentifier = self::ROOT_FOLDER_IDENTIFIER;
+        }
+
+        $listedFolderCacheKey = $this->cachePrefix . 'listed-folder-' . md5($folderIdentifier);
+        if (!$this->requestCache->has($listedFolderCacheKey) && !$this->folderExists($folderIdentifier)) {
+            throw new FolderDoesNotExistException(
+                'Folder "' . $folderIdentifier . '" does not exist.',
+                1314516810
+            );
+        }
 
         return [
             'identifier' => rtrim($folderIdentifier, '/') . '/',
@@ -932,6 +969,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             }
         }
 
+        foreach ($folders as $folder) {
+            $this->normalizeIdentifier($folder);
+            $this->requestCache->set($this->cachePrefix . 'listed-folder-' . md5($folder), true);
+        }
+
         return $folders;
     }
 
@@ -1044,6 +1086,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         switch ($this->configuration['fileContentHash'] ?? '') {
             case 'receive':
                 $this->fileContentHash = self::FILE_CONTENT_HASH_RECEIVE;
+                break;
+            case 'strict':
+                $this->fileContentHash = self::FILE_CONTENT_HASH_STRICT;
                 break;
             case 'force':
                 $this->fileContentHash = self::FILE_CONTENT_HASH_FORCE;
@@ -1174,8 +1219,12 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         }
 
         $this->cachePrefix = md5(
-            $configuration['endpoint']
-                ?? ($configuration['region'] . '-' . ($this->configuration['bucket'] ?? '-'))
+            serialize([
+                'endpoint' => $configuration['endpoint'] ?? '',
+                'region' => $configuration['region'] ?: 'eu-central-1',
+                'bucket' => $this->configuration['bucket'] ?? '',
+                'baseFolder' => $this->baseFolder,
+            ])
         ) . '-';
         return $this;
     }
@@ -1232,7 +1281,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             return str_replace('//', '/', $this->baseFolder . $identifier);
         }
 
-        return $identifier;
+        return ltrim($identifier, '/');
     }
 
     /**
@@ -1284,12 +1333,13 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
      *
      * @return array<string, mixed>|null Returns an array with the meta info or "null"
      */
-    protected function getMetaInfo(string $identifier): ?array
+    protected function getMetaInfo(string $identifier, bool $requireCompleteMetadata = false): ?array
     {
         $this->normalizeIdentifier($identifier);
         $cacheIdentifier = $this->cachePrefix . md5($identifier);
         $metaInfo = $this->metaInfoCache->has($cacheIdentifier) ? $this->metaInfoCache->get($cacheIdentifier) : false;
-        if ($metaInfo) {
+        if ($metaInfo && (!$requireCompleteMetadata || ($metaInfo[self::META_INFO_HEAD_COMPLETE] ?? false) === true)) {
+            unset($metaInfo[self::META_INFO_HEAD_COMPLETE]);
             return $metaInfo;
         }
 
@@ -1298,10 +1348,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                 'Bucket' => $this->configuration['bucket'],
                 'Key' => $this->addBaseFolder($identifier)
             ])->toArray();
-
-            $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-            $metaInfo = $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
+            $metaInfo = $this->metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $identifier, $metadata);
+            // An absent custom hash is conclusive only after a successful HEAD.
+            $metaInfo[self::META_INFO_HEAD_COMPLETE] = true;
             $this->metaInfoCache->set($cacheIdentifier, $metaInfo);
+            unset($metaInfo[self::META_INFO_HEAD_COMPLETE]);
             return $metaInfo;
         } catch (\Exception $exception) {
             // Ignore file not found errors
@@ -1339,7 +1390,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
     /**
      * Remove the identifier from the first level cache
      */
-    protected function flushMetaInfoCache(string $identifier): void
+    protected function flushMetaInfoCache(string $identifier, bool $resetRequestCache = true): void
     {
         $this->normalizeIdentifier($identifier);
         $cacheIdentifier = $this->cachePrefix . md5($identifier);
@@ -1347,7 +1398,9 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             $this->metaInfoCache->remove($cacheIdentifier);
         }
 
-        $this->requestCache->flush();
+        if ($resetRequestCache) {
+            $this->resetRequestCache();
+        }
     }
 
     /**
@@ -1506,10 +1559,7 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
         return $basePath . $this->addBaseFolder($identifier);
     }
 
-    /**
-     * @param string &$identifier
-     */
-    protected function normalizeIdentifier(&$identifier): void
+    protected function normalizeIdentifier(string &$identifier): void
     {
         $identifier = str_replace('//', '/', $identifier);
         if ($identifier !== '/') {
@@ -1575,9 +1625,6 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
             'Prefix' => $this->addBaseFolder($identifier),
         ];
         $result = $this->getCachedResponse('listObjectsV2', array_merge_recursive($args, $overrideArgs));
-        // Cache the given meta info
-        $metaInfoDownloadAdapter = GeneralUtility::makeInstance(MetaInfoDownloadAdapter::class);
-
         // with many files we come to the recursion which lessens the home of a cache hit, so we do not create the cache here
         if (isset($result['Contents']) && is_array($result['Contents'])) {
             $baseFolderSelfKey = null;
@@ -1588,11 +1635,11 @@ class AmazonS3Driver extends AbstractHierarchicalFilesystemDriver implements Str
                     continue;
                 }
 
-                $fileIdentifier = $identifier . $content['Key'];
+                $fileIdentifier = $content['Key'];
                 $this->normalizeIdentifier($fileIdentifier);
                 $cacheIdentifier = $this->cachePrefix . md5($fileIdentifier);
                 if (!$this->metaInfoCache->has($cacheIdentifier) || !$this->metaInfoCache->get($cacheIdentifier)) {
-                    $this->metaInfoCache->set($cacheIdentifier, $metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content));
+                    $this->metaInfoCache->set($cacheIdentifier, $this->metaInfoDownloadAdapter->getMetaInfoFromResponse($this, $fileIdentifier, $content));
                 }
             }
 

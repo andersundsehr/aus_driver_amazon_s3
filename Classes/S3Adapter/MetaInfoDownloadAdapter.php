@@ -62,10 +62,18 @@ class MetaInfoDownloadAdapter extends AbstractS3Adapter
             $metaInfo['mimetype'] = $this->getOverwrittenMimeType($response['ContentType'], $metaInfo['extension'], basename($identifier));
         }
 
-        if (!empty($response['ContentLength'])) {
+        if (isset($response['ContentLength'])) {
             $metaInfo['size'] = (int)$response['ContentLength'];
-        } elseif (!empty($response['size'])) {
-            $metaInfo['size'] = (int)$response['size'];
+        } elseif (isset($response['Size'])) {
+            $metaInfo['size'] = (int)$response['Size'];
+        }
+
+        if (isset($response['Metadata']) && is_array($response['Metadata'])) {
+            /** @var array<string, string> $metadata */
+            $metadata = $response['Metadata'];
+            foreach ($metadata as $metadataKey => $metadataValue) {
+                $metaInfo[$metadataKey] ??= $metadataValue;
+            }
         }
 
         return $metaInfo;

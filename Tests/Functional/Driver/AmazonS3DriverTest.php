@@ -149,6 +149,19 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->assertEquals("42\n", $this->driver->getFileContents('23.txt'));
     }
 
+    public function testGetFileContentsWithLeadingSlashAtBucketRoot(): void
+    {
+        $this->assertSame("42\n", $this->driver->getFileContents('/23.txt'));
+    }
+
+    public function testGetFileForLocalProcessingWithLeadingSlashAtBucketRoot(): void
+    {
+        $localPath = $this->driver->getFileForLocalProcessing('/23.txt');
+
+        $this->assertFileExists($localPath);
+        $this->assertSame("42\n", file_get_contents($localPath));
+    }
+
     public function testGetPublicUrl(): void
     {
         $this->assertEquals(

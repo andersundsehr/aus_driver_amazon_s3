@@ -7,6 +7,10 @@ services:
   AUS\AusDriverAmazonS3\:
     resource: '../Classes/*'
 
+  AUS\AusDriverAmazonS3\S3Adapter\MetaInfoDownloadAdapter:
+    public: true
+    shared: true
+
   AUS\AusDriverAmazonS3\EventListener\AfterFileAddedToIndexEventListener:
     tags:
       - name: event.listener

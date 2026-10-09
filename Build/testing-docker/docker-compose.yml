@@ -22,7 +22,9 @@ services:
       - /var/lib/postgresql/data:rw,noexec,nosuid
 
   minio:
-    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    build:
+      context: .
+      dockerfile: minio.Dockerfile
     user: ${HOST_UID}
     command: server /minio-data
     volumes:

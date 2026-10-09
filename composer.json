@@ -9,6 +9,7 @@
     "docs": "https://docs.typo3.org/p/andersundsehr/aus-driver-amazon-s3/master/en-us/"
   },
   "require": {
+    "php": "^8.2",
     "aws/aws-sdk-php": "^3.288",
     "typo3/cms-core": "^13.4"
   },
@@ -59,7 +60,7 @@
     ],
     "test": [
       "@setupTest",
-      "./Build/Scripts/runTests.sh -p '8.4' -s composerInstall && ./Build/Scripts/runTests.sh -p '8.4' -s composerValidate && ./Build/Scripts/runTests.sh -p '8.4' -s unit && ./Build/Scripts/runTests.sh -p '8.4' -s lint"
+      "./Build/Scripts/runTests.sh -p '8.5' -s composerInstall && ./Build/Scripts/runTests.sh -p '8.5' -s composerValidate && ./Build/Scripts/runTests.sh -p '8.5' -s unit && ./Build/Scripts/runTests.sh -p '8.5' -s lint"
     ]
   }
 }

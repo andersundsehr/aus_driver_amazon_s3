@@ -27,6 +27,12 @@ services:
       dockerfile: minio.Dockerfile
     user: ${HOST_UID}
     command: server /minio-data
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9000/minio/health/ready"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
     volumes:
       - ../../.Build/minio-data:/minio-data
 
@@ -244,8 +250,9 @@ services:
   functional_sqlite:
     image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
-    links:
-      - minio
+    depends_on:
+      minio:
+        condition: service_healthy
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
       - ${HOST_HOME}:${HOST_HOME}

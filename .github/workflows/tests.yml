@@ -26,7 +26,7 @@ jobs:
       # CI-only alias: TYPO3 still requires ~0.22; 1.0.0 fixes its security advisories.
       # Remove the alias when TYPO3 accepts ^1.0.
       - name: Select security-fixed SVG sanitizer
-        run: composer require "enshrined/svg-sanitize:1.0.0 as 0.22.99" --dev --no-update --no-interaction
+        run: composer require "enshrined/svg-sanitize:1.0.0 as 0.22.99" --dev --no-update --sort-packages --no-interaction
 
       - name: Composer
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerInstall

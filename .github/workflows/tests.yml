@@ -11,14 +11,28 @@ jobs:
     name: all tests
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
-        php: ['8.4']
+        php: ['8.2', '8.3', '8.4', '8.5']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Set up Composer for CI dependency constraints
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      # CI-only alias: TYPO3 still requires ~0.22; 1.0.0 fixes its security advisories.
+      # Remove the alias when TYPO3 accepts ^1.0.
+      - name: Select security-fixed SVG sanitizer
+        run: composer require "enshrined/svg-sanitize:1.0.0 as 0.22.99" --dev --no-update --no-interaction
+
       - name: Composer
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerInstall
+
+      - name: Verify TYPO3 SVG sanitizer compatibility
+        run: bash Tests/typo3-svg-sanitizer.sh
 
       - name: Composer validate
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate

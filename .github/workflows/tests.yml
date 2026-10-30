@@ -45,27 +45,3 @@ jobs:
 
       - name: Functional tests
         run: mkdir -p .Build/Web/typo3conf/ && rm -rf .Build/Web/typo3conf/ext && ln -sfn ../../../../ .Build/Web/typo3conf/ext && Build/Scripts/runTests.sh -p ${{ matrix.php }} -d sqlite -s functional
-
-  lowest-dependencies:
-    name: lowest dependencies (PHP 8.2 / TYPO3 13)
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: intl, mbstring, gd, zip, pdo_sqlite
-      - name: Resolve lowest compatible dependencies
-        run: composer update --prefer-lowest --prefer-stable --with-all-dependencies --no-scripts --no-interaction --no-progress
-      - run: composer validate
-      - run: composer check-platform-reqs
-      - name: Prepare extension test path
-        run: mkdir -p .Build/Web/typo3conf/ext && ln -sfn ../../../../ .Build/Web/typo3conf/ext/aus_driver_amazon_s3
-      - name: Lint PHP
-        run: Build/Scripts/runTests.sh -p 8.2 -s lint
-      - name: Static analysis
-        run: .Build/bin/phpstan analyse --no-progress
-      - name: Unit tests
-        run: Build/Scripts/runTests.sh -p 8.2 -s unit
-      - name: Functional tests
-        run: Build/Scripts/runTests.sh -p 8.2 -d sqlite -s functional

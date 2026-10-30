@@ -11,14 +11,25 @@ jobs:
     name: all tests
     runs-on: ubuntu-24.04
     strategy:
+      fail-fast: false
       matrix:
-        php: ['8.4']
+        php: ['8.2', '8.3', '8.4', '8.5']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Set up PHP for dependency resolution
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl, mbstring, gd, zip, pdo_sqlite
+
+      - name: Resolve latest compatible dependencies
+        run: composer update --with-all-dependencies --no-install --no-scripts --no-progress --no-interaction
+
       - name: Composer
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerInstall
+
 
       - name: Composer validate
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate

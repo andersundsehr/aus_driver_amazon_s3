@@ -44,6 +44,8 @@ services:
       - ${HOST_HOME}:${HOST_HOME}
       - /etc/passwd:/etc/passwd:ro
       - /etc/group:/etc/group:ro
+    environment:
+      COMPOSER_IGNORE_PLATFORM_REQ: ${COMPOSER_IGNORE_PLATFORM_REQ:-}
     working_dir: ${ROOT_DIR}
     command: >
       /bin/sh -c "

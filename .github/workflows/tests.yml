@@ -13,13 +13,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2', '8.3', '8.4', '8.5']
+        php: ['8.2', '8.3', '8.4', '8.5', '8.6']
+        include:
+          # phpro/grumphp does not allow PHP 8.6 yet
+          - php: '8.6'
+            composerIgnorePlatformReq: 'php+'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Composer
+        env:
+          COMPOSER_IGNORE_PLATFORM_REQ: ${{ matrix.composerIgnorePlatformReq }}
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerInstall
+
+      # --ignore-platform-req=php+ may only skip the PHP check of dev dependencies (e.g. phpro/grumphp)
+      - if: matrix.php == '8.6'
+        run: docker run --rm -v "$PWD:$PWD" -w "$PWD" ghcr.io/typo3/core-testing-php86:latest composer check-platform-reqs --no-dev
 
       - name: Composer validate
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate

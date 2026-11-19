@@ -18,18 +18,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up PHP for dependency resolution
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: intl, mbstring, gd, zip, pdo_sqlite
-
-      - name: Resolve latest compatible dependencies
-        run: composer update --with-all-dependencies --no-install --no-scripts --no-progress --no-interaction
-
       - name: Composer
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerInstall
-
 
       - name: Composer validate
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate

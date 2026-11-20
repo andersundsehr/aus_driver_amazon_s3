@@ -268,8 +268,6 @@ services:
     depends_on:
       s3:
         condition: service_healthy
-      s3_setup:
-        condition: service_completed_successfully
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}
       - ${HOST_HOME}:${HOST_HOME}

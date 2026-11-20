@@ -15,7 +15,7 @@ jobs:
       matrix:
         php: ['8.2', '8.3', '8.4', '8.5', '8.6']
         include:
-          # phpro/grumphp does not allow PHP 8.6 yet
+          # phpspec/prophecy does not allow PHP 8.6 yet
           - php: '8.6'
             composerIgnorePlatformReq: 'php+'
     steps:
@@ -27,7 +27,7 @@ jobs:
           COMPOSER_IGNORE_PLATFORM_REQ: ${{ matrix.composerIgnorePlatformReq }}
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerInstall
 
-      # --ignore-platform-req=php+ may only skip the PHP check of dev dependencies (e.g. phpro/grumphp)
+      # --ignore-platform-req=php+ may only skip the PHP check of dev dependencies (e.g. phpspec/prophecy)
       - if: matrix.php == '8.6'
         run: docker run --rm -v "$PWD:$PWD" -w "$PWD" ghcr.io/typo3/core-testing-php86:latest composer check-platform-reqs --no-dev
 

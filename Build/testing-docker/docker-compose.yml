@@ -21,20 +21,37 @@ services:
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid
 
-  minio:
-    build:
-      context: .
-      dockerfile: minio.Dockerfile
-    user: ${HOST_UID}
-    command: server /minio-data
+  s3:
+    image: rustfs/rustfs:1.0.6
+    environment:
+      RUSTFS_ACCESS_KEY: test-key
+      RUSTFS_SECRET_KEY: test-secretkey
+      RUSTFS_REGION: eu-central-1
+      # the functional tests expect nothing to listen on port 9001
+      RUSTFS_CONSOLE_ENABLE: 'false'
+    tmpfs:
+      - /data:uid=10001
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9000/minio/health/ready"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9000/health/ready"]
       interval: 1s
       timeout: 3s
       retries: 30
       start_period: 5s
+
+  s3_setup:
+    image: amazon/aws-cli:2.39.3
+    depends_on:
+      s3:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: test-key
+      AWS_SECRET_ACCESS_KEY: test-secretkey
+      AWS_DEFAULT_REGION: eu-central-1
+      AWS_ENDPOINT_URL: http://s3:9000
     volumes:
-      - ../../.Build/minio-data:/minio-data
+      - ${ROOT_DIR}/Tests/Functional/Bucketfiles:/Bucketfiles:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["aws s3 mb s3://test-bucket && aws s3 cp --recursive --quiet /Bucketfiles s3://test-bucket/"]
 
   composer_install:
     image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
@@ -253,7 +270,7 @@ services:
     image: ghcr.io/typo3/core-testing-${DOCKER_PHP_IMAGE}:latest
     user: ${HOST_UID}
     depends_on:
-      minio:
+      s3:
         condition: service_healthy
     volumes:
       - ${ROOT_DIR}:${ROOT_DIR}

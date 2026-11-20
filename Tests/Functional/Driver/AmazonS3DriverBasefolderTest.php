@@ -31,11 +31,11 @@ class AmazonS3DriverBasefolderTest extends FunctionalTestCase
     protected $testConfiguration = [
         'bucket'              => 'test-bucket',
         'region'              => 'eu-central-1',
-        'customHost'          => 'http://minio:9000',
+        'customHost'          => 'http://s3:9000',
         'pathStyleEndpoint'   => 1,
         'key'                 => 'test-key',
         'secretKey'           => 'test-secretkey',
-        'publicBaseUrl'       => 'minio',
+        'publicBaseUrl'       => 's3',
         'cacheHeaderDuration' => 0,
         'protocol'            => 'http://',
         'signature'           => 0,
@@ -89,7 +89,7 @@ class AmazonS3DriverBasefolderTest extends FunctionalTestCase
         $this->assertFalse(file_exists($localPath));
 
         $this->assertEquals(
-            'http://minio/folder1/tmp-uploaded.txt',
+            'http://s3/folder1/tmp-uploaded.txt',
             $this->driver->getPublicUrl('tmp-uploaded.txt')
         );
         $this->assertTrue($this->driver->deleteFile('tmp-uploaded.txt'));
@@ -145,7 +145,7 @@ class AmazonS3DriverBasefolderTest extends FunctionalTestCase
     public function testGetPublicUrl(): void
     {
         $this->assertEquals(
-            'http://minio/folder1/file.txt',
+            'http://s3/folder1/file.txt',
             $this->driver->getPublicUrl('file.txt')
         );
     }

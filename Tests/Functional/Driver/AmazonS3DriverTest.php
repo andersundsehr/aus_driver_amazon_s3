@@ -36,11 +36,11 @@ class AmazonS3DriverTest extends FunctionalTestCase
     protected $testConfiguration = [
         'bucket'              => 'test-bucket',
         'region'              => 'eu-central-1',
-        'customHost'          => 'http://minio:9000',
+        'customHost'          => 'http://s3:9000',
         'pathStyleEndpoint'   => 1,
         'key'                 => 'test-key',
         'secretKey'           => 'test-secretkey',
-        'publicBaseUrl'       => 'minio',
+        'publicBaseUrl'       => 's3',
         'baseFolder'          => '',
         'cacheHeaderDuration' => 0,
         'protocol'            => 'http://',
@@ -152,7 +152,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
     public function testGetPublicUrl(): void
     {
         $this->assertEquals(
-            'http://minio/file.txt',
+            'http://s3/file.txt',
             $this->driver->getPublicUrl('file.txt')
         );
     }
@@ -187,7 +187,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
             $publicStorage
         );
 
-        $this->assertSame('http://minio/23.txt', $publicFile->getPublicUrl());
+        $this->assertSame('http://s3/23.txt', $publicFile->getPublicUrl());
 
         $storageRecord['is_public'] = 0;
         $privateDriver = new AmazonS3Driver(
@@ -361,7 +361,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage'] = [
             //define invalid host
-            'customHost' => 'http://minio:9001',
+            'customHost' => 'http://s3:9001',
         ];
         $this->driver = new AmazonS3Driver(
             $this->testConfiguration,
@@ -372,7 +372,7 @@ class AmazonS3DriverTest extends FunctionalTestCase
         $this->driver->initialize();
 
         $this->expectException(S3Exception::class);
-        $this->expectExceptionMessageMatches('/Failed to connect to minio(?::9001| port 9001)/');
+        $this->expectExceptionMessageMatches('/Failed to connect to s3(?::9001| port 9001)/');
         $this->driver->getFileContents('23.txt');
     }
 
@@ -383,11 +383,11 @@ class AmazonS3DriverTest extends FunctionalTestCase
 
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage'] = [
             //define invalid host
-            'customHost' => 'http://minio:9001',
+            'customHost' => 'http://s3:9001',
         ];
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][AmazonS3Driver::EXTENSION_KEY]['storage_42'] = [
             //define valid host specific for storage ID 42 that overrides the broken generic one
-            'customHost' => 'http://minio:9000',
+            'customHost' => 'http://s3:9000',
         ];
 
         $this->driver = new AmazonS3Driver(

@@ -92,7 +92,6 @@ class MultipartUploaderAdapter extends AbstractS3Adapter
         }
 
         $contentType = finfo_file($fileInfo, $localFilePath);
-        finfo_close($fileInfo);
         if ($contentType === false) {
             return 'application/octet-stream';
         }

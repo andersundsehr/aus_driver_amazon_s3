@@ -10,7 +10,7 @@ This is a driver for the file abstraction layer (FAL) to support Amazon AWS S3.
 
 You can create a file storage which allows you to upload/download and link the files to an AWS S3 bucket. It also supports the TYPO3 CMS image rendering.
 
-Requires TYPO3 11.5 - 12.4
+Requires TYPO3 13.4
 
 Issue tracking: [GitHub: AWS S3 FAL Driver](https://github.com/andersundsehr/aus_driver_amazon_s3/issues)
 
@@ -176,12 +176,3 @@ If you wish other hooks - don’t be shy: [GitHub issue tracking: Amazon S3 FAL 
 ## Running tests
 
 Run `make tests` to run both unit and functional tests.
-
-To switch TYPO3 test version to 11:
-```bash
-composer update --with typo3/cms-core:^11.5.6
-```
-To switch TYPO3 test version to 12:
-```bash
-composer update --with typo3/cms-core:^12.4.0 --ignore-platform-req=ext-intl
-```

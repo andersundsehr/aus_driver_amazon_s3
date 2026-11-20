@@ -1,57 +1,56 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <xliff version="1.0">
-	<file target-language="de" datatype="plaintext" original="messages" date="2013-05-27T14:06:47Z" product-name="aus_driver_amazon_s3">
-		<header/>
-		<body>
-			<trans-unit id="driverConfiguration.region">
-				<target>AWS S3: Region</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.bucket">
-				<target>AWS S3: Bucket</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.key">
-				<target>AWS S3: Key</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.secretKey">
-				<target>AWS S3: Secret Key</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.publicBaseUrl">
-				<target>AWS S3: Öffentliche URL (optional)</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.cacheHeaderDuration">
-				<target>Cache Header: Max-Age (in Sekunden, optional)</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.protocol">
-				<target>Netzwerkprotokoll</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.protocol.auto">
-				<target>automatisch</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.signature">
-				<target>Signatur</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.signature.auto">
-				<target>automatisch</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.caseSensitive">
-				<target>Benutzt groß-/kleinschreibungsabhängige Bezeichner (case sensitive)</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.message.connectionTestFailed.title">
-				<target>AWS S3 Verbindung fehlgeschlagen</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.message.connectionTestSuccessful.title">
-				<target>Verbindung erfolgreich hergestellt</target>
-			</trans-unit>
-			<trans-unit id="driverConfiguration.message.connectionTestSuccessful.message">
-				<target>Glückwunsch! AWS S3 ist erfolgreich mit TYPO3 verbunden.</target>
-			</trans-unit>
-
-			<trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
-				<target>Lade DNS Auflösung durch HTML-Tag "dns-prefetch"</target>
-			</trans-unit>
-			<trans-unit id="ausDriverAmazonS3.settings.enablePermissionsCheck">
-				<target>Prüfe Dateiberechtigungen (sehr langsam)</target>
-			</trans-unit>
-		</body>
-	</file>
+    <file target-language="de" datatype="plaintext" original="messages" date="2013-05-27T14:06:47Z" product-name="aus_driver_amazon_s3">
+        <header/>
+        <body>
+            <trans-unit id="driverConfiguration.region">
+                <target>AWS S3: Region</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.bucket">
+                <target>AWS S3: Bucket</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.key">
+                <target>AWS S3: Key</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.secretKey">
+                <target>AWS S3: Secret Key</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.publicBaseUrl">
+                <target>AWS S3: Öffentliche URL (optional)</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.cacheHeaderDuration">
+                <target>Cache Header: Max-Age (in Sekunden, optional)</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.protocol">
+                <target>Netzwerkprotokoll</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.protocol.auto">
+                <target>automatisch</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.signature">
+                <target>Signatur</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.signature.auto">
+                <target>automatisch</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.caseSensitive">
+                <target>Benutzt groß-/kleinschreibungsabhängige Bezeichner (case sensitive)</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.message.connectionTestFailed.title">
+                <target>AWS S3 Verbindung fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.message.connectionTestSuccessful.title">
+                <target>Verbindung erfolgreich hergestellt</target>
+            </trans-unit>
+            <trans-unit id="driverConfiguration.message.connectionTestSuccessful.message">
+                <target>Glückwunsch! AWS S3 ist erfolgreich mit TYPO3 verbunden.</target>
+            </trans-unit>
+            <trans-unit id="ausDriverAmazonS3.settings.dnsPrefetch">
+                <target>Lade DNS Auflösung durch HTML-Tag "dns-prefetch"</target>
+            </trans-unit>
+            <trans-unit id="ausDriverAmazonS3.settings.enablePermissionsCheck">
+                <target>Prüfe Dateiberechtigungen (sehr langsam)</target>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>

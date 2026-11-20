@@ -5,8 +5,7 @@
         <el>
             <bucket>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.bucket
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.bucket</label>
                 <config>
                     <type>input</type>
                     <size>30</size>
@@ -14,8 +13,7 @@
             </bucket>
             <region>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.region
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.region</label>
                 <config>
                     <type>select</type>
                     <renderType>selectSingle</renderType>
@@ -134,11 +132,9 @@
             </region>
             <customHost>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost</label>
                 <description>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost-description
-                </description>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.customHost-description</description>
                 <config>
                     <type>link</type>
                     <size>30</size>
@@ -146,11 +142,9 @@
             </customHost>
             <pathStyleEndpoint>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint</label>
                 <description>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint-description
-                </description>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.pathStyleEndpoint-description</description>
                 <config>
                     <type>check</type>
                     <default>0</default>
@@ -158,8 +152,7 @@
             </pathStyleEndpoint>
             <key>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.key
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.key</label>
                 <config>
                     <type>input</type>
                     <size>30</size>
@@ -167,8 +160,7 @@
             </key>
             <secretKey>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.secretKey
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.secretKey</label>
                 <config>
                     <type>password</type>
                     <hashed>0</hashed>
@@ -177,28 +169,25 @@
             </secretKey>
             <publicBaseUrl>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl</label>
                 <description>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl-description
-                </description>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.publicBaseUrl-description</description>
                 <config>
                     <type>input</type>
                     <size>30</size>
                 </config>
             </publicBaseUrl>
-			<baseFolder>
+            <baseFolder>
                 <label>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.baseFolder</label>
                 <description>LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.baseFolder-description</description>
                 <config>
                     <type>input</type>
                     <size>30</size>
                 </config>
-			</baseFolder>
+            </baseFolder>
             <cacheHeaderDuration>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.cacheHeaderDuration
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.cacheHeaderDuration</label>
                 <config>
                     <type>number</type>
                     <size>30</size>
@@ -209,8 +198,7 @@
             </cacheHeaderDuration>
             <protocol>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol</label>
                 <config>
                     <type>select</type>
                     <renderType>selectSingle</renderType>
@@ -218,8 +206,7 @@
                     <items>
                         <numIndex index="0">
                             <label>
-                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol.auto
-                            </label>
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.protocol.auto</label>
                             <value>auto</value>
                         </numIndex>
                         <numIndex index="1">
@@ -235,8 +222,7 @@
             </protocol>
             <signature>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature</label>
                 <config>
                     <type>select</type>
                     <renderType>selectSingle</renderType>
@@ -246,8 +232,7 @@
                     <items>
                         <numIndex index="0">
                             <label>
-                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature.auto
-                            </label>
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.signature.auto</label>
                             <value>0</value>
                         </numIndex>
                         <numIndex index="1">
@@ -259,8 +244,7 @@
             </signature>
             <caseSensitive>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.caseSensitive
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.caseSensitive</label>
                 <config>
                     <type>check</type>
                     <default>1</default>
@@ -268,8 +252,7 @@
             </caseSensitive>
             <fileContentHash>
                 <label>
-                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash
-                </label>
+                    LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash</label>
                 <config>
                     <type>select</type>
                     <renderType>selectSingle</renderType>
@@ -279,20 +262,17 @@
                     <items>
                         <numIndex index="0">
                             <label>
-                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.ignore
-                            </label>
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.ignore</label>
                             <value>ignore</value>
                         </numIndex>
                         <numIndex index="1">
                             <label>
-                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.receive
-                            </label>
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.receive</label>
                             <value>receive</value>
                         </numIndex>
                         <numIndex index="2">
                             <label>
-                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.force
-                            </label>
+                                LLL:EXT:aus_driver_amazon_s3/Resources/Private/Language/locallang_flexform.xlf:driverConfiguration.fileContentHash.force</label>
                             <value>force</value>
                         </numIndex>
                     </items>
